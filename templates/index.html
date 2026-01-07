@@ -1,1 +1,52 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DR-MITAMBO | Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --cat: #FFCD00; --bg: #0d0d0d; --card: #1a1a1a; }
+        body { background-color: var(--bg); color: #fff; font-family: sans-serif; padding-bottom: 80px; }
+        .stat-card { background: var(--card); border-radius: 15px; padding: 20px; border-left: 4px solid var(--cat); margin-bottom: 15px; }
+        .nav-card { background: var(--card); border-radius: 20px; padding: 25px; text-align: center; text-decoration: none; color: white; display: block; transition: 0.3s; height: 100%; border: 1px solid #333; }
+        .nav-card:hover { border-color: var(--cat); transform: translateY(-5px); }
+        .nav-card i { font-size: 2.5rem; color: var(--cat); margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="p-3 text-center border-bottom border-warning mb-4">
+        <h4 class="fw-bold mb-0">DR-MITAMBO <span class="text-warning">OS</span></h4>
+    </div>
+
+    <div class="container">
+        <div class="row g-2 mb-4">
+            <div class="col-6"><div class="stat-card"><h3 class="fw-bold text-warning">42</h3><small class="opacity-50">Assets</small></div></div>
+            <div class="col-6"><div class="stat-card"><h3 class="fw-bold text-danger">05</h3><small class="opacity-50">Critical</small></div></div>
+        </div>
+
+        <h6 class="text-uppercase opacity-50 mb-3 small fw-bold">Main Control Units</h6>
+        <div class="row g-3">
+            {% for item in huduma %}
+            <div class="col-6">
+                <a href="{{ url_for(item.link) }}" class="nav-card">
+                    <i class="fas {{ item.icon }}"></i>
+                    <div class="fw-bold small">{{ item.title }}</div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="fixed-bottom bg-dark border-top border-secondary d-flex justify-content-around p-3">
+        <a href="{{ url_for('index') }}" class="text-warning text-decoration-none text-center"><i class="fas fa-th-large d-block"></i><small style="font-size: 0.6rem;">Home</small></a>
+        <a href="{{ url_for('diagnosis') }}" class="text-white text-decoration-none text-center opacity-50"><i class="fas fa-microchip d-block"></i><small style="font-size: 0.6rem;">Diag</small></a>
+        <a href="{{ url_for('maintenance') }}" class="text-white text-decoration-none text-center opacity-50"><i class="fas fa-tools d-block"></i><small style="font-size: 0.6rem;">Service</small></a>
+        <a href="{{ url_for('electrical') }}" class="text-white text-decoration-none text-center opacity-50"><i class="fas fa-bolt d-block"></i><small style="font-size: 0.6rem;">Elec</small></a>
+    </div>
+
+</body>
+</html>
 

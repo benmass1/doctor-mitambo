@@ -3,114 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business_Systems_Op | Fleet Management</title>
+    <title>Doctor-Mitambo | Professional Fleet Support</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
-        :root {
-            --cat-yellow: #FFCD00;
-            --industry-dark: #1a1a1a;
-            --sidebar-width: 260px;
+        :root { --cat-yellow: #FFCD00; --komatsu-blue: #0054A6; --dark-bg: #111111; }
+        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; overflow-x: hidden; }
+        
+        /* Mobile Friendly Sidebar */
+        .sidebar { width: 260px; height: 100vh; position: fixed; background: var(--dark-bg); z-index: 1000; transition: 0.5s; }
+        .nav-link { color: #888; padding: 15px 25px; display: flex; align-items: center; border-radius: 10px; margin: 5px 15px; transition: 0.3s; }
+        .nav-link:hover, .nav-link.active { background: var(--cat-yellow); color: #000 !important; font-weight: bold; transform: translateX(5px); }
+        .brand { padding: 30px 20px; font-size: 1.6rem; color: var(--cat-yellow); font-weight: 900; letter-spacing: -1px; }
+
+        .main-content { margin-left: 260px; min-height: 100vh; padding: 20px; transition: 0.5s; }
+        
+        /* Responsive Fixes */
+        @media (max-width: 992px) {
+            .sidebar { margin-left: -260px; }
+            .sidebar.active { margin-left: 0; }
+            .main-content { margin-left: 0; }
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f4f4f4;
-        }
-
-        /* Sidebar Styling */
-        .sidebar {
-            width: var(--sidebar-width);
-            height: 100vh;
-            position: fixed;
-            background-color: var(--industry-dark);
-            color: white;
-            padding-top: 20px;
-            z-index: 1000;
-        }
-
-        .brand-name {
-            font-family: 'Roboto Condensed', sans-serif;
-            color: var(--cat-yellow);
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.4rem;
-            margin-bottom: 30px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 15px;
-        }
-
-        .nav-link {
-            color: #bdc3c7;
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-
-        .nav-link i {
-            width: 25px;
-            margin-right: 10px;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            background-color: var(--cat-yellow);
-            color: black;
-            font-weight: 600;
-        }
-
-        /* Main Content Styling */
-        .main-content {
-            margin-left: var(--sidebar-width);
-            padding: 30px;
-        }
-
-        .top-bar {
-            background: white;
-            padding: 15px 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .card { border: none; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .glass-header { background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); sticky-top; border-radius: 15px; padding: 15px; margin-bottom: 25px; }
     </style>
 </head>
 <body>
 
-    <div class="sidebar shadow">
-        <div class="brand-name">
-            <i class="fas fa-hard-hat"></i> Business_Systems_Op
-        </div>
-        <nav>
-            <a href="/" class="nav-link active"><i class="fas fa-desktop"></i> Dashboard</a>
-            <a href="/operation" class="nav-link"><i class="fas fa-cogs"></i> System Operation</a>
-            <a href="/maintenance" class="nav-link"><i class="fas fa-tools"></i> Maintenance & Repair</a>
-            <a href="/troubleshooting" class="nav-link"><i class="fas fa-search-minus"></i> Troubleshooting</a>
-            <a href="/diagnosis" class="nav-link"><i class="fas fa-stethoscope"></i> Diagnosis</a>
-            <a href="/electrical" class="nav-link"><i class="fas fa-bolt text-warning"></i> Electrical System</a>
-            <a href="/training" class="nav-link"><i class="fas fa-graduation-cap"></i> Training Hub</a>
-            <hr class="mx-3 border-secondary">
-            <a href="#" class="nav-link text-danger mt-5"><i class="fas fa-sign-out-alt"></i> Toka</a>
+    <div class="sidebar" id="sidebar">
+        <div class="brand"><i class="fas fa-microchip me-2"></i>DR-MITAMBO</div>
+        <nav class="nav flex-column">
+            <a href="/" class="nav-link {{ 'active' if active_page == 'dashboard' }}"><i class="fas fa-home me-3"></i> Dashboard</a>
+            <a href="/operation" class="nav-link {{ 'active' if active_page == 'operation' }}"><i class="fas fa-sync-alt me-3"></i> System Operation</a>
+            <a href="/maintenance" class="nav-link {{ 'active' if active_page == 'maintenance' }}"><i class="fas fa-tools me-3"></i> Maintenance</a>
+            <a href="/troubleshooting" class="nav-link {{ 'active' if active_page == 'troubleshooting' }}"><i class="fas fa-stethoscope me-3"></i> Troubleshooting</a>
+            <a href="/diagnosis" class="nav-link {{ 'active' if active_page == 'diagnosis' }}"><i class="fas fa-laptop-code me-3"></i> Diagnosis</a>
+            <a href="/electrical" class="nav-link {{ 'active' if active_page == 'electrical' }}"><i class="fas fa-bolt me-3 text-warning"></i> Electrical</a>
+            <a href="/training" class="nav-link {{ 'active' if active_page == 'training' }}"><i class="fas fa-video me-3"></i> Training Hub</a>
         </nav>
     </div>
 
     <div class="main-content">
-        <div class="top_bar rounded shadow-sm mb-4">
-            <div class="d-flex justify-content-between w-100">
-                <span class="fw-bold"><i class="fas fa-calendar-alt"></i> {{ now }}</span>
-                <span class="text-muted">Heavy Machinery Support System v1.0</span>
+        <div class="glass-header d-flex justify-content-between align-items-center shadow-sm">
+            <button class="btn btn-dark d-lg-none" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <h5 class="fw-bold m-0 d-none d-md-block">Heavy Machinery Support System</h5>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-success me-3 py-2 px-3 rounded-pill">CAT-ET Connected</span>
+                <i class="fas fa-user-circle fa-2x text-secondary"></i>
             </div>
         </div>
-
         {% block content %}{% endblock %}
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+    </script>
 </body>
 </html>
 

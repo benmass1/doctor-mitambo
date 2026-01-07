@@ -3,108 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biashara Extreme | Suluhisho la Kidijitali</title>
+    <title>MITAMBO EXTREME | Mfumo wa Usimamizi</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root { --primary-color: #0d6efd; --dark-bg: #1a1a1a; }
-        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .hero-section { 
-            background: linear-gradient(45deg, rgba(0,0,0,0.8), rgba(13,110,253,0.5)), url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1350&q=80');
-            background-size: cover; height: 90vh; color: white; display: flex; align-items: center;
+        :root { --primary: #ffcc00; --dark: #121212; --card-bg: #1e1e1e; }
+        body { background-color: var(--dark); color: #e0e0e0; font-family: 'Inter', sans-serif; }
+        
+        /* Sidebar Styles */
+        .sidebar { background: #000; height: 100vh; position: fixed; width: 250px; border-right: 1px solid #333; }
+        .main-content { margin-left: 250px; padding: 30px; }
+        
+        /* Card Styles */
+        .stat-card { background: var(--card-bg); border: none; border-radius: 15px; transition: 0.3s; }
+        .stat-card:hover { transform: translateY(-5px); border: 1px solid var(--primary); }
+        
+        /* Progress Bar for Fuel */
+        .progress { height: 8px; background-color: #333; }
+        .progress-bar { background-color: var(--primary); }
+        
+        /* Table Styles */
+        .table { color: #e0e0e0; border-color: #333; }
+        .table thead { background: #252525; }
+        
+        .status-pill { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+        .status-kazi { background: rgba(40, 167, 69, 0.2); color: #28a745; }
+        .status-service { background: rgba(220, 53, 69, 0.2); color: #dc3545; }
+        
+        @media (max-width: 768px) {
+            .sidebar { width: 0; display: none; }
+            .main-content { margin-left: 0; }
         }
-        .service-card { border: none; transition: 0.4s; border-radius: 15px; }
-        .service-card:hover { transform: translateY(-10px); background: var(--primary-color); color: white; }
-        .whatsapp-float { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 2px 2px 10px rgba(0,0,0,0.3); z-index: 1000; }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#">BIASHARA <span class="text-primary">EXTREME</span></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#nyumbani">Nyumbani</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#huduma">Huduma</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#wasiliana">Wasiliana</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <div class="sidebar d-flex flex-column p-3">
+        <h3 class="text-warning fw-bold mb-4"><i class="fas fa-hard-hat"></i> MITAMBO EX</h3>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item mb-2"><a href="#" class="nav-link active bg-warning text-dark"><i class="fas fa-th-large me-2"></i> Dashboard</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link text-white"><i class="fas fa-truck-pickup me-2"></i> Mitambo Yote</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link text-white"><i class="fas fa-user-hard-hat me-2"></i> Waendeshaji</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link text-white"><i class="fas fa-gas-pump me-2"></i> Ripoti ya Mafuta</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link text-white"><i class="fas fa-tools me-2"></i> Matengenezo</a></li>
+        </ul>
+    </div>
 
-    <section id="nyumbani" class="hero-section">
-        <div class="container text-center text-md-start">
-            <h1 class="display-2 fw-bold mb-4">Ipeleke Biashara Yako <br><span class="text-primary">Ngazi ya Juu</span></h1>
-            <p class="lead mb-5">Tunatoa suluhisho bora za kiteknolojia kwa wafanyabiashara wa Kitanzania.</p>
-            <a href="#wasiliana" class="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow">Anza Sasa Hivi</a>
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold">Hali ya Miradi (Fleet Overview)</h2>
+            <button class="btn btn-warning fw-bold" data-bs-toggle="modal" data-bs-target="#addMachine"><i class="fas fa-plus"></i> Sajili Mtambo</button>
         </div>
-    </section>
 
-    <section id="huduma" class="py-5 bg-light">
-        <div class="container">
-            <h2 class="text-center fw-bold mb-5">Huduma Tunazotoa</h2>
-            <div class="row g-4">
-                {% for item in huduma %}
-                <div class="col-md-3">
-                    <div class="card h-100 p-4 text-center service-card shadow-sm">
-                        <i class="fas {{ item.icon }} fa-3x mb-3 text-primary"></i>
-                        <h4 class="fw-bold">{{ item.kichwa }}</h4>
-                        <p class="text-muted">{{ item.maelezo }}</p>
-                    </div>
+        <div class="row g-4 mb-5">
+            <div class="col-md-3">
+                <div class="card stat-card p-3">
+                    <small class="text-muted">Jumla ya Mitambo</small>
+                    <h2 class="fw-bold text-warning">{{ jumla }}</h2>
+                    <i class="fas fa-boxes fa-2x opacity-25 mt-2"></i>
                 </div>
-                {% endfor %}
             </div>
-        </div>
-    </section>
-
-    <section class="py-5 bg-primary text-white text-center">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4"><h3>500+</h3><p>Wateja Walioridhika</p></div>
-                <div class="col-md-4"><h3>10+</h3><p>Miaka ya Uzoefu</p></div>
-                <div class="col-md-4"><h3>100%</h3><p>Uaminifu</p></div>
+            <div class="col-md-3">
+                <div class="card stat-card p-3 text-success">
+                    <small class="text-white-50">Inayofanya Kazi</small>
+                    <h2 class="fw-bold">{{ kazini }}</h2>
+                    <i class="fas fa-play-circle fa-2x opacity-25 mt-2"></i>
+                </div>
             </div>
-        </div>
-    </section>
-
-    <section id="wasiliana" class="py-5 container">
-        <div class="row justify-content-center">
-            <div class="col-md-8 text-center">
-                <h2 class="fw-bold mb-4">Tuandikie Ujumbe</h2>
-                <div class="card p-4 shadow-lg border-0">
-                    <form>
-                        <div class="row">
-                            <div class="col-md-6 mb-3"><input type="text" class="form-control" placeholder="Jina lako"></div>
-                            <div class="col-md-6 mb-3"><input type="email" class="form-control" placeholder="Barua pepe"></div>
-                        </div>
-                        <textarea class="form-control mb-3" rows="5" placeholder="Eleza mahitaji yako..."></textarea>
-                        <button class="btn btn-dark w-100 py-3">TUMA SASA</button>
-                    </form>
+            <div class="col-md-3">
+                <div class="card stat-card p-3 text-danger">
+                    <small class="text-white-50">Iliyo Gereji</small>
+                    <h2 class="fw-bold">{{ matengenezo }}</h2>
+                    <i class="fas fa-wrench fa-2x opacity-25 mt-2"></i>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card p-3 text-info">
+                    <small class="text-white-50">Tahadhari ya Mafuta</small>
+                    <h2 class="fw-bold">{{ low_fuel }}</h2>
+                    <i class="fas fa-exclamation-triangle fa-2x opacity-25 mt-2"></i>
                 </div>
             </div>
         </div>
-    </section>
 
-    <footer class="bg-dark text-white py-5">
-        <div class="container text-center">
-            <div class="mb-4">
-                <a href="#" class="text-white mx-2"><i class="fab fa-facebook fa-2x"></i></a>
-                <a href="#" class="text-white mx-2"><i class="fab fa-instagram fa-2x"></i></a>
-                <a href="#" class="text-white mx-2"><i class="fab fa-twitter fa-2x"></i></a>
+        <div class="card stat-card p-4">
+            <h5 class="mb-4 fw-bold">Orodha ya Mitambo na Mapato ya Leo</h5>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>ID & Mtambo</th>
+                            <th>Namba ya Usajili</th>
+                            <th>Masaa (Hrs)</th>
+                            <th>Mafuta (%)</th>
+                            <th>Dereva</th>
+                            <th>Hali</th>
+                            <th>Kitendo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for m in mitambo %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="p-2 bg-warning rounded text-dark me-2"><i class="fas fa-truck-monster"></i></div>
+                                    <span>{{ m.jina }}</span>
+                                </div>
+                            </td>
+                            <td>{{ m.namba }}</td>
+                            <td>{{ m.saa_kazi }}</td>
+                            <td style="width: 150px;">
+                                <div class="progress">
+                                    <div class="progress-bar {{ 'bg-danger' if m.mafuta < 20 else '' }}" style="width: {{ m.mafuta }}%"></div>
+                                </div>
+                                <small style="font-size: 10px;">{{ m.mafuta }}% Imebaki</small>
+                            </td>
+                            <td>{{ m.dereva }}</td>
+                            <td>
+                                <span class="status-pill {{ 'status-kazi' if m.hali == 'Kazi' else 'status-service' }}">
+                                    {{ m.hali }}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-warning"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-outline-info"><i class="fas fa-history"></i></button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-            <p>&copy; 2026 Biashara Extreme. Haki zote zimehifadhiwa.</p>
         </div>
-    </footer>
-
-    <a href="https://wa.me/255123456789" class="whatsapp-float" target="_blank">
-        <i class="fab fa-whatsapp"></i>
-    </a>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

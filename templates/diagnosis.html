@@ -1,1 +1,37 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Diagnosis | DR-MITAMBO</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --cat: #FFCD00; --bg: #0d0d0d; }
+        body { background-color: var(--bg); color: #fff; height: 100vh; display: flex; flex-direction: column; }
+        .chat-area { flex: 1; overflow-y: auto; padding: 20px; }
+        .bubble { padding: 12px 18px; border-radius: 20px; margin-bottom: 10px; max-width: 85%; font-size: 0.9rem; }
+        .ai-bubble { background: #222; border-bottom-left-radius: 2px; border: 1px solid #333; }
+        .user-input { background: #1a1a1a; padding: 15px; border-top: 1px solid #333; }
+    </style>
+</head>
+<body>
+    <div class="p-3 border-bottom border-warning text-center">
+        <h6 class="mb-0 text-warning"><i class="fas fa-robot me-2"></i>DOCTOR AI</h6>
+    </div>
+
+    <div class="chat-area">
+        <div class="bubble ai-bubble">
+            Habari! Mimi ni Doctor AI. Niezeze tatizo la mtambo wako (mfano: Engine overheating au Fault code E15).
+        </div>
+    </div>
+
+    <div class="user-input">
+        <div class="input-group">
+            <input type="text" class="form-control bg-dark text-white border-secondary" placeholder="Andika hapa...">
+            <button class="btn btn-warning"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+</body>
+</html>
 

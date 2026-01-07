@@ -3,75 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DR-MITAMBO | Diagnosis AI</title>
+    <title>DR-MITAMBO | Diagnosis AI Active</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --cat: #FFCD00; --bg: #0d0d0d; --card: #1a1a1a; }
         body { background-color: var(--bg); color: #fff; font-family: sans-serif; padding-bottom: 80px; }
-        
-        /* Header Section */
         .diag-header { background: linear-gradient(180deg, #000 0%, var(--bg) 100%); padding: 40px 20px; border-bottom: 3px solid var(--cat); text-align: center; }
-        
-        /* Input Area */
         .search-area { max-width: 500px; margin: -30px auto 30px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 10px; border-radius: 50px; border: 1px solid var(--cat); display: flex; }
         .search-area input { background: transparent; border: none; color: #fff; width: 100%; padding-left: 20px; outline: none; }
-        
-        /* Diagnostic Cards */
-        .result-card { background: var(--card); border-radius: 20px; padding: 25px; margin-bottom: 20px; border-left: 5px solid var(--cat); }
-        .log-box { background: #000; border-radius: 10px; padding: 15px; font-family: monospace; font-size: 0.8rem; color: #0f0; max-height: 200px; overflow-y: auto; }
-        
-        /* Action Buttons */
-        .btn-action { background: var(--cat); color: #000; font-weight: bold; border-radius: 50px; padding: 10px 20px; border: none; transition: 0.3s; width: 100%; margin-top: 10px; }
-        
-        /* Bottom Nav */
+        .result-card { background: var(--card); border-radius: 20px; padding: 25px; margin-bottom: 20px; border-left: 5px solid var(--cat); display: none; } /* Inafichwa kwanza */
+        .instruction-card { background: var(--card); border-radius: 20px; padding: 25px; text-align: center; opacity: 0.6; }
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: rgba(0,0,0,0.9); display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #333; }
         .nav-item { color: #888; text-decoration: none; text-align: center; font-size: 0.7rem; }
         .active { color: var(--cat); }
+        .btn-chambua { background: var(--cat); border: none; font-weight: bold; border-radius: 50px; padding: 5px 25px; }
     </style>
 </head>
 <body>
 
     <div class="diag-header">
-        <h2 class="fw-bold mb-0">DIAGNOSIS <span style="color:var(--cat)">AI</span></h2>
-        <p class="small opacity-50">Advanced ECM Fault Code Analyzer</p>
+        <h2 class="fw-bold mb-0 text-uppercase">Diagnosis <span style="color:var(--cat)">AI</span></h2>
+        <p class="small opacity-50">Ingiza Fault Code kupata ufumbuzi</p>
     </div>
 
     <div class="container">
         <div class="search-area">
-            <input type="text" placeholder="Andika Code (mf: 102-03)...">
-            <button class="btn btn-warning rounded-pill px-4 fw-bold">SEARCH</button>
+            <input type="text" id="faultCodeInput" placeholder="Mfano: 102-03 au 91-08">
+            <button class="btn-chambua" onclick="performDiagnosis()">SEARCH</button>
         </div>
 
-        <div class="result-card">
-            <h6 class="text-warning fw-bold mb-3"><i class="fas fa-microchip me-2"></i>UCHAMBUZI WA HARAKA</h6>
+        <div id="instruction" class="instruction-card">
+            <i class="fas fa-search fa-3x mb-3 text-warning"></i>
+            <h5>Tayari kwa Uchunguzi</h5>
+            <p class="small">Andika kodi ya hitilafu hapo juu kisha bonyeza SEARCH</p>
+        </div>
+
+        <div id="resultBox" class="result-card">
+            <h5 id="resTitle" class="text-warning fw-bold mb-3"></h5>
+            <div class="mb-3 p-3 bg-dark rounded border border-secondary">
+                <small class="text-muted d-block">Maelezo ya Tatizo:</small>
+                <p id="resDesc" class="fw-bold mb-0 text-white"></p>
+            </div>
             <div class="mb-3">
-                <small class="text-muted d-block">Fault Identity:</small>
-                <span class="fw-bold">Ingiza Code kuona Maelezo...</span>
+                <small class="text-muted d-block text-uppercase" style="font-size: 0.7rem;">Hatua za Kuchukua (Solution):</small>
+                <ul id="resSteps" class="small mt-2" style="color: #0f0;">
+                    </ul>
             </div>
-            <div class="log-box mb-3">
-                > System ready...<br>
-                > Waiting for ECM Data Link...<br>
-                > Connection: Stable
-            </div>
-            <button class="btn-action"><i class="fas fa-file-export me-2"></i>PAKUA RIPOTI (PDF)</button>
-        </div>
-
-        <div class="row g-3">
-            <div class="col-6">
-                <div class="result-card p-3" style="border-left-color: #007bff;">
-                    <i class="fas fa-history mb-2"></i>
-                    <div class="small fw-bold">History</div>
-                    <small class="opacity-50">Codes za nyuma</small>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="result-card p-3" style="border-left-color: #28a745;">
-                    <i class="fas fa-check-circle mb-2 text-success"></i>
-                    <div class="small fw-bold">Clear Codes</div>
-                    <small class="opacity-50">Futa kumbukumbu</small>
-                </div>
-            </div>
+            <button class="btn btn-outline-warning btn-sm w-100 rounded-pill">PAKUA MIONGOZO (PDF)</button>
         </div>
     </div>
 
@@ -79,9 +58,60 @@
         <a href="index.html" class="nav-item"><i class="fas fa-th-large d-block mb-1"></i> Dashboard</a>
         <a href="diagnosis.html" class="nav-item active"><i class="fas fa-microchip d-block mb-1"></i> Diagnosis</a>
         <a href="maintenance.html" class="nav-item"><i class="fas fa-calendar-check d-block mb-1"></i> Service</a>
-        <a href="library.html" class="nav-item"><i class="fas fa-book d-block mb-1"></i> Library</a>
+        <a href="training.html" class="nav-item"><i class="fas fa-book d-block mb-1"></i> Library</a>
     </div>
 
+    <script>
+        const faultDatabase = {
+            "102-03": {
+                title: "Boost Pressure Sensor: Voltage Above Normal",
+                desc: "ECM imegundua voltage kubwa kuliko kawaida kwenye Boost Pressure Sensor.",
+                steps: ["Kagua wiring harness ya sensor", "Pima voltage ya 5V reference", "Badilisha Boost Pressure Sensor"]
+            },
+            "102-04": {
+                title: "Boost Pressure Sensor: Voltage Below Normal",
+                desc: "Voltage iko chini sana (short to ground).",
+                steps: ["Kagua kama kuna waya uliokatika", "Kagua sensor connector kwa uchafu/maji", "Pima continuity ya signal wire"]
+            },
+            "91-08": {
+                title: "Throttle Position Signal: Abnormal Frequency",
+                desc: "ECM inapokea signal isiyo na mpangilio kutoka kwenye accelerator pedal.",
+                steps: ["Kagua sensor ya accelerator pedal", "Pima PWM signal kwa kutumia Multimeter", "Update ECM software kama tatizo litaendelea"]
+            },
+            "190-08": {
+                title: "Engine Speed Signal: Abnormal Frequency",
+                desc: "ECM haipati signal sahihi ya mzunguko wa engine (RPM).",
+                steps: ["Sura Speed/Timing sensor", "Safi ncha ya sensor (magneic tip)", "Kagua clearance kati ya sensor na gear"]
+            },
+            "100-03": {
+                title: "Engine Oil Pressure: Voltage Above Normal",
+                desc: "Hitilafu kwenye presha ya oili ya injini (High Voltage).",
+                steps: ["Kagua kiwango cha oili", "Pima pressure kwa kutumia Gauge ya nje", "Kagua Oil Pressure Sensor"]
+            }
+        };
+
+        function performDiagnosis() {
+            const code = document.getElementById('faultCodeInput').value.trim();
+            const resultBox = document.getElementById('resultBox');
+            const instruction = document.getElementById('instruction');
+
+            if (faultDatabase[code]) {
+                instruction.style.display = 'none';
+                resultBox.style.display = 'block';
+                
+                document.getElementById('resTitle').innerText = code + " | " + faultDatabase[code].title;
+                document.getElementById('resDesc').innerText = faultDatabase[code].desc;
+                
+                let stepsHtml = "";
+                faultDatabase[code].steps.forEach(step => {
+                    stepsHtml += `<li>${step}</li>`;
+                });
+                document.getElementById('resSteps').innerHTML = stepsHtml;
+            } else {
+                alert("Kodi haijapatikana. Jaribu: 102-03 au 91-08");
+            }
+        }
+    </script>
 </body>
 </html>
 

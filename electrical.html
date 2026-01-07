@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DR-MITAMBO | Electrical & Schematics</title>
+    <title>DR-MITAMBO | Electrical & Upload</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -11,18 +11,19 @@
         body { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; padding-bottom: 80px; }
         .elec-header { background: linear-gradient(180deg, #000 0%, var(--bg) 100%); padding: 40px 20px; border-bottom: 3px solid var(--cat); text-align: center; }
         
-        /* Interactive Schematic Viewer Placeholder */
-        .schematic-viewer { background: #222; border-radius: 20px; height: 350px; display: flex; align-items: center; justify-content: center; border: 2px dashed #444; position: relative; overflow: hidden; }
-        .zoom-controls { position: absolute; bottom: 10px; right: 10px; display: flex; flex-direction: column; gap: 5px; }
+        /* 1. FEATURE: Advanced Upload & Viewer */
+        .viewer-container { background: #111; border: 2px dashed #444; border-radius: 20px; position: relative; overflow: hidden; min-height: 400px; display: flex; align-items: center; justify-content: center; }
+        #schematicImg { max-width: 100%; transition: transform 0.3s ease; display: none; }
         
-        /* Pinout Table Styling */
-        .pin-table { font-size: 0.8rem; background: var(--card); border-radius: 15px; overflow: hidden; }
-        .pin-table th { background: #333; color: var(--cat); padding: 10px; }
-        .pin-table td { padding: 8px 10px; border-bottom: 1px solid #222; }
+        .upload-zone { text-align: center; cursor: pointer; transition: 0.3s; padding: 40px; }
+        .upload-zone:hover { color: var(--cat); border-color: var(--cat); }
         
-        .wire-rd { color: #ff4444; font-weight: bold; } /* Red Wire */
-        .wire-wh { color: #ffffff; font-weight: bold; } /* White Wire */
-        .wire-bk { color: #888888; font-weight: bold; } /* Black Wire */
+        .zoom-controls { position: absolute; top: 20px; right: 20px; display: none; flex-direction: column; gap: 10px; z-index: 100; }
+        .zoom-btn { background: var(--cat); border: none; width: 45px; height: 45px; border-radius: 50%; color: #000; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+
+        .pin-table { font-size: 0.8rem; background: var(--card); border-radius: 15px; overflow: hidden; margin-top: 20px; }
+        .pin-table th { background: #333; color: var(--cat); padding: 12px; }
+        .pin-table td { padding: 10px; border-bottom: 1px solid #222; }
 
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: rgba(0,0,0,0.95); display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #333; z-index: 1000; }
         .nav-item { color: #888; text-decoration: none; text-align: center; font-size: 0.75rem; }
@@ -32,73 +33,57 @@
 <body>
 
     <div class="elec-header">
-        <h2 class="fw-bold mb-0">ELECTRICAL <span style="color:var(--cat)">SYSTEM</span></h2>
-        <p class="small opacity-50">Wiring Diagrams & ECM Pinouts</p>
+        <h2 class="fw-bold mb-0 text-uppercase">Electrical <span style="color:var(--cat)">Viewer</span></h2>
+        <p class="small opacity-50">Upload na Chambua Michoro ya Umeme</p>
     </div>
 
     <div class="container py-4">
         
-        <h6 class="fw-bold text-uppercase mb-3 small opacity-75">Interactive Schematic Viewer</h6>
-        <div class="schematic-viewer mb-4">
-            <div class="text-center opacity-25">
-                <i class="fas fa-project-diagram fa-5x mb-3"></i>
-                <h6>Pakia Mchoro (PDF/Image)</h6>
+        <div class="viewer-container mb-4" id="dropZone">
+            <div class="upload-zone" id="uploadPrompt" onclick="document.getElementById('fileInput').click()">
+                <i class="fas fa-cloud-upload-alt fa-4x mb-3 text-warning"></i>
+                <h5>GUSA AU BURUTA MCHORO HAPA</h5>
+                <p class="small opacity-50">Inakubali PDF, JPG, PNG (Max: 10MB)</p>
+                <input type="file" id="fileInput" hidden accept="image/*, application/pdf" onchange="previewFile()">
             </div>
-            <div class="zoom-controls">
-                <button class="btn btn-dark btn-sm"><i class="fas fa-search-plus"></i></button>
-                <button class="btn btn-dark btn-sm"><i class="fas fa-search-minus"></i></button>
+
+            <img src="" id="schematicImg" alt="Wiring Diagram">
+
+            <div class="zoom-controls" id="zoomTools">
+                <button class="zoom-btn" onclick="zoomIn()"><i class="fas fa-plus"></i></button>
+                <button class="zoom-btn" onclick="zoomOut()"><i class="fas fa-minus"></i></button>
+                <button class="zoom-btn" onclick="resetZoom()"><i class="fas fa-sync"></i></button>
             </div>
         </div>
 
-        <div class="row g-4">
-            <div class="col-md-7">
-                <div class="pin-table shadow-lg">
-                    <table class="w-100">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="card bg-dark border-secondary p-3 rounded-4">
+                    <h6 class="text-warning fw-bold mb-3 small"><i class="fas fa-bolt me-2"></i>PINOUTS QUICK REFERENCE</h6>
+                    <table class="w-100 pin-table text-white">
                         <thead>
-                            <tr>
-                                <th>Pin</th>
-                                <th>Function</th>
-                                <th>Wire Color</th>
-                            </tr>
+                            <tr><th>PIN</th><th>FUNCTION</th><th>V-SPEC</th></tr>
                         </thead>
                         <tbody>
-                            <tr><td>1</td><td>+Battery (Unswitched)</td><td><span class="wire-rd">RD</span></td></tr>
-                            <tr><td>2</td><td>ECM Ground</td><td><span class="wire-bk">BK</span></td></tr>
-                            <tr><td>15</td><td>Sensor Return (Common)</td><td><span class="wire-wh">WH</span></td></tr>
-                            <tr><td>42</td><td>Boost Pressure Signal</td><td><span style="color:yellow">YL</span></td></tr>
-                            <tr><td>70</td><td>Key Switch Input</td><td><span style="color:orange">OR</span></td></tr>
+                            <tr><td>J1-1</td><td>Battery +</td><td>24V - 28V</td></tr>
+                            <tr><td>J1-2</td><td>ECM Ground</td><td>< 0.5V</td></tr>
+                            <tr><td>J2-3</td><td>5V Reference</td><td>4.9V - 5.1V</td></tr>
+                            <tr><td>J2-10</td><td>CAN High</td><td>2.5V - 2.8V</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-
-            <div class="col-md-5">
+            
+            <div class="col-md-6">
                 <div class="card bg-dark border-secondary p-3 rounded-4 h-100">
-                    <h6 class="text-warning fw-bold mb-3 small">Quick Voltage Check</h6>
-                    <div class="mb-3">
-                        <small class="text-muted d-block">5V Sensor Reference:</small>
-                        <span class="fw-bold text-success">4.95V - 5.05V</span>
-                    </div>
-                    <div class="mb-3">
-                        <small class="text-muted d-block">Battery Voltage (Running):</small>
-                        <span class="fw-bold text-success">26.5V - 28.5V</span>
-                    </div>
-                    <div class="mb-0">
-                        <small class="text-muted d-block">CAN Data Link High/Low:</small>
-                        <span class="fw-bold text-info">2.4V - 2.6V</span>
-                    </div>
+                    <h6 class="text-warning fw-bold mb-3 small"><i class="fas fa-info-circle me-2"></i>GUIDE</h6>
+                    <ul class="small opacity-75 list-unstyled">
+                        <li class="mb-2">● Tumia Multimeter kupima voltage kwenye pini za ECM.</li>
+                        <li class="mb-2">● Hakikisha key-switch iko 'ON' wakati unapima sensor signals.</li>
+                        <li>● Zoom mchoro uliopakia kwa undani kuona namba za nyaya.</li>
+                    </ul>
+                    <button class="btn btn-warning w-100 rounded-pill fw-bold mt-auto" onclick="location.reload()">FUTA MCHORO</button>
                 </div>
-            </div>
-        </div>
-
-        <div class="mt-4 p-3 rounded-4" style="background: #111; border: 1px solid #333;">
-            <h6 class="fw-bold small text-muted text-uppercase mb-2">Wire Color Key</h6>
-            <div class="d-flex flex-wrap gap-2">
-                <span class="badge border border-secondary p-2">RD: Red</span>
-                <span class="badge border border-secondary p-2">BK: Black</span>
-                <span class="badge border border-secondary p-2">WH: White</span>
-                <span class="badge border border-secondary p-2">BU: Blue</span>
-                <span class="badge border border-secondary p-2">GN: Green</span>
             </div>
         </div>
     </div>
@@ -110,6 +95,51 @@
         <a href="electrical.html" class="nav-item active-nav"><i class="fas fa-bolt d-block mb-1"></i> Electrical</a>
     </div>
 
+    <script>
+        let currentScale = 1;
+
+        function previewFile() {
+            const preview = document.getElementById('schematicImg');
+            const file = document.getElementById('fileInput').files[0];
+            const reader = new FileReader();
+            const prompt = document.getElementById('uploadPrompt');
+            const tools = document.getElementById('zoomTools');
+
+            reader.onloadend = function () {
+                preview.src = reader.result;
+                preview.style.display = 'block';
+                prompt.style.display = 'none';
+                tools.style.display = 'flex';
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // FEATURE: Zoom Logic
+        function zoomIn() {
+            currentScale += 0.2;
+            applyZoom();
+        }
+
+        function zoomOut() {
+            if (currentScale > 0.4) {
+                currentScale -= 0.2;
+                applyZoom();
+            }
+        }
+
+        function resetZoom() {
+            currentScale = 1;
+            applyZoom();
+        }
+
+        function applyZoom() {
+            const img = document.getElementById('schematicImg');
+            img.style.transform = `scale(${currentScale})`;
+        }
+    </script>
 </body>
 </html>
-￼Enter
+

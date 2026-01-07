@@ -1,54 +1,37 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="container-fluid">
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card bg-dark text-white p-4 overflow-hidden position-relative">
-                <div style="z-index: 1;">
-                    <h2 class="fw-bold">Advanced Machine Diagnosis</h2>
-                    <p class="opacity-75">Tafsiri namba za siri (Error Codes) za CAT na Komatsu mara moja.</p>
-                </div>
-                <i class="fas fa-microchip position-absolute end-0 bottom-0 opacity-25" style="font-size: 150px; transform: rotate(-15deg);"></i>
-            </div>
-        </div>
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DR-MITAMBO | Diagnosis AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #0b0b0b; color: #fff; font-family: sans-serif; }
+        .hero-header { background: #1a1a1a; padding: 40px 20px; border-bottom: 4px solid #FFCD00; }
+        .diag-card { background: #1e1e1e; border-radius: 20px; padding: 25px; border: 1px solid #333; margin-top: 20px; }
+        .form-control { background: #252525; border: 1px solid #FFCD00; color: #fff; border-radius: 50px; padding: 15px; }
+        .btn-chambua { background: #FFCD00; font-weight: bold; border-radius: 50px; width: 100%; padding: 12px; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="hero-header text-center">
+        <h2 class="text-warning fw-bold">MACHINE DIAGNOSIS</h2>
+        <p class="opacity-75">Tafsiri ya papo hapo ya ECM Error Codes</p>
     </div>
 
-    <div class="row g-4">
-        <div class="col-lg-5">
-            <div class="card p-4 h-100">
-                <h5 class="fw-bold mb-4">Ingiza Code za Hitilafu</h5>
-                <form>
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Brand</label>
-                        <select class="form-select border-0 bg-light">
-                            <option>Caterpillar (MID, CID, FMI)</option>
-                            <option>Komatsu (User/Service Code)</option>
-                        </select>
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label small fw-bold">Fault Code Number</label>
-                        <input type="text" class="form-control form-control-lg border-0 bg-light shadow-none" placeholder="mf: 102-03">
-                    </div>
-                    <button class="btn btn-dark btn-lg w-100 rounded-pill fw-bold">CHAMBUA TATIZO</button>
-                </form>
-            </div>
+    <div class="container py-4">
+        <div class="diag-card">
+            <label class="mb-2 fw-bold">Ingiza Code (mfano: 102-03)</label>
+            <input type="text" class="form-control" placeholder="Andika hapa...">
+            <button class="btn btn-chambua">ANZA UCHUNGUZI</button>
         </div>
 
-        <div class="col-lg-7">
-            <div class="card p-4 h-100">
-                <div class="d-flex justify-content-between border-bottom pb-3 mb-3">
-                    <h5 class="fw-bold m-0 text-danger">Matokeo ya Uchunguzi</h5>
-                    <span class="text-muted small">Status: Analysis Pending</span>
-                </div>
-                <div class="text-center py-5">
-                    <i class="fas fa-search-plus fa-4x text-light mb-3"></i>
-                    <p class="text-muted">Ingiza code upande wa kushoto ili kuona mwongozo wa Doctor-Mitambo hapa.</p>
-                </div>
-            </div>
+        <div class="diag-card mt-4" style="border-left: 5px solid red;">
+            <h6 class="text-danger fw-bold">Matokeo ya Uchunguzi:</h6>
+            <p class="small text-muted">Ingiza code juu kuona matokeo hapa...</p>
         </div>
     </div>
-
-    
-</div>
-{% endblock %}
+</body>
+</html>
 

@@ -1,172 +1,180 @@
-here<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DR-MITAMBO | Maintenance & Fleet OS</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root { --cat: #FFCD00; --bg: #0d0d0d; --card: #1a1a1a; --danger: #ff4444; --success: #00c851; }
         body { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; padding-bottom: 90px; }
         
-        /* 1. Feature: Industrial Header */
+        /* Industrial Header */
         .maint-header { background: linear-gradient(180deg, #000 0%, var(--bg) 100%); padding: 40px 20px; border-bottom: 3px solid var(--cat); text-align: center; }
         
-        /* 2. Feature: Real-time Service SMU Counter */
+        /* Service SMU Cards */
         .smu-card { background: var(--card); border-radius: 20px; padding: 20px; border-left: 5px solid var(--cat); margin-bottom: 20px; transition: 0.3s; }
         .progress { height: 8px; background-color: #333; border-radius: 10px; margin-top: 10px; }
         .progress-bar { background-color: var(--cat); }
-
-        /* 3. Feature: Service Alerts (Urgent) */
         .alert-urgent { border-left-color: var(--danger); background: rgba(255, 68, 68, 0.05); }
 
-        /* 4. Feature: Preventive Maintenance Checklist */
+        /* Checklist Styling */
         .checklist-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #222; font-size: 0.9rem; }
-        .checklist-item input[type="checkbox"] { margin-right: 15px; accent-color: var(--cat); width: 20px; height: 20px; }
+        .checklist-item input[type="checkbox"] { margin-right: 15px; accent-color: var(--cat); width: 18px; height: 18px; }
 
-        /* 5. Feature: Tabbed Navigation (Logs vs Scheduler) */
-        .nav-pills .nav-link { color: #888; border-radius: 50px; font-weight: bold; }
-        .nav-pills .nav-link.active { background-color: var(--cat); color: #000; }
+        /* Navigation Pills */
+        .nav-pills .nav-link { color: #888; border-radius: 50px; font-weight: bold; border: 1px solid #333; margin: 0 5px; }
+        .nav-pills .nav-link.active { background-color: var(--cat); color: #000; border-color: var(--cat); }
 
-        /* 6. Feature: Mobile Responsive Table */
-        .table-custom { font-size: 0.85rem; color: #ccc; }
-        .table-custom th { color: var(--cat); text-transform: uppercase; }
+        /* Floating Action Button (FAB) */
+        .fab { position: fixed; bottom: 100px; right: 20px; width: 65px; height: 65px; background: var(--cat); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-size: 1.8rem; box-shadow: 0 8px 20px rgba(255, 205, 0, 0.4); z-index: 1000; text-decoration: none; border: none; transition: 0.3s; }
+        .fab:hover { transform: scale(1.1); color: #000; }
 
-        /* 7. Feature: Digital Signature Area (Placeholder) */
-        .sig-pad { border: 2px dashed #444; height: 100px; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: #666; font-style: italic; }
-
-        /* 8. Feature: Dynamic Filter Buttons */
-        .filter-btn { border-radius: 50px; padding: 5px 15px; font-size: 0.75rem; border: 1px solid #444; color: #888; background: transparent; margin-right: 5px; }
-        .filter-btn.active { border-color: var(--cat); color: var(--cat); }
-
-        /* 9. Feature: Floating Action Button (New Entry) */
-        .fab { position: fixed; bottom: 100px; right: 20px; width: 60px; height: 60px; background: var(--cat); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-size: 1.5rem; box-shadow: 0 5px 15px rgba(255, 205, 0, 0.4); z-index: 100; text-decoration: none; }
-
-        /* 10. Feature: Bottom Navigation Control */
+        /* Bottom Navigation */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #333; z-index: 1000; }
-        .nav-item { color: #888; text-decoration: none; text-align: center; font-size: 0.7rem; }
-        .active-nav { color: var(--cat); }
+        .nav-item { color: #888; text-decoration: none; text-align: center; font-size: 0.75rem; }
+        .nav-item.active-nav { color: var(--cat); }
+
+        /* Modal Custom Styling */
+        .modal-content { background: var(--card); border: 2px solid var(--cat); border-radius: 25px; }
+        .form-control { background: #252525; border: 1px solid #444; color: #fff; border-radius: 12px; }
+        .form-control:focus { background: #333; color: #fff; border-color: var(--cat); box-shadow: none; }
     </style>
 </head>
 <body>
 
     <div class="maint-header">
-        <h2 class="fw-bold mb-0 text-uppercase">Maintenance <span style="color:var(--cat)">OS</span></h2>
-        <p class="small opacity-50">Ratiba na Ukaguzi wa Mashine Site A</p>
+        <h2 class="fw-bold mb-0">MAINTENANCE <span style="color:var(--cat)">OS</span></h2>
+        <p class="small opacity-50">Usimamizi wa Service na Matengenezo</p>
     </div>
 
     <div class="container py-4">
         
-        <ul class="nav nav-pills mb-4 justify-content-center" id="pills-tab" role="tablist">
-            <li class="nav-item-tab" role="presentation">
-                <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-current" type="button">MASHINE</button>
-            </li>
-            <li class="nav-item-tab ms-2" role="presentation">
-                <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-history" type="button">LOGS</button>
-            </li>
+        <ul class="nav nav-pills mb-4 justify-content-center">
+            <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#fleet">FLEET</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#logs">LOGS</button></li>
         </ul>
 
-        <div class="tab-content" id="pills-tabContent">
-            <div class="tab-pane fade show active" id="pills-current" role="tabpanel">
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="fleet">
                 
-                <div class="mb-3">
-                    <button class="filter-btn active">Zote</button>
-                    <button class="filter-btn">CAT</button>
-                    <button class="filter-btn">Komatsu</button>
-                </div>
-
                 <div class="smu-card alert-urgent">
-                    <div class="d-flex justify-content-between align-items-start">
+                    <div class="d-flex justify-content-between">
                         <div>
-                            <h6 class="fw-bold mb-0 text-danger">CAT D8R (9EM012)</h6>
-                            <small class="text-muted">Serial: 9EM01245 | Site: Zone B</small>
+                            <h6 class="fw-bold mb-0 text-danger">CAT D8R (SN: 9EM012)</h6>
+                            <small class="text-muted">Location: Site Alpha</small>
                         </div>
-                        <span class="badge bg-danger rounded-pill">URGENT</span>
+                        <span class="badge bg-danger">URGENT</span>
                     </div>
                     <div class="mt-3">
-                        <div class="d-flex justify-content-between small">
-                            <span>Saa za Mashine: <b>4,995 Hrs</b></span>
-                            <span class="text-warning">Next: 5,000 Hrs</span>
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span>Current: 4,995 Hrs</span>
+                            <span class="text-warning">Target: 5,000 Hrs</span>
                         </div>
-                        <div class="progress"><div class="progress-bar bg-danger" style="width: 99%"></div></div>
+                        <div class="progress"><div class="progress-bar bg-danger" style="width: 98%"></div></div>
                     </div>
-                    <button class="btn btn-sm btn-outline-danger w-100 mt-3 rounded-pill fw-bold" onclick="alert('Ufungue Checklist ya PM3?')">ANZA PM3 SERVICE</button>
                 </div>
 
                 <div class="smu-card">
-                    <div class="d-flex justify-content-between align-items-start">
+                    <div class="d-flex justify-content-between">
                         <div>
-                            <h6 class="fw-bold mb-0">Komatsu PC200-8</h6>
-                            <small class="text-muted">Serial: K45001 | Site: Zone A</small>
+                            <h6 class="fw-bold mb-0">KOMATSU PC200-8</h6>
+                            <small class="text-muted">Location: Site Bravo</small>
                         </div>
-                        <span class="badge bg-success rounded-pill">GOOD</span>
+                        <span class="badge bg-success">HEALTHY</span>
                     </div>
                     <div class="mt-3">
-                        <div class="d-flex justify-content-between small">
-                            <span>Saa za Mashine: <b>1,250 Hrs</b></span>
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span>Current: 1,200 Hrs</span>
                             <span class="text-muted">Next: 1,500 Hrs</span>
                         </div>
-                        <div class="progress"><div class="progress-bar" style="width: 65%"></div></div>
+                        <div class="progress"><div class="progress-bar" style="width: 40%"></div></div>
                     </div>
                 </div>
-
             </div>
 
-            <div class="tab-pane fade" id="pills-history" role="tabpanel">
-                <div class="card bg-dark p-3 border-0 rounded-4">
-                    <table class="table table-custom table-dark table-hover">
-                        <thead>
-                            <tr>
-                                <th>Tarehe</th>
-                                <th>Mashine</th>
-                                <th>Aina</th>
-                                <th>Saa</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Jan 05</td>
-                                <td>CAT D6R</td>
-                                <td>PM1</td>
-                                <td>2500</td>
-                            </tr>
-                            <tr>
-                                <td>Jan 02</td>
-                                <td>PC300</td>
-                                <td>Hydraulic</td>
-                                <td>8900</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="tab-pane fade" id="logs">
+                <div class="smu-card">
+                    <h6 class="fw-bold text-warning mb-3">Recent Activities</h6>
+                    <div class="checklist-item"><i class="fas fa-check-circle text-success me-2"></i> PM1 Service - CAT D6R (Jan 05)</div>
+                    <div class="checklist-item"><i class="fas fa-check-circle text-success me-2"></i> Oil Change - PC300 (Jan 02)</div>
                 </div>
             </div>
         </div>
-
-        <div class="smu-card mt-4">
-            <h6 class="fw-bold text-warning mb-3"><i class="fas fa-clipboard-check me-2"></i>Daily Inspection Guide</h6>
-            <div class="checklist-item"><input type="checkbox"> Engine Oil Level Check</div>
-            <div class="checklist-item"><input type="checkbox"> Hydraulic Leaks Inspection</div>
-            <div class="checklist-item"><input type="checkbox"> Radiator Coolant Check</div>
-            <div class="checklist-item"><input type="checkbox"> Track Tension (Visual)</div>
-        </div>
-
-        <div class="mt-4">
-            <label class="small text-muted mb-2">Technician Signature:</label>
-            <div class="sig-pad">Signature Required to Close Log</div>
-        </div>
-
     </div>
 
-    <a href="#" class="fab" onclick="alert('Ingiza Taarifa za Mashine Mpya')"><i class="fas fa-plus"></i></a>
+    <button class="fab" data-bs-toggle="modal" data-bs-target="#addMachineModal">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <div class="modal fade" id="addMachineModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold text-warning">SAJILI MASHINE MPYA</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="machineForm">
+                        <div class="mb-3">
+                            <label class="small text-muted mb-1">Model (Mfano: CAT 320D)</label>
+                            <input type="text" id="mModel" class="form-control" required placeholder="...">
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="small text-muted mb-1">Serial Number</label>
+                                <input type="text" id="mSerial" class="form-control" required placeholder="S/N">
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="small text-muted mb-1">Masaa (SMU)</label>
+                                <input type="number" id="mHours" class="form-control" required placeholder="0">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="small text-muted mb-1">Eneo la Kazi (Site)</label>
+                            <select class="form-select bg-secondary text-white border-0 rounded-3">
+                                <option>Main Mine</option>
+                                <option>Civil Works</option>
+                                <option>Workshop</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100 rounded-pill fw-bold py-2 mt-2">HIFADHI TAARIFA</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="bottom-nav">
         <a href="index.html" class="nav-item"><i class="fas fa-th-large d-block mb-1"></i> Dashboard</a>
         <a href="diagnosis.html" class="nav-item"><i class="fas fa-microchip d-block mb-1"></i> Diagnosis</a>
         <a href="maintenance.html" class="nav-item active-nav"><i class="fas fa-calendar-check d-block mb-1"></i> Service</a>
-        <a href="training.html" class="nav-item"><i class="fas fa-book d-block mb-1"></i> Library</a>
+        <a href="library.html" class="nav-item"><i class="fas fa-book d-block mb-1"></i> Library</a>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('machineForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const model = document.getElementById('mModel').value;
+            const serial = document.getElementById('mSerial').value;
+            const hours = document.getElementById('mHours').value;
+
+            // Simulating Database Save
+            alert("MASHINE IMEONGEZWA!\nModel: " + model + "\nS/N: " + serial + "\nHours: " + hours);
+            
+            // Close Modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addMachineModal'));
+            modal.hide();
+            
+            // Reset Form
+            this.reset();
+        });
+    </script>
 </body>
 </html>
+

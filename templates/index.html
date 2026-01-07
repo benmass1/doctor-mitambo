@@ -3,220 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Systems Op | Heavy Machinery Technical Solutions</title>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <title>MGM TOKEN | Powering Heavy Machinery Systems</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Goldman:wght@400;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --cat-yellow: #ffcd00;
-            --komatsu-blue: #004098;
-            --dark-grey: #2d2d2d;
-            --danger: #e74c3c;
-            --success: #27ae60;
+            --mgm-gold: #ffcc00; /* Rangi ya dhahabu/CAT Yellow */
+            --crypto-blue: #00d4ff;
+            --dark-space: #05080a;
+            --glass: rgba(255, 255, 255, 0.05);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Roboto Condensed', sans-serif; background-color: #f0f0f0; line-height: 1.6; }
-        h1, h2, h3 { font-family: 'Oswald', sans-serif; text-transform: uppercase; }
-
-        /* Header & Nav */
-        header { background: #000; color: white; padding: 20px 5%; border-bottom: 5px solid var(--cat-yellow); }
-        nav { display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 2rem; color: var(--cat-yellow); letter-spacing: 2px; }
-        
-        /* Hero Section */
-        .hero { 
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1513828583688-c52646db42da?auto=format&fit=crop&w=1500&q=80');
-            background-size: cover; height: 60vh; display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; text-align: center; color: white;
+        body { 
+            font-family: 'Roboto Mono', monospace; 
+            background: radial-gradient(circle at top, #101a20 0%, var(--dark-space) 100%); 
+            color: #e0e0e0;
+            overflow-x: hidden;
         }
-        .hero h1 { font-size: 3.5rem; margin-bottom: 15px; }
-        .hero p { font-size: 1.4rem; max-width: 800px; color: #ccc; }
 
-        /* Tech Section Container */
-        .container { max-width: 1200px; margin: -50px auto 50px; padding: 0 20px; }
-
-        /* Technical Cards */
-        .tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
-        .tech-card { 
-            background: white; border-radius: 5px; overflow: hidden; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); border-top: 5px solid var(--cat-yellow);
+        /* 1. Crypto Header */
+        header { 
+            background: rgba(0,0,0,0.8); padding: 20px 5%; 
+            border-bottom: 2px solid var(--mgm-gold);
+            display: flex; justify-content: space-between; align-items: center;
+            backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000;
         }
-        .tech-header { background: var(--dark-grey); color: white; padding: 15px; display: flex; justify-content: space-between; }
-        .tech-body { padding: 25px; }
-        .tech-body h3 { margin-bottom: 15px; color: var(--komatsu-blue); border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        .logo { font-family: 'Orbitron'; font-weight: bold; color: var(--mgm-gold); font-size: 1.8rem; }
+        .token-price { color: var(--crypto-blue); font-size: 0.9rem; border: 1px solid var(--crypto-blue); padding: 5px 15px; border-radius: 20px; }
+
+        /* 2. Hero Section - Token Launch */
+        .hero {
+            height: 90vh; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; text-align: center;
+            padding: 0 10%; background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+        }
+        .hero h1 { font-family: 'Goldman'; font-size: 4.5rem; color: #fff; text-shadow: 0 0 20px var(--mgm-gold); margin-bottom: 10px; }
+        .hero p { font-size: 1.5rem; color: var(--mgm-gold); margin-bottom: 30px; letter-spacing: 2px; }
         
-        /* Lists and Details */
-        .spec-list { list-style: none; }
-        .spec-list li { padding: 8px 0; border-bottom: 1px dashed #ddd; display: flex; justify-content: space-between; }
-        .spec-list li span { font-weight: bold; color: #555; }
-        .tag { background: #eee; padding: 2px 8px; border-radius: 3px; font-size: 0.8rem; }
+        .buy-now { 
+            background: linear-gradient(45deg, var(--mgm-gold), #ffa200);
+            color: #000; padding: 18px 45px; font-size: 1.2rem; font-weight: bold;
+            text-decoration: none; border-radius: 5px; font-family: 'Orbitron';
+            box-shadow: 0 0 30px rgba(255, 204, 0, 0.4); transition: 0.3s;
+        }
+        .buy-now:hover { transform: scale(1.1); box-shadow: 0 0 50px var(--mgm-gold); }
 
-        /* Knowledge Base Table */
-        .data-table-section { background: white; margin-top: 50px; padding: 40px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { background: var(--dark-grey); color: white; text-align: left; padding: 15px; }
-        td { padding: 12px; border-bottom: 1px solid #ddd; }
-        tr:hover { background: #f9f9f9; }
+        /* 3. Tokenomics Grid */
+        .grid-container { max-width: 1200px; margin: -100px auto 50px; padding: 0 20px; }
+        .token-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        
+        .card { 
+            background: var(--glass); padding: 30px; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px; backdrop-filter: blur(5px); transition: 0.4s;
+        }
+        .card:hover { border-color: var(--mgm-gold); background: rgba(255, 204, 0, 0.05); }
+        .card h3 { color: var(--mgm-gold); font-family: 'Orbitron'; margin-bottom: 15px; }
 
-        /* Contact Form Extension */
-        .contact-footer { background: var(--dark-grey); color: white; padding: 60px 5%; margin-top: 50px; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; }
-        input, textarea, select { width: 100%; padding: 12px; margin-bottom: 15px; background: #444; border: 1px solid #555; color: white; }
-        .submit-btn { background: var(--cat-yellow); border: none; padding: 15px 30px; font-weight: bold; cursor: pointer; width: 100%; }
+        /* 4. Machinery Ecosystem (Integration) */
+        .ecosystem { padding: 80px 10%; text-align: center; }
+        .eco-box { 
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; margin-top: 50px;
+        }
+        .eco-item { width: 300px; padding: 20px; border-bottom: 3px solid var(--crypto-blue); }
+        .eco-item i { font-size: 3rem; color: var(--crypto-blue); }
 
-        @media (max-width: 768px) { .grid-2, .tech-grid { grid-template-columns: 1fr; } .hero h1 { font-size: 2rem; } }
+        /* 5. Live Stats (Feature) */
+        .live-stats { 
+            background: #000; padding: 50px; border-radius: 20px; margin-top: 50px;
+            border: 1px solid #222; text-align: left;
+        }
+        .stat-line { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #111; }
+        .green { color: #00ff41; }
+
+        footer { padding: 50px; text-align: center; border-top: 1px solid #222; margin-top: 50px; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .grid-container { margin-top: 20px; }
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <nav>
-            <div class="logo">BUSINESS SYSTEMS OP</div>
-            <div style="color: var(--cat-yellow); font-weight: bold;">CAT | KOMATSU | VOLVO | SANY</div>
-        </nav>
+        <div class="logo">MGM TOKEN</div>
+        <div class="token-price">1 MGM = $0.00452 <span class="green">▲ +12.4%</span></div>
     </header>
 
     <section class="hero">
-        <h1>TECHNICAL SYSTEMS & MAINTENANCE</h1>
-        <p>Utaalamu wa Juu katika Mifumo ya Hydraulic, Umeme, na Nyumatiki kwa Mitambo Mizito</p>
+        <p>THE FUTURE OF INDUSTRIAL MAINTENANCE</p>
+        <h1>MGM TOKEN SYSTEM</h1>
+        <p style="color: #888; font-size: 1.1rem; max-width: 700px;">Token pekee inayotumika kulipia huduma za matengenezo (Diagnosis) na vipuri vya CAT & Komatsu kidijitali.</p>
+        <a href="#buy" class="buy-now">NUNUA MGM TOKEN</a>
     </section>
 
-    <div class="container">
-        <div class="tech-grid">
-            
-            <article class="tech-card">
-                <div class="tech-header">
-                    <span>MIFUMO YA HYDRAULIC</span>
-                    <span class="tag">HIGH PRESSURE</span>
-                </div>
-                <div class="tech-body">
-                    <h3>Ukarabati na Utambuzi</h3>
-                    <p>Tunashughulika na shinikizo kubwa la mafuta (pressure) linaloendesha mitambo ya CAT na Komatsu.</p>
-                    <ul class="spec-list">
-                        <li><span>Main Pump (Pistoni)</span> <span>CAT 320D/336D</span></li>
-                        <li><span>Control Valve Blocks</span> <span>Pressure Relief</span></li>
-                        <li><span>Hydraulic Cylinders</span> <span>Resealing & Honing</span></li>
-                        <li><span>Travel Motors</span> <span>Final Drive Tech</span></li>
-                        <li><span>Oil Analysis</span> <span>Contamination Control</span></li>
-                    </ul>
-                </div>
-            </article>
-
-            <article class="tech-card" style="border-top-color: var(--komatsu-blue);">
-                <div class="tech-header">
-                    <span>MIFUMO YA UMEME (ECM)</span>
-                    <span class="tag">DIAGNOSTICS</span>
-                </div>
-                <div class="tech-body">
-                    <h3>Mifumo ya Kompyuta na Sensor</h3>
-                    <p>Utambuzi wa makosa (Fault Codes) kwa kutumia ET (Caterpillar) na Komtrax.</p>
-                    <ul class="spec-list">
-                        <li><span>ECM Programming</span> <span>Engine Control Unit</span></li>
-                        <li><span>Wiring Harness</span> <span>Short Circuit Fix</span></li>
-                        <li><span>Sensor Calibration</span> <span>Pressure & Temp</span></li>
-                        <li><span>Alternator/Starter</span> <span>24V Heavy Duty</span></li>
-                        <li><span>Monitor Panels</span> <span>Display Repair</span></li>
-                    </ul>
-                </div>
-            </article>
-
-            <article class="tech-card" style="border-top-color: var(--danger);">
-                <div class="tech-header">
-                    <span>MIFUMO YA UPEPO</span>
-                    <span class="tag">AIR SYSTEMS</span>
-                </div>
-                <div class="tech-body">
-                    <h3>Braking & Pneumatic Controls</h3>
-                    <p>Mifumo ya upepo kwa ajili ya Wheel Loaders, Dump Trucks na Mitambo ya Migodini.</p>
-                    <ul class="spec-list">
-                        <li><span>Air Compressors</span> <span>Governor Settings</span></li>
-                        <li><span>Brake Valves</span> <span>Dual Circuit Systems</span></li>
-                        <li><span>Air Dryers</span> <span>Moisture Control</span></li>
-                        <li><span>Pneumatic Actuators</span> <span>Transmission Shift</span></li>
-                        <li><span>Leak Detection</span> <span>Lines & Fittings</span></li>
-                    </ul>
-                </div>
-            </article>
-
+    <div class="grid-container">
+        <div class="token-grid">
+            <div class="card">
+                <h3>UTILITY</h3>
+                <p>Tumia MGM Token kulipia vipuri asilia na huduma za ufundi wa mitambo mizito (CAT/Komatsu).</p>
+            </div>
+            <div class="card">
+                <h3>STAKING</h3>
+                <p>Weka (Stake) MGM zako upate punguzo la 20% kwenye gharama za ukarabati wa Injini na Hydraulic.</p>
+            </div>
+            <div class="card" style="border-color: var(--crypto-blue);">
+                <h3>BURN TECH</h3>
+                <p>Kila ununuzi wa vipuri unapofanyika, 2% ya MGM Tokens zinachomwa ili kuongeza thamani ya token.</p>
+            </div>
         </div>
 
-        <section class="data-table-section">
-            <h2>Jedwali la Utambuzi wa Mitambo (Model Specs)</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Model</th>
-                        <th>Mfumo Mkuu</th>
-                        <th>Aina ya Injini</th>
-                        <th>Hydraulic Pressure</th>
-                        <th>Hali ya Vipuri</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>CAT 320D</td>
-                        <td>Hydraulic Excavator</td>
-                        <td>C6.4 ACERT</td>
-                        <td>35,000 kPa</td>
-                        <td style="color: var(--success);">Inapatikana</td>
-                    </tr>
-                    <tr>
-                        <td>Komatsu PC200-8</td>
-                        <td>Hydraulic Excavator</td>
-                        <td>SAA6D107E-1</td>
-                        <td>37.3 MPa</td>
-                        <td style="color: var(--success);">Inapatikana</td>
-                    </tr>
-                    <tr>
-                        <td>CAT D8R</td>
-                        <td>Bulldozer</td>
-                        <td>3406C Engine</td>
-                        <td>Variable</td>
-                        <td style="color: var(--danger);">Oda Maalum</td>
-                    </tr>
-                    <tr>
-                        <td>Komatsu D155A</td>
-                        <td>Bulldozer</td>
-                        <td>S6D155-4</td>
-                        <td>Transmission Control</td>
-                        <td style="color: var(--success);">Inapatikana</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
+        <div class="live-stats">
+            <h2 style="font-family: 'Orbitron'; color: var(--mgm-gold); margin-bottom: 20px;">MGM NETWORK LIVE DATA</h2>
+            <div class="stat-line"><span>Current Supply:</span> <span>1,000,000,000 MGM</span></div>
+            <div class="stat-line"><span>Holders:</span> <span class="green">14,250 +</span></div>
+            <div class="stat-line"><span>Market Cap:</span> <span style="color: var(--crypto-blue);">$4.52M</span></div>
+            <div class="stat-line"><span>Burned Token:</span> <span style="color: #ff4444;">150,000,000 MGM</span></div>
+        </div>
     </div>
 
-    <footer class="contact-footer">
-        <div class="grid-2">
-            <div>
-                <h2>Kuhusu Business Systems Op</h2>
-                <p style="margin-top: 20px; color: #aaa;">Sisi ni wataalamu wa mifumo ya mitambo mizito nchini Tanzania. Tunatoa huduma za ukarabati wa "Major Components" kama vile Injini, Transmission, na Hydraulic Pumps. Tunatumia teknolojia ya kisasa ya utambuzi wa makosa ili kupunguza gharama za matengenezo.</p>
-                <div style="margin-top: 30px;">
-                    <p>📍 Dar Es Salaam / Mwanza, Tanzania</p>
-                    <p>📞 +255 7XX XXX XXX</p>
-                    <p>📧 info@business-systems-op.com</p>
-                </div>
+    <section class="ecosystem">
+        <h2 style="font-family: 'Orbitron'; font-size: 2rem;">MGM ECOSYSTEM INTEGRATION</h2>
+        <div class="eco-box">
+            <div class="eco-item">
+                <h3>⚙️ Matengenezo</h3>
+                <p>Lipa mafundi (Technicians) kwa MGM Token popote ulipo migodini.</p>
             </div>
-            <div>
-                <h3>Tuma Maombi ya Ufundi / Vipuri</h3>
-                <form>
-                    <input type="text" placeholder="Jina la Kampuni/Mteja" required>
-                    <select>
-                        <option>Chagua Aina ya Mfumo</option>
-                        <option>Hydraulic System</option>
-                        <option>Electrical/ECM Issues</option>
-                        <option>Engine Overhaul</option>
-                        <option>Pneumatic/Air Brake</option>
-                    </select>
-                    <textarea rows="4" placeholder="Elezea Tatizo la Mtambo au Namba ya Kipuri (Part Number)"></textarea>
-                    <button type="submit" class="submit-btn">TUMA MAOMBI SASA</button>
-                </form>
+            <div class="eco-item">
+                <h3>🚜 Vipuri</h3>
+                <p>Soko la kwanza la vipuri vya Komatsu na CAT linalotumia Blockchain.</p>
+            </div>
+            <div class="eco-item">
+                <h3>🖥️ Diagnosis</h3>
+                <p>Fungua (Unlock) programu za kisasa za diagnosis kwa kutumia MGM.</p>
             </div>
         </div>
-        <div style="text-align: center; margin-top: 50px; border-top: 1px solid #444; padding-top: 20px; font-size: 0.9rem;">
-            &copy; 2024-2026 Business Systems Op. Engineering the Future.
+    </section>
+
+    <section id="buy" style="padding: 100px 10%; background: var(--mgm-gold); color: #000; text-align: center;">
+        <h2 style="font-family: 'Goldman'; font-size: 3rem;">JOIN THE REVOLUTION</h2>
+        <p style="font-weight: bold; margin-bottom: 30px;">Kuwa sehemu ya mfumo wa kwanza wa mitambo duniani kutumia Token ya Kidijitali.</p>
+        <button onclick="connectWallet()" style="background: #000; color: #fff; padding: 20px 40px; border: none; font-family: 'Orbitron'; cursor: pointer; font-weight: bold;">CONNECT WALLET (MGM)</button>
+    </section>
+
+    <footer>
+        <p style="color: var(--mgm-gold); font-family: 'Orbitron';">MGM TOKEN &copy; 2026 - POWERED BY BS-OP SYSTEMS</p>
+        <div style="margin-top: 20px;">
+            <a href="#" style="color: #555; margin: 0 10px; text-decoration: none;">Whitepaper</a>
+            <a href="#" style="color: #555; margin: 0 10px; text-decoration: none;">Contract</a>
+            <a href="#" style="color: #555; margin: 0 10px; text-decoration: none;">Telegram</a>
         </div>
     </footer>
+
+    <script>
+        function connectWallet() {
+            alert("Inaunganisha na TrustWallet/MetaMask...\nTafadhali hakikisha una mtandao wa MGM Smart Chain.");
+        }
+    </script>
 
 </body>
 </html>

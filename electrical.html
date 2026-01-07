@@ -3,28 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DR-MITAMBO | Electrical & Upload</title>
+    <title>DR-MITAMBO | Smart Scanner</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    
     <style>
         :root { --cat: #FFCD00; --bg: #0d0d0d; --card: #1a1a1a; }
-        body { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; padding-bottom: 80px; }
-        .elec-header { background: linear-gradient(180deg, #000 0%, var(--bg) 100%); padding: 40px 20px; border-bottom: 3px solid var(--cat); text-align: center; }
+        body { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; padding-bottom: 90px; }
+        .scanner-header { background: linear-gradient(180deg, #000 0%, var(--bg) 100%); padding: 30px 20px; border-bottom: 3px solid var(--cat); text-align: center; }
         
-        /* 1. FEATURE: Advanced Upload & Viewer */
-        .viewer-container { background: #111; border: 2px dashed #444; border-radius: 20px; position: relative; overflow: hidden; min-height: 400px; display: flex; align-items: center; justify-content: center; }
-        #schematicImg { max-width: 100%; transition: transform 0.3s ease; display: none; }
+        /* Scanner Box */
+        .work-zone { background: var(--card); border-radius: 25px; padding: 20px; border: 1px solid #333; margin-top: 20px; }
+        #reader { width: 100%; border-radius: 15px; overflow: hidden; background: #000; }
         
-        .upload-zone { text-align: center; cursor: pointer; transition: 0.3s; padding: 40px; }
-        .upload-zone:hover { color: var(--cat); border-color: var(--cat); }
+        .preview-box { width: 100%; height: 300px; background: #111; border-radius: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px dashed #444; position: relative; }
+        #uploadedImage { max-width: 100%; max-height: 100%; display: none; }
         
-        .zoom-controls { position: absolute; top: 20px; right: 20px; display: none; flex-direction: column; gap: 10px; z-index: 100; }
-        .zoom-btn { background: var(--cat); border: none; width: 45px; height: 45px; border-radius: 50%; color: #000; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .color-result { display: flex; align-items: center; gap: 15px; background: #000; padding: 15px; border-radius: 15px; margin-top: 15px; border: 1px solid #444; }
+        .color-box { width: 50px; height: 50px; border-radius: 10px; border: 2px solid #fff; }
 
-        .pin-table { font-size: 0.8rem; background: var(--card); border-radius: 15px; overflow: hidden; margin-top: 20px; }
-        .pin-table th { background: #333; color: var(--cat); padding: 12px; }
-        .pin-table td { padding: 10px; border-bottom: 1px solid #222; }
-
+        .btn-scan { background: var(--cat); color: #000; font-weight: bold; border-radius: 50px; padding: 12px; border: none; width: 100%; margin-top: 10px; }
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: rgba(0,0,0,0.95); display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #333; z-index: 1000; }
         .nav-item { color: #888; text-decoration: none; text-align: center; font-size: 0.75rem; }
         .active-nav { color: var(--cat); }
@@ -32,57 +31,47 @@
 </head>
 <body>
 
-    <div class="elec-header">
-        <h2 class="fw-bold mb-0 text-uppercase">Electrical <span style="color:var(--cat)">Viewer</span></h2>
-        <p class="small opacity-50">Upload na Chambua Michoro ya Umeme</p>
+    <div class="scanner-header">
+        <h2 class="fw-bold mb-0">SMART <span style="color:var(--cat)">SCANNER</span></h2>
+        <p class="small opacity-50">QR Code & Wire Color Analyzer</p>
     </div>
 
-    <div class="container py-4">
-        
-        <div class="viewer-container mb-4" id="dropZone">
-            <div class="upload-zone" id="uploadPrompt" onclick="document.getElementById('fileInput').click()">
-                <i class="fas fa-cloud-upload-alt fa-4x mb-3 text-warning"></i>
-                <h5>GUSA AU BURUTA MCHORO HAPA</h5>
-                <p class="small opacity-50">Inakubali PDF, JPG, PNG (Max: 10MB)</p>
-                <input type="file" id="fileInput" hidden accept="image/*, application/pdf" onchange="previewFile()">
-            </div>
-
-            <img src="" id="schematicImg" alt="Wiring Diagram">
-
-            <div class="zoom-controls" id="zoomTools">
-                <button class="zoom-btn" onclick="zoomIn()"><i class="fas fa-plus"></i></button>
-                <button class="zoom-btn" onclick="zoomOut()"><i class="fas fa-minus"></i></button>
-                <button class="zoom-btn" onclick="resetZoom()"><i class="fas fa-sync"></i></button>
-            </div>
+    <div class="container">
+        <div class="work-zone">
+            <h6 class="text-warning fw-bold mb-3"><i class="fas fa-qrcode me-2"></i>QR CODE SCANNER</h6>
+            <div id="reader"></div>
+            <div id="qr-result" class="mt-3 small text-success fw-bold text-center"></div>
         </div>
 
-        <div class="row g-3">
-            <div class="col-md-6">
-                <div class="card bg-dark border-secondary p-3 rounded-4">
-                    <h6 class="text-warning fw-bold mb-3 small"><i class="fas fa-bolt me-2"></i>PINOUTS QUICK REFERENCE</h6>
-                    <table class="w-100 pin-table text-white">
-                        <thead>
-                            <tr><th>PIN</th><th>FUNCTION</th><th>V-SPEC</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>J1-1</td><td>Battery +</td><td>24V - 28V</td></tr>
-                            <tr><td>J1-2</td><td>ECM Ground</td><td>< 0.5V</td></tr>
-                            <tr><td>J2-3</td><td>5V Reference</td><td>4.9V - 5.1V</td></tr>
-                            <tr><td>J2-10</td><td>CAN High</td><td>2.5V - 2.8V</td></tr>
-                        </tbody>
-                    </table>
+        <div class="work-zone">
+            <h6 class="text-warning fw-bold mb-3"><i class="fas fa-eye-dropper me-2"></i>WIRE COLOR ANALYZER</h6>
+            <div class="preview-box" id="dropZone">
+                <div id="uploadText">
+                    <i class="fas fa-camera fa-3x mb-2 opacity-25"></i>
+                    <p class="small opacity-50">Pakia picha ya waya hapa</p>
                 </div>
+                <img id="uploadedImage" src="">
             </div>
             
-            <div class="col-md-6">
-                <div class="card bg-dark border-secondary p-3 rounded-4 h-100">
-                    <h6 class="text-warning fw-bold mb-3 small"><i class="fas fa-info-circle me-2"></i>GUIDE</h6>
-                    <ul class="small opacity-75 list-unstyled">
-                        <li class="mb-2">● Tumia Multimeter kupima voltage kwenye pini za ECM.</li>
-                        <li class="mb-2">● Hakikisha key-switch iko 'ON' wakati unapima sensor signals.</li>
-                        <li>● Zoom mchoro uliopakia kwa undani kuona namba za nyaya.</li>
-                    </ul>
-                    <button class="btn btn-warning w-100 rounded-pill fw-bold mt-auto" onclick="location.reload()">FUTA MCHORO</button>
+            <input type="file" id="imageInput" hidden accept="image/*">
+            <button class="btn-scan" onclick="document.getElementById('imageInput').click()">
+                <i class="fas fa-upload me-2"></i>PAKIA PICHA
+            </button>
+            <button class="btn-scan bg-info text-white" id="pickColorBtn" style="display:none;">
+                <i class="fas fa-crosshairs me-2"></i>TAMBUA RANGI
+            </button>
+
+            <div id="colorInfo" style="display:none;">
+                <div class="color-result">
+                    <div id="displayColor" class="color-box"></div>
+                    <div>
+                        <div id="colorName" class="fw-bold">Rangi Inatambuliwa...</div>
+                        <small id="colorHex" class="text-muted">#000000</small>
+                    </div>
+                </div>
+                <div class="mt-3 p-3 rounded bg-dark border border-secondary small">
+                    <b class="text-warning">Maelekezo:</b>
+                    <p id="wireInstructions" class="mb-0 mt-1 opacity-75">...</p>
                 </div>
             </div>
         </div>
@@ -92,52 +81,76 @@
         <a href="index.html" class="nav-item"><i class="fas fa-th-large d-block mb-1"></i> Dashboard</a>
         <a href="diagnosis.html" class="nav-item"><i class="fas fa-robot d-block mb-1"></i> Doctor AI</a>
         <a href="maintenance.html" class="nav-item"><i class="fas fa-calendar-check d-block mb-1"></i> Service</a>
-        <a href="electrical.html" class="nav-item active-nav"><i class="fas fa-bolt d-block mb-1"></i> Electrical</a>
+        <a href="electrical.html" class="nav-item active-nav"><i class="fas fa-bolt d-block mb-1"></i> Scanner</a>
     </div>
 
     <script>
-        let currentScale = 1;
+        // --- FEATURE 1: QR CODE LOGIC ---
+        function onScanSuccess(decodedText, decodedResult) {
+            document.getElementById('qr-result').innerHTML = `
+                <div class="p-3 bg-success bg-opacity-10 rounded border border-success">
+                    <i class="fas fa-check-circle me-2"></i> Data: ${decodedText}
+                </div>`;
+            // Unaweza kuongeza redirect hapa kama ni link
+        }
+        let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+        html5QrcodeScanner.render(onScanSuccess);
 
-        function previewFile() {
-            const preview = document.getElementById('schematicImg');
-            const file = document.getElementById('fileInput').files[0];
-            const reader = new FileReader();
-            const prompt = document.getElementById('uploadPrompt');
-            const tools = document.getElementById('zoomTools');
+        // --- FEATURE 2: WIRE COLOR LOGIC ---
+        const imageInput = document.getElementById('imageInput');
+        const uploadedImage = document.getElementById('uploadedImage');
+        const uploadText = document.getElementById('uploadText');
+        const pickColorBtn = document.getElementById('pickColorBtn');
 
-            reader.onloadend = function () {
-                preview.src = reader.result;
-                preview.style.display = 'block';
-                prompt.style.display = 'none';
-                tools.style.display = 'flex';
-            }
-
+        imageInput.onchange = (e) => {
+            const file = e.target.files[0];
             if (file) {
-                reader.readAsDataURL(file);
+                uploadedImage.src = URL.createObjectURL(file);
+                uploadedImage.style.display = 'block';
+                uploadText.style.display = 'none';
+                pickColorBtn.style.display = 'block';
             }
-        }
+        };
 
-        // FEATURE: Zoom Logic
-        function zoomIn() {
-            currentScale += 0.2;
-            applyZoom();
-        }
-
-        function zoomOut() {
-            if (currentScale > 0.4) {
-                currentScale -= 0.2;
-                applyZoom();
+        // EyeDropper API (Inafanya kazi kwenye Chrome/Edge ya kisasa)
+        pickColorBtn.addEventListener('click', async () => {
+            if (!window.EyeDropper) {
+                alert("Browser yako haisupport Color Picker. Tumia Chrome au Edge.");
+                return;
             }
-        }
 
-        function resetZoom() {
-            currentScale = 1;
-            applyZoom();
-        }
+            const eyeDropper = new EyeDropper();
+            try {
+                const result = await eyeDropper.open();
+                const hex = result.sRGBHex;
+                displayColorResult(hex);
+            } catch (e) {
+                console.log("Color picking canceled");
+            }
+        });
 
-        function applyZoom() {
-            const img = document.getElementById('schematicImg');
-            img.style.transform = `scale(${currentScale})`;
+        function displayColorResult(hex) {
+            document.getElementById('colorInfo').style.display = 'block';
+            document.getElementById('displayColor').style.background = hex;
+            document.getElementById('colorHex').innerText = hex;
+            
+            // Logic ya kutambua maana ya rangi (Simple Database)
+            let name = "Rangi Haijulikani";
+            let guide = "Kagua mchoro wa wiring kwa maelezo zaidi.";
+
+            if (hex.startsWith('#ff00') || hex.startsWith('#d')) {
+                name = "RED (NYEKUNDU)";
+                guide = "Mara nyingi ni Battery Positive (+). Kagua kama kuna moto (Voltage).";
+            } else if (hex.startsWith('#0000')) {
+                name = "BLACK (NYEUSI)";
+                guide = "Hii ni Ground (-). Hakikisha continuity na chasi (Frame).";
+            } else if (hex.startsWith('#ffffff')) {
+                name = "WHITE (NYEUPE)";
+                guide = "Mara nyingi ni Signal wire au Communication. Pima voltage ya 5V.";
+            }
+
+            document.getElementById('colorName').innerText = name;
+            document.getElementById('wireInstructions').innerText = guide;
         }
     </script>
 </body>

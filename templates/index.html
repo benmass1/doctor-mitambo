@@ -3,50 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DR-MITAMBO | Dashboard</title>
+    <title>Biashara Extreme | Suluhisho la Kidijitali</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        :root { --cat: #FFCD00; --bg: #0d0d0d; --card: #1a1a1a; }
-        body { background-color: var(--bg); color: #fff; font-family: sans-serif; padding-bottom: 80px; }
-        .stat-card { background: var(--card); border-radius: 15px; padding: 20px; border-left: 4px solid var(--cat); margin-bottom: 15px; }
-        .nav-card { background: var(--card); border-radius: 20px; padding: 25px; text-align: center; text-decoration: none; color: white; display: block; transition: 0.3s; height: 100%; border: 1px solid #333; }
-        .nav-card:hover { border-color: var(--cat); transform: translateY(-5px); }
-        .nav-card i { font-size: 2.5rem; color: var(--cat); margin-bottom: 15px; }
+        :root { --primary-color: #0d6efd; --dark-bg: #1a1a1a; }
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .hero-section { 
+            background: linear-gradient(45deg, rgba(0,0,0,0.8), rgba(13,110,253,0.5)), url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1350&q=80');
+            background-size: cover; height: 90vh; color: white; display: flex; align-items: center;
+        }
+        .service-card { border: none; transition: 0.4s; border-radius: 15px; }
+        .service-card:hover { transform: translateY(-10px); background: var(--primary-color); color: white; }
+        .whatsapp-float { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 2px 2px 10px rgba(0,0,0,0.3); z-index: 1000; }
     </style>
 </head>
 <body>
 
-    <div class="p-3 text-center border-bottom border-warning mb-4">
-        <h4 class="fw-bold mb-0">DR-MITAMBO <span class="text-warning">OS</span></h4>
-    </div>
-
-    <div class="container">
-        <div class="row g-2 mb-4">
-            <div class="col-6"><div class="stat-card"><h3 class="fw-bold text-warning">42</h3><small class="opacity-50">Assets</small></div></div>
-            <div class="col-6"><div class="stat-card"><h3 class="fw-bold text-danger">05</h3><small class="opacity-50">Critical</small></div></div>
-        </div>
-
-        <h6 class="text-uppercase opacity-50 mb-3 small fw-bold">Main Control Units</h6>
-        <div class="row g-3">
-            {% for item in huduma %}
-            <div class="col-6">
-                <a href="{{ url_for(item.link) }}" class="nav-card">
-                    <i class="fas {{ item.icon }}"></i>
-                    <div class="fw-bold small">{{ item.title }}</div>
-                </a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">BIASHARA <span class="text-primary">EXTREME</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#nyumbani">Nyumbani</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#huduma">Huduma</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#wasiliana">Wasiliana</a></li>
+                </ul>
             </div>
-            {% endfor %}
         </div>
-    </div>
+    </nav>
 
-    <div class="fixed-bottom bg-dark border-top border-secondary d-flex justify-content-around p-3">
-        <a href="{{ url_for('index') }}" class="text-warning text-decoration-none text-center"><i class="fas fa-th-large d-block"></i><small style="font-size: 0.6rem;">Home</small></a>
-        <a href="{{ url_for('diagnosis') }}" class="text-white text-decoration-none text-center opacity-50"><i class="fas fa-microchip d-block"></i><small style="font-size: 0.6rem;">Diag</small></a>
-        <a href="{{ url_for('maintenance') }}" class="text-white text-decoration-none text-center opacity-50"><i class="fas fa-tools d-block"></i><small style="font-size: 0.6rem;">Service</small></a>
-        <a href="{{ url_for('electrical') }}" class="text-white text-decoration-none text-center opacity-50"><i class="fas fa-bolt d-block"></i><small style="font-size: 0.6rem;">Elec</small></a>
-    </div>
+    <section id="nyumbani" class="hero-section">
+        <div class="container text-center text-md-start">
+            <h1 class="display-2 fw-bold mb-4">Ipeleke Biashara Yako <br><span class="text-primary">Ngazi ya Juu</span></h1>
+            <p class="lead mb-5">Tunatoa suluhisho bora za kiteknolojia kwa wafanyabiashara wa Kitanzania.</p>
+            <a href="#wasiliana" class="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow">Anza Sasa Hivi</a>
+        </div>
+    </section>
 
+    <section id="huduma" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center fw-bold mb-5">Huduma Tunazotoa</h2>
+            <div class="row g-4">
+                {% for item in huduma %}
+                <div class="col-md-3">
+                    <div class="card h-100 p-4 text-center service-card shadow-sm">
+                        <i class="fas {{ item.icon }} fa-3x mb-3 text-primary"></i>
+                        <h4 class="fw-bold">{{ item.kichwa }}</h4>
+                        <p class="text-muted">{{ item.maelezo }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 bg-primary text-white text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4"><h3>500+</h3><p>Wateja Walioridhika</p></div>
+                <div class="col-md-4"><h3>10+</h3><p>Miaka ya Uzoefu</p></div>
+                <div class="col-md-4"><h3>100%</h3><p>Uaminifu</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="wasiliana" class="py-5 container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                <h2 class="fw-bold mb-4">Tuandikie Ujumbe</h2>
+                <div class="card p-4 shadow-lg border-0">
+                    <form>
+                        <div class="row">
+                            <div class="col-md-6 mb-3"><input type="text" class="form-control" placeholder="Jina lako"></div>
+                            <div class="col-md-6 mb-3"><input type="email" class="form-control" placeholder="Barua pepe"></div>
+                        </div>
+                        <textarea class="form-control mb-3" rows="5" placeholder="Eleza mahitaji yako..."></textarea>
+                        <button class="btn btn-dark w-100 py-3">TUMA SASA</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-dark text-white py-5">
+        <div class="container text-center">
+            <div class="mb-4">
+                <a href="#" class="text-white mx-2"><i class="fab fa-facebook fa-2x"></i></a>
+                <a href="#" class="text-white mx-2"><i class="fab fa-instagram fa-2x"></i></a>
+                <a href="#" class="text-white mx-2"><i class="fab fa-twitter fa-2x"></i></a>
+            </div>
+            <p>&copy; 2026 Biashara Extreme. Haki zote zimehifadhiwa.</p>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/255123456789" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 

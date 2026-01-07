@@ -1,90 +1,93 @@
+
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="card bg-dark text-white border-0 shadow-lg overflow-hidden mb-5" style="border-radius: 20px;">
-        <div class="card-body p-5">
-            <div class="row align-items-center">
-                <div class="col-lg-7">
-                    <h1 class="display-4 fw-bold text-warning mb-3">Doctor-Mitambo</h1>
-                    <p class="lead mb-4 opacity-75">Mfumo namba moja wa uchunguzi, matengenezo, na mafunzo ya mitambo ya Caterpillar na Komatsu.</p>
-                    
-                    <div class="input-group bg-white rounded-pill p-1 shadow-sm" style="max-width: 500px;">
-                        <input type="text" class="form-control border-0 px-4" placeholder="Tafuta Fault Code (mf: 102-03)..." style="box-shadow: none;">
-                        <button class="btn btn-warning rounded-pill px-4 fw-bold">CHAMBUA</button>
-                    </div>
-                </div>
-                <div class="col-lg-5 d-none d-lg-block text-center">
-                    <i class="fas fa-tools fa-10x text-white opacity-10"></i>
+<div class="container-fluid px-0">
+    <div class="card bg-dark text-white p-5 mb-5 border-0 shadow-lg position-relative overflow-hidden" style="border-radius: 30px;">
+        <div class="row align-items-center position-relative" style="z-index: 2;">
+            <div class="col-lg-7">
+                <h1 class="display-4 fw-bold text-warning mb-3">Hali ya Fleet Site A</h1>
+                <p class="lead opacity-75">Uchambuzi wa moja kwa moja wa mashine 42. Mifumo yote ya ECM iko chini ya uangalizi wa Doctor-Mitambo.</p>
+                <div class="input-group bg-white rounded-pill p-2 mt-4 shadow-lg" style="max-width: 600px;">
+                    <span class="input-group-text bg-transparent border-0"><i class="fas fa-search text-muted"></i></span>
+                    <input type="text" class="form-control border-0" placeholder="Tafuta Fault Code (mf: 102-03)...">
+                    <button class="btn btn-warning rounded-pill px-5 fw-bold">CHAMBUA</button>
                 </div>
             </div>
         </div>
+        <i class="fas fa-engine position-absolute end-0 bottom-0 opacity-10 fa-10x" style="transform: rotate(-15deg) translate(20%, 20%);"></i>
     </div>
 
     <div class="row g-4 mb-5">
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm text-center p-3 border-start border-primary border-5">
-                <h3 class="fw-bold mb-0">24</h3>
-                <small class="text-muted fw-bold uppercase">Mashine Zilizopo</small>
+            <div class="card p-4 text-center border-bottom border-primary border-5">
+                <h6 class="text-muted fw-bold">TOTAL ASSETS</h6>
+                <h2 class="fw-bold mb-0">42</h2>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm text-center p-3 border-start border-danger border-5">
-                <h3 class="fw-bold mb-0 text-danger">05</h3>
-                <small class="text-muted fw-bold uppercase">Zenye Hitilafu</small>
+            <div class="card p-4 text-center border-bottom border-danger border-5">
+                <h6 class="text-muted fw-bold text-danger text-uppercase">Critical Faults</h6>
+                <h2 class="fw-bold mb-0 text-danger">05</h2>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm text-center p-3 border-start border-success border-5">
-                <h3 class="fw-bold mb-0 text-success">18</h3>
-                <small class="text-muted fw-bold uppercase">Ziko Kazini</small>
+            <div class="card p-4 text-center border-bottom border-success border-5">
+                <h6 class="text-muted fw-bold">OPERATIONAL</h6>
+                <h2 class="fw-bold mb-0 text-success">34</h2>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm text-center p-3 border-start border-warning border-5">
-                <h3 class="fw-bold mb-0">02</h3>
-                <small class="text-muted fw-bold uppercase">Service ya Leo</small>
+            <div class="card p-4 text-center border-bottom border-warning border-5">
+                <h6 class="text-muted fw-bold">SERVICE DUE</h6>
+                <h2 class="fw-bold mb-0">03</h2>
             </div>
         </div>
     </div>
 
-    <h4 class="fw-bold mb-4">Moduli za Doctor-Mitambo</h4>
+    <h4 class="fw-bold mb-4">Moduli Kuu za Doctor-Mitambo</h4>
     <div class="row g-4">
         <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm p-3 hover-effect">
-                <div class="card-body">
-                    <div class="icon-box bg-primary-subtle text-primary rounded-3 mb-3">
-                        <i class="fas fa-project-diagram fa-2x"></i>
-                    </div>
-                    <h5 class="fw-bold">System Operation</h5>
-                    <p class="small text-muted">Elewa jinsi mifumo ya hydraulic na engine inavyofanya kazi.</p>
-                    <a href="/operation" class="btn btn-sm btn-outline-primary rounded-pill px-3">Fungua Moduli</a>
+            <div class="card h-100 p-4 border-0 shadow-sm">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="p-3 rounded-4 bg-danger-subtle text-danger me-3"><i class="fas fa-microchip fa-2x"></i></div>
+                    <h5 class="fw-bold mb-0">Diagnosis AI</h5>
                 </div>
+                <p class="text-muted small">Chambua codes za ECM kwa haraka na upate mwongozo wa ufundi.</p>
+                <a href="/diagnosis" class="btn btn-outline-danger w-100 rounded-pill mt-auto">Fungua</a>
             </div>
         </div>
-
         <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm p-3 hover-effect">
-                <div class="card-body">
-                    <div class="icon-box bg-success-subtle text-success rounded-3 mb-3">
-                        <i class="fas fa-wrench fa-2x"></i>
-                    </div>
-                    <h5 class="fw-bold">Maintenance</h5>
-                    <p class="small text-muted">Panga na fuatilia ratiba za service (PM) za mitambo yote.</p>
-                    <a href="/maintenance" class="btn btn-sm btn-outline-success rounded-pill px-3">Fungua Moduli</a>
+            <div class="card h-100 p-4 border-0 shadow-sm">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="p-3 rounded-4 bg-primary-subtle text-primary me-3"><i class="fas fa-bolt fa-2x"></i></div>
+                    <h5 class="fw-bold mb-0">Electrical</h5>
                 </div>
+                <p class="text-muted small">Wiring diagrams na sensor pinouts za CAT na Komatsu.</p>
+                <a href="/electrical" class="btn btn-outline-primary w-100 rounded-pill mt-auto">Fungua</a>
             </div>
         </div>
-
         <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm p-3 hover-effect">
-                <div class="card-body">
-                    <div class="icon-box bg-danger-subtle text-danger rounded-3 mb-3">
-                        <i class="fas fa-stethoscope fa-2x"></i>
+            <div class="card h-100 p-4 border-0 bg-dark text-white">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="p-3 rounded-4 bg-warning text-dark me-3"><i class="fas fa-calendar-alt fa-2x"></i></div>
+                    <h5 class="fw-bold mb-0">Maintenance</h5>
+                </div>
+                <p class="small opacity-75">Panga ratiba za service (PM) kulingana na masaa ya mashine.</p>
+                <a href="/maintenance" class="btn btn-warning w-100 rounded-pill mt-auto fw-bold text-dark">Fungua</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card p-4 border-0 shadow-sm">
+                <h5 class="fw-bold mb-4"><i class="fas fa-map-marker-alt text-danger me-2"></i>Live Fleet Location</h5>
+                <div class="bg-light rounded-4 d-flex align-items-center justify-content-center" style="height: 300px; border: 2px dashed #ddd;">
+                    <div class="text-center opacity-50">
+                        <i class="fas fa-satellite-dish fa-4x mb-3"></i>
+                        <h6>GPS Monitoring Module Inasubiri Data...</h6>
                     </div>
-                    <h5 class="fw-bold text-danger">Machine Diagnosis</h5>
-                    <p class="small text-muted">Chambua codes na fanya ukaguzi wa ECM kwa dakika moja.</p>
-                    <a href="/diagnosis" class="btn btn-sm btn-outline-danger rounded-pill px-3">Fungua Moduli</a>
                 </div>
             </div>
         </div>
@@ -92,12 +95,7 @@
 </div>
 
 <style>
-    .icon-box { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; }
-    .bg-primary-subtle { background-color: #e7f1ff; }
-    .bg-success-subtle { background-color: #e6f7ef; }
     .bg-danger-subtle { background-color: #fcecef; }
-    .hover-effect:hover { transform: translateY(-10px); transition: 0.3s ease-in-out; cursor: pointer; }
-    .uppercase { text-transform: uppercase; font-size: 0.7rem; letter-spacing: 1px; }
+    .bg-primary-subtle { background-color: #e7f1ff; }
 </style>
 {% endblock %}
-

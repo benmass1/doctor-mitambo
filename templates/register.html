@@ -3,27 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sajili Mhandisi | DR-MITAMBO</title>
+    <title>Sajili Mhandisi | DR-MITAMBO PRO</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: #0d0d0d; color: white; display: flex; align-items: center; height: 100vh; justify-content: center; }
-        .reg-card { background: #1a1a1a; padding: 30px; border-radius: 20px; border: 1px solid #FFCD00; width: 100%; max-width: 400px; }
+        :root { --cat: #FFCD00; --bg: #050505; --card: #111111; }
+        
+        body { 
+            background-color: var(--bg); 
+            color: #fff; 
+            font-family: 'Orbitron', sans-serif; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh;
+            background: radial-gradient(circle at center, #1a1a00 0%, #050505 100%);
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+        }
+
+        .register-card {
+            background: var(--card);
+            padding: 40px;
+            border-radius: 30px;
+            border: 1px solid #222;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .register-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, transparent, var(--cat), transparent);
+        }
+
+        .logo-section i {
+            font-size: 3.5rem;
+            color: var(--cat);
+            filter: drop-shadow(0 0 10px rgba(255, 205, 0, 0.5));
+        }
+
+        .form-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control, .form-select {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 12px;
+            padding: 12px 15px;
+            transition: 0.3s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background: #000;
+            border-color: var(--cat);
+            box-shadow: 0 0 15px rgba(255, 205, 0, 0.2);
+            color: white;
+        }
+
+        .btn-register {
+            background: var(--cat);
+            color: #000;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            width: 100%;
+            margin-top: 20px;
+            transition: 0.3s;
+            letter-spacing: 1px;
+        }
+
+        .btn-register:hover {
+            background: #e6b800;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 205, 0, 0.3);
+        }
+
+        .login-link {
+            color: var(--cat);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Animated Background Elements */
+        .bg-gear {
+            position: absolute;
+            z-index: -1;
+            opacity: 0.03;
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
-    <div class="reg-card text-center">
-        <h4 class="text-warning fw-bold mb-4">SAJILI AKAUNTI MPYA</h4>
-        {% with messages = get_flashed_messages() %}
-          {% if messages %}{% for message in messages %}
-            <div class="alert alert-info py-2 small">{{ message }}</div>
-          {% endfor %}{% endif %}
-        {% endwith %}
-        <form method="POST">
-            <input type="text" name="username" class="form-control bg-dark text-white mb-3" placeholder="Username" required>
-            <input type="password" name="password" class="form-control bg-dark text-white mb-4" placeholder="Password" required>
-            <button type="submit" class="btn btn-warning w-100 fw-bold">SAJILI SASA</button>
-        </form>
-        <p class="mt-3 small">Tayari una akaunti? <a href="/login" class="text-warning">Ingia hapa</a></p>
+
+    <i class="fas fa-cog bg-gear" style="font-size: 20rem; top: -50px; right: -50px;"></i>
+    <i class="fas fa-cog bg-gear" style="font-size: 15rem; bottom: -50px; left: -50px; animation-direction: reverse;"></i>
+
+    <div class="register-container">
+        <div class="register-card">
+            <div class="logo-section text-center mb-4">
+                <i class="fas fa-tools mb-2"></i>
+                <h3 class="fw-bold mb-0">JIUNGE NA <span class="text-warning">PRO</span></h3>
+                <p class="small text-muted">Mfumo wa Kisasa wa Mafundi Mitambo</p>
+            </div>
+
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                {% for message in messages %}
+                  <div class="alert alert-danger py-2 small border-0 rounded-3 mb-3" style="background: rgba(255,0,0,0.1); color: #ff6666;">
+                    <i class="fas fa-exclamation-circle me-2"></i> {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form action="/register" method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Jina Kamili</label>
+                    <input type="text" name="username" class="form-control" placeholder="Mfano: Masanja Mhandisi" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Kitengo (Specialization)</label>
+                    <select name="department" class="form-select">
+                        <option value="mechanical">Mechanical Expert</option>
+                        <option value="electrical">Electrical Expert</option>
+                        <option value="hydraulic">Hydraulic Specialist</option>
+                        <option value="operator">Heavy Equipment Operator</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Nenosiri (Password)</label>
+                    <div class="input-group">
+                        <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-register">Tengeneza Akaunti <i class="fas fa-arrow-right ms-2"></i></button>
+            </form>
+
+            <div class="text-center mt-4 small">
+                <span class="opacity-50">Tayari una akaunti?</span> 
+                <a href="/login" class="login-link">Ingia Hapa</a>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4 opacity-25 small">
+            DR-MITAMBO OS v2.0 | SECURE ENCRYPTION
+        </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

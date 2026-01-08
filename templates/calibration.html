@@ -1,1 +1,162 @@
+{% extends "layout.html" %}
+
+{% block title %}Calibration Center | DR-MITAMBO PRO{% endblock %}
+
+{% block head %}
+<style>
+    :root { --cal-glow: #ff9900; --bg: #0a0a0a; }
+    
+    .cal-header {
+        background: linear-gradient(135deg, #2b1a00 0%, #000 100%);
+        border: 1px solid #4d2e00;
+        border-radius: 25px;
+        padding: 30px;
+        margin-bottom: 25px;
+    }
+
+    .cal-card {
+        background: #111;
+        border-radius: 20px;
+        border: 1px solid #222;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .gauge-wrapper {
+        text-align: center;
+        padding: 20px;
+        background: #000;
+        border-radius: 50%;
+        width: 150px;
+        height: 150px;
+        margin: 0 auto 15px;
+        border: 5px solid #222;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        transition: 0.5s;
+    }
+    .gauge-active { border-color: var(--cal-glow); box-shadow: 0 0 20px rgba(255, 153, 0, 0.2); }
+
+    .progress-custom {
+        height: 12px;
+        background: #222;
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 15px 0;
+    }
+    .progress-bar-custom {
+        height: 100%;
+        background: linear-gradient(90deg, #ff9900, #ffcc00);
+        width: 0%;
+        transition: 0.5s;
+    }
+
+    .status-text { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
+    
+    .btn-cal {
+        background: transparent;
+        border: 1px solid var(--cal-glow);
+        color: var(--cal-glow);
+        border-radius: 12px;
+        padding: 10px;
+        width: 100%;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .btn-cal:hover { background: var(--cal-glow); color: #000; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="cal-header text-center">
+    <i class="fas fa-sliders-h fa-3x text-warning mb-3"></i>
+    <h3 class="brand-font text-white">SYSTEM <span class="text-warning">CALIBRATION</span></h3>
+    <p class="small text-muted mb-0">Rekebisha vigezo vya sensorer na solenoid valves kwa utendaji bora.</p>
+</div>
+
+<div class="container">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="cal-card" id="card1">
+                <div class="gauge-wrapper" id="gauge1">
+                    <small class="status-text">Offset</small>
+                    <h3 class="fw-bold mb-0">0.02</h3>
+                    <small class="text-muted">ms</small>
+                </div>
+                <h6 class="text-center fw-bold mt-2">Fuel Injector Trim</h6>
+                <p class="small text-muted text-center">Inasawazisha muda wa mlipuko wa kila silinda.</p>
+                
+                
+
+                <div class="progress-custom">
+                    <div class="progress-bar-custom" id="bar1"></div>
+                </div>
+                <button class="btn-cal" onclick="startCal(1)">ANZA CALIBRATION</button>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="cal-card" id="card2">
+                <div class="gauge-wrapper" id="gauge2">
+                    <small class="status-text">Current</small>
+                    <h3 class="fw-bold mb-0">740</h3>
+                    <small class="text-muted">mA</small>
+                </div>
+                <h6 class="text-center fw-bold mt-2">Pump PRV Calibration</h6>
+                <p class="small text-muted text-center">Inarekebisha shinikizo la pampu kuu ya hydraulic.</p>
+                
+                
+
+                <div class="progress-custom">
+                    <div class="progress-bar-custom" id="bar2"></div>
+                </div>
+                <button class="btn-cal" onclick="startCal(2)">ANZA CALIBRATION</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-dark p-4 rounded-4 border border-secondary mt-4 mb-5">
+        <h6 class="fw-bold text-warning mb-3"><i class="fas fa-info-circle me-2"></i> MASHARTI YA CALIBRATION</h6>
+        <div class="row small opacity-75">
+            <div class="col-6">
+                <i class="fas fa-check-circle text-success me-2"></i> Injini iwe kwenye Joto (80°C)<br>
+                <i class="fas fa-check-circle text-success me-2"></i> Parking Brake imefungwa
+            </div>
+            <div class="col-6">
+                <i class="fas fa-check-circle text-success me-2"></i> Hydraulic Oil (50°C)<br>
+                <i class="fas fa-check-circle text-success me-2"></i> Hakuna Fault Codes
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function startCal(id) {
+        const bar = document.getElementById('bar' + id);
+        const gauge = document.getElementById('gauge' + id);
+        const btn = event.target;
+        
+        btn.disabled = true;
+        btn.innerHTML = "INACHAKATA...";
+        gauge.classList.add('gauge-active');
+        
+        let width = 0;
+        const interval = setInterval(() => {
+            if (width >= 100) {
+                clearInterval(interval);
+                btn.innerHTML = "IMESHAKAMILIKA!";
+                btn.classList.replace('btn-cal', 'btn-success');
+                btn.style.color = "white";
+                btn.style.borderColor = "green";
+            } else {
+                width++;
+                bar.style.width = width + '%';
+            }
+        }, 50);
+    }
+</script>
+{% endblock %}
 

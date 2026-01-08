@@ -1,1 +1,126 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Operation | DR-MITAMBO PRO</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --danger: #ff4444; --warning: #FFCD00; --bg: #0a0a0a; --card: #141414; }
+        body { background-color: var(--bg); color: #fff; font-family: 'Segoe UI', Roboto, sans-serif; padding-bottom: 80px; }
+        
+        /* Danger Header */
+        .safety-header { background: linear-gradient(45deg, #b30000 0%, #000 100%); padding: 50px 20px; border-bottom: 4px solid var(--warning); position: relative; overflow: hidden; }
+        .safety-header::after { content: '⚠ SAFETY FIRST'; position: absolute; bottom: -10px; right: 10px; font-size: 5rem; font-weight: 900; opacity: 0.05; white-space: nowrap; }
+
+        .safety-card { background: var(--card); border-radius: 20px; padding: 25px; margin-bottom: 25px; border-left: 8px solid var(--danger); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .safety-card.warning-type { border-left-color: var(--warning); }
+        
+        .ppe-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .ppe-item { background: #000; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #333; }
+        .ppe-item i { font-size: 1.5rem; color: var(--warning); margin-bottom: 8px; display: block; }
+        .ppe-item span { font-size: 0.65rem; text-transform: uppercase; font-weight: bold; }
+
+        .lockout-step { background: #1a1a1a; padding: 15px; border-radius: 10px; border: 1px dashed #444; margin-bottom: 10px; font-size: 0.9rem; }
+        .step-tag { background: var(--danger); color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; margin-right: 10px; }
+
+        .critical-table { width: 100%; font-size: 0.85rem; background: #000; border-radius: 10px; margin-top: 15px; border-collapse: separate; border-spacing: 0 5px; }
+        .critical-table td { padding: 12px; background: #111; }
+        .text-danger-pro { color: #ff6666; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="safety-header text-center">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <a href="/" class="text-white text-decoration-none"><i class="fas fa-chevron-left me-1"></i> DASHBOARD</a>
+                <span class="badge bg-danger">LEVEL: CRITICAL</span>
+            </div>
+            <i class="fas fa-biohazard fa-3x text-white mb-3"></i>
+            <h2 class="fw-bold text-uppercase">Safety <span class="text-warning">Operation</span></h2>
+            <p class="small opacity-75">Kanuni za uokoaji na ulinzi wa mazingira ya kazi</p>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+
+        <div class="safety-card warning-type">
+            <h5 class="fw-bold text-warning"><i class="fas fa-hard-hat me-2"></i> PPE ESSENTIALS</h5>
+            <p class="small opacity-75">Vifaa vya kinga binafsi ni lazima kabla ya kugusa mtambo wowote.</p>
+            
+            
+
+            <div class="ppe-grid">
+                <div class="ppe-item"><i class="fas fa-hard-hat"></i><span>Helmet</span></div>
+                <div class="ppe-item"><i class="fas fa-glasses"></i><span>Goggles</span></div>
+                <div class="ppe-item"><i class="fas fa-mitten"></i><span>Gloves</span></div>
+                <div class="ppe-item"><i class="fas fa-boot"></i><span>Safety Boots</span></div>
+                <div class="ppe-item"><i class="fas fa-deaf"></i><span>Ear Plugs</span></div>
+                <div class="ppe-item"><i class="fas fa-vest"></i><span>High-Vis</span></div>
+            </div>
+        </div>
+
+        <div class="safety-card">
+            <h5 class="fw-bold text-danger"><i class="fas fa-lock me-2"></i> LOTO PROCEDURES</h5>
+            <p class="small opacity-75 mb-3">Zingatia hatua hizi kuzuia mtambo kujiusha kwa bahati mbaya (Accidental Startup).</p>
+            
+            
+
+            <div class="lockout-step"><span class="step-tag">01</span> Zima mtambo na ondoa ufunguo (Master Switch).</div>
+            <div class="lockout-step"><span class="step-tag">02</span> Weka "Danger Tag" kwenye battery disconnect switch.</div>
+            <div class="lockout-step"><span class="step-tag">03</span> Toa presha iliyobaki (Residual Pressure) kwenye cylinders.</div>
+            <div class="lockout-step"><span class="step-tag">04</span> Zuia matairi au track kwa kutumia "Chocks".</div>
+        </div>
+
+        <div class="safety-card">
+            <h5 class="fw-bold text-danger"><i class="fas fa-fire-alt me-2"></i> PRESSURE & HEAT HAZARDS</h5>
+            <p class="small tech-info">
+                Mifumo ya hydraulic inaweza kuwa na presha hadi <b>5000 PSI</b>. Presha hii inaweza kupenya kwenye ngozi ya binadamu (Injection Injury) na kusababisha kifo.
+            </p>
+
+            <table class="critical-table">
+                <tbody>
+                    <tr>
+                        <td><i class="fas fa-thermometer-high text-danger"></i> Coolant Temp</td>
+                        <td class="text-danger-pro">> 100°C</td>
+                        <td class="small opacity-50">Danger: Scalding</td>
+                    </tr>
+                    <tr>
+                        <td><i class="fas fa-pills text-danger"></i> Hyd. Pressure</td>
+                        <td class="text-danger-pro">> 35 MPa</td>
+                        <td class="small opacity-50">Danger: Injection</td>
+                    </tr>
+                    <tr>
+                        <td><i class="fas fa-battery-full text-danger"></i> Battery Gas</td>
+                        <td class="text-danger-pro">H2 Gas</td>
+                        <td class="small opacity-50">Danger: Explosion</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="safety-card warning-type">
+            <h5 class="fw-bold text-warning"><i class="fas fa-expand-arrows-alt me-2"></i> CRITICAL CLEARANCE</h5>
+            <p class="small opacity-75">Eneo la hatari (Danger Zone) ni mita 10 kuzunguka mtambo unapoanza kufanya kazi.</p>
+            
+            
+
+            <ul class="small mt-3 opacity-75">
+                <li>Hakikisha <b>Backup Alarm</b> inafanya kazi kabla ya kurudisha mtambo nyuma.</li>
+                <li>Usimame kamwe chini ya mzigo uliopandishwa na <b>Boom</b>.</li>
+                <li>Wakati wa <b>Towing</b>, tumia kamba zenye uwezo wa mara 1.5 ya uzito wa mtambo.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="fixed-bottom p-3">
+        <button class="btn btn-danger w-100 fw-bold py-3 rounded-pill shadow-lg" onclick="location.href='tel:112'">
+            <i class="fas fa-phone-alt me-2"></i> EMERGENCY CONTACT (SITE)
+        </button>
+    </div>
+
+</body>
+</html>
 

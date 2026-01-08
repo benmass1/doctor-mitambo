@@ -1,1 +1,118 @@
+{% extends "layout.html" %}
+
+{% block title %}Harness Hub | DR-MITAMBO PRO{% endblock %}
+
+{% block head %}
+<style>
+    :root { --cat: #FFCD00; --bg: #0a0a0a; --card: #141414; }
+    
+    .harness-card { background: var(--card); border-radius: 20px; border: 1px solid #222; margin-bottom: 25px; overflow: hidden; }
+    .connector-view { background: #000; padding: 30px; text-align: center; border-bottom: 1px solid #222; }
+    .connector-view img { max-width: 100%; height: auto; border-radius: 10px; }
+    
+    .pin-table { width: 100%; font-size: 0.85rem; color: #ccc; }
+    .pin-table th { color: var(--cat); padding: 12px; border-bottom: 1px solid #333; text-transform: uppercase; }
+    .pin-table td { padding: 12px; border-bottom: 1px solid #111; }
+    
+    .color-code { width: 20px; height: 10px; display: inline-block; border-radius: 2px; margin-right: 8px; border: 1px solid #444; }
+    .code-yl { background: yellow; }
+    .code-rd { background: red; }
+    .code-bk { background: black; }
+    .code-wh { background: white; }
+    .code-bl { background: blue; }
+
+    .tech-note { background: rgba(255, 205, 0, 0.05); border-left: 4px solid var(--cat); padding: 15px; border-radius: 0 10px 10px 0; margin-top: 20px; font-size: 0.85rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="fw-bold brand-font mb-0">HARNESS <span class="text-warning">HUB</span></h3>
+    <span class="badge bg-dark border border-warning text-warning">ECM PINOUTS</span>
+</div>
+
+<div class="harness-card">
+    <div class="connector-view">
+        <h6 class="text-warning mb-3 fw-bold text-uppercase">ECM J1 Connector (70-Pin) View</h6>
+        
+        <p class="small text-muted mt-2">Muonekano wa mbele wa kiunganishi (Front Face View)</p>
+    </div>
+    <div class="p-4">
+        <h6 class="fw-bold mb-3"><i class="fas fa-list-ol me-2 text-warning"></i> PIN ASSIGNMENTS</h6>
+        <table class="pin-table">
+            <thead>
+                <tr>
+                    <th>Pin</th>
+                    <th>Color</th>
+                    <th>Function / Circuit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>01</td>
+                    <td><span class="color-code code-rd"></span>RD</td>
+                    <td>+24V Battery Supply (Unswitched)</td>
+                </tr>
+                <tr>
+                    <td>02</td>
+                    <td><span class="color-code code-bk"></span>BK</td>
+                    <td>Main Ground (Negative)</td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td><span class="color-code code-yl"></span>YL/BK</td>
+                    <td>CAN Data Link Hi (+)</td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td><span class="color-code code-bl"></span>BL/WH</td>
+                    <td>CAN Data Link Lo (-)</td>
+                </tr>
+                <tr>
+                    <td>42</td>
+                    <td><span class="color-code code-wh"></span>WH</td>
+                    <td>Engine Speed Sensor (+) Signal</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="harness-card">
+    <div class="p-4">
+        <h5 class="fw-bold text-warning mb-3"><i class="fas fa-project-diagram me-2"></i> HARNESS ROUTING</h5>
+        <p class="small opacity-75">Njia ya nyaya kuanzia kwenye ECM hadi kwenye Injectors na Sensorer za Hydraulic.</p>
+        
+        
+        
+        <div class="tech-note">
+            <b class="text-warning">MAONYO YA KIUFUNDI:</b><br>
+            Hakikisha "Harness Straps" zimekazwa vizuri kuzuia nyaya kusugua (rubbing) kwenye chassis. 90% ya matatizo ya "Short to Ground" husababishwa na nyaya kusugua kwenye vyuma.
+        </div>
+    </div>
+</div>
+
+<div class="harness-card">
+    <div class="p-4">
+        <div class="row align-items-center">
+            <div class="col-6 text-center border-end border-secondary">
+                
+                <p class="small mt-2 mb-0"><b>Deutsch DT 3-Pin</b><br>(Pressure Sensors)</p>
+            </div>
+            <div class="col-6 ps-4">
+                <ul class="list-unstyled small">
+                    <li class="mb-2"><b>A:</b> +5V Reference</li>
+                    <li class="mb-2"><b>B:</b> Signal Output</li>
+                    <li><b>C:</b> Common Ground</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-dark border-secondary rounded-4 p-3 mb-5">
+    <h6 class="fw-bold text-warning small"><i class="fas fa-search-plus me-2"></i> TIP: CONTINUITY TEST</h6>
+    <p class="small mb-0 opacity-75">Tumia Multimeter kupima "Continuity" kati ya Pin 1 (ECM) na Pin A (Sensor). Resistance haipaswi kuzidi **5.0 Ohms**.</p>
+</div>
+{% endblock %}
 

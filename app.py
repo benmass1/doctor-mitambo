@@ -17,7 +17,7 @@ login_manager = LoginManager(app)
 login_manager.login_view = "login"
 login_manager.login_message_category = "info"
 
-# --- MODELS ---
+# --- MODELS (UBORESHAJI WA DATABASE) ---
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -36,9 +36,8 @@ class Machine(db.Model):
     brand = db.Column(db.String(50))
     model = db.Column(db.String(50))
     serial = db.Column(db.String(50), unique=True)
-    # Mpya: Saa za matengenezo
-    current_hours = db.Column(db.Integer, default=0)
-    next_service_hours = db.Column(db.Integer, default=250)
+    current_hours = db.Column(db.Integer, default=0) # Saa za sasa
+    next_service_hours = db.Column(db.Integer, default=250) # Saa za service
     owner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
 @login_manager.user_loader
@@ -51,8 +50,7 @@ def register():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     if request.method == "POST":
-        u = request.form.get("username")
-        p = request.form.get("password")
+        u, p = request.form.get("username"), request.form.get("password")
         if User.query.filter_by(username=u).first():
             flash("Jina hili tayari lipo.", "danger")
             return redirect(url_for("register"))
@@ -60,6 +58,7 @@ def register():
         new_user.set_password(p)
         db.session.add(new_user)
         db.session.commit()
+        flash("Akaunti imetengenezwa!", "success")
         return redirect(url_for("login"))
     return render_template("register.html")
 
@@ -73,7 +72,7 @@ def login():
         if user and user.check_password(p):
             login_user(user)
             return redirect(url_for("index"))
-        flash("Kuingia kumeshindikana.", "danger")
+        flash("Login imefeli. Angalia jina au nywila.", "danger")
     return render_template("login.html")
 
 @app.route("/logout")
@@ -82,27 +81,41 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
-# --- DASHBOARD & MODULE ROUTES ---
+# --- DASHBOARD ---
 @app.route("/")
 @app.route("/index")
 @login_required
 def index():
-    return render_template("index.html", user=current_user.username)
+    fleet_count = Machine.query.filter_by(owner_id=current_user.id).count()
+    return render_template("index.html", user=current_user.username, fleet_count=fleet_count)
 
+# --- AI DIAGNOSIS (UBONGO WA MFUMO) ---
 @app.route("/diagnosis", methods=["GET", "POST"])
 @login_required
 def diagnosis():
     result = None
     if request.method == "POST":
-        code = request.form.get("error_code", "").upper()
+        code = request.form.get("error_code", "").upper().strip()
         solutions = {
-            "P0101": "MAF Sensor: Kagua filter ya hewa na nyaya za sensor.",
-            "E001": "Overheating: Kagua kiwango cha coolant na feni ya redieta.",
-            "HYD-05": "Low Hydraulic Pressure: Kagua kiwango cha mafuta na pampu."
+            # Caterpillar
+            "102-3": "CAT Boost Pressure Sensor: Voltage iko juu. Kagua sensor na nyaya.",
+            "110-3": "CAT Engine Coolant Temp: Joto la maji limezidi. Kagua radiator na sensor.",
+            "190-8": "CAT Engine Speed Signal: Signal siyo ya kawaida. Kagua Speed sensor kwenye flywheel.",
+            # Komatsu
+            "E11": "Komatsu Engine Overload: Punguza mzigo wa kazi, mtambo unalemewa.",
+            "E15": "Komatsu Water Temp High: Joto la maji limezidi kiwango.",
+            "CA441": "Komatsu Battery Voltage Low: Chaji ya betri iko chini sana. Kagua alternator.",
+            # Sinotruk
+            "P0087": "Sinotruk Fuel Rail Pressure Low: Shinikizo la mafuta ni dogo. Kagua fuel filter.",
+            "P0299": "Sinotruk Turbo Underboost: Turbo haitoi shinikizo la kutosha.",
+            # General
+            "P0101": "MAF Sensor: Hitilafu ya mzunguko wa hewa. Safisha air filter.",
+            "HYD-LOW": "Low Hydraulic Oil: Ongeza mafuta ya hydraulic mara moja."
         }
-        result = solutions.get(code, "Code haitambuliki bado kwenye mfumo.")
-    return render_template("placeholder.html", title="AI Diagnosis", result=result)
+        result = solutions.get(code, f"Code '{code}' haijapatikana. Wasiliana na mtaalamu wa Dr. Mitambo.")
+    return render_template("diagnosis.html", result=result)
 
+# --- MODULI NYINGINE (ZINAZOTUMIA PLACEHOLDER KWA SASA) ---
 @app.route("/electrical")
 @login_required
 def electrical():
@@ -121,7 +134,6 @@ def troubleshooting():
 @app.route("/maintenance")
 @login_required
 def maintenance():
-    # Hapa tunaweza kuweka logic ya kuonyesha list ya mashine na masaa
     user_machines = Machine.query.filter_by(owner_id=current_user.id).all()
     return render_template("placeholder.html", title="Maintenance Schedule", machines=user_machines)
 
@@ -170,13 +182,12 @@ def add_machine():
                 current_hours=request.form.get("hours", 0),
                 owner_id=current_user.id
             )
-            db.session.add(m)
-            db.session.commit()
+            db.session.add(m); db.session.commit()
             flash("Mashine imeongezwa!", "success")
             return redirect(url_for("machines"))
         except:
             db.session.rollback()
-            flash("Hitilafu imetokea.", "danger")
+            flash("Hitilafu: Serial number inaweza kuwa tayari ipo.", "danger")
     return render_template("add_machine.html")
 
 # --- INITIALIZATION ---

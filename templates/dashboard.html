@@ -1,51 +1,166 @@
-<!DOCTYPE html>
-<html lang="sw">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DR-MITAMBO | Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root { --cat: #FFCD00; --bg: #0d0d0d; --card: #1a1a1a; }
-        body { background-color: var(--bg); color: #fff; font-family: sans-serif; padding-bottom: 80px; }
-        .stat-card { background: var(--card); border-radius: 15px; padding: 20px; border-left: 4px solid var(--cat); margin-bottom: 15px; }
-        .nav-card { background: var(--card); border-radius: 20px; padding: 25px; text-align: center; text-decoration: none; color: white; display: block; transition: 0.3s; height: 100%; border: 1px solid #333; }
-        .nav-card:hover { border-color: var(--cat); transform: translateY(-5px); }
-        .nav-card i { font-size: 2.5rem; color: var(--cat); margin-bottom: 15px; }
-    </style>
-</head>
-<body>
+{% extends "layout.html" %}
 
-    <div class="p-3 text-center border-bottom border-warning mb-4">
-        <h4 class="fw-bold mb-0">DR-MITAMBO <span class="text-warning">OS</span></h4>
+{% block title %}Analytics Dashboard | DR-MITAMBO PRO{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    :root { --cat: #FFCD00; --bg: #0a0a0a; }
+    
+    .stat-card-pro {
+        background: #111;
+        border-radius: 20px;
+        padding: 20px;
+        border: 1px solid #222;
+        transition: 0.3s;
+    }
+    .stat-card-pro:hover { border-color: var(--cat); }
+    
+    .chart-container {
+        background: #111;
+        border-radius: 25px;
+        padding: 20px;
+        border: 1px solid #222;
+        margin-bottom: 25px;
+    }
+
+    .indicator {
+        width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 8px;
+    }
+    .online { background: #2ecc71; box-shadow: 0 0 10px #2ecc71; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold brand-font mb-0">ANALYTICS <span class="text-warning">CENTER</span></h3>
+        <p class="small text-muted mb-0"><span class="indicator online"></span> Mfumo unasoma data za Live kutoka site.</p>
     </div>
+    <button class="btn btn-dark btn-sm rounded-pill border-secondary px-3">
+        <i class="fas fa-download me-2"></i> Report
+    </button>
+</div>
 
-    <div class="container">
-        <div class="row g-2 mb-4">
-            <div class="col-6"><div class="stat-card"><h3 class="fw-bold text-warning">42</h3><small class="opacity-50">Assets</small></div></div>
-            <div class="col-6"><div class="stat-card"><h3 class="fw-bold text-danger">05</h3><small class="opacity-50">Critical</small></div></div>
+<div class="row g-3 mb-4 text-center">
+    <div class="col-6 col-md-3">
+        <div class="stat-card-pro">
+            <small class="text-muted d-block text-uppercase small">Fuel Efficiency</small>
+            <h4 class="fw-bold text-success mt-2">84%</h4>
         </div>
-
-        <h6 class="text-uppercase opacity-50 mb-3 small fw-bold">Main Control Units</h6>
-        <div class="row g-3">
-            {% for item in huduma %}
-            <div class="col-6">
-                <a href="{{ url_for(item.link) }}" class="nav-card">
-                    <i class="fas {{ item.icon }}"></i>
-                    <div class="fw-bold small">{{ item.title }}</div>
-                </a>
-            </div>
-            {% endfor %}
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card-pro">
+            <small class="text-muted d-block text-uppercase small">Fleet Uptime</small>
+            <h4 class="fw-bold text-warning mt-2">92%</h4>
         </div>
     </div>
-
-    <div class="fixed-bottom bg-dark border-top border-secondary d-flex justify-content-around p-3">
-        <a href="{{ url_for('index') }}" class="text-warning text-decoration-none text-center"><i class="fas fa-th-large d-block"></i><small style="font-size: 0.6rem;">Home</small></a>
-        <a href="{{ url_for('diagnosis') }}" class="text-white text-decoration-none text-center opacity-50"><i class="fas fa-microchip d-block"></i><small style="font-size: 0.6rem;">Diag</small></a>
-        <a href="{{ url_for('maintenance') }}" class="text-white text-decoration-none text-center opacity-50"><i class="fas fa-tools d-block"></i><small style="font-size: 0.6rem;">Service</small></a>
-        <a href="{{ url_for('electrical') }}" class="text-white text-decoration-none text-center opacity-50"><i class="fas fa-bolt d-block"></i><small style="font-size: 0.6rem;">Elec</small></a>
+    <div class="col-6 col-md-3">
+        <div class="stat-card-pro">
+            <small class="text-muted d-block text-uppercase small">Active Alerts</small>
+            <h4 class="fw-bold text-danger mt-2">03</h4>
+        </div>
     </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card-pro">
+            <small class="text-muted d-block text-uppercase small">Total Hours</small>
+            <h4 class="fw-bold text-white mt-2">1,240</h4>
+        </div>
+    </div>
+</div>
 
-</body>
-</html>
+<div class="row">
+    <div class="col-md-8">
+        <div class="chart-container shadow">
+            <h6 class="fw-bold mb-4 small text-uppercase opacity-50">Utendaji wa Wiki (Machine Utilization)</h6>
+            
+            <canvas id="performanceChart" height="200"></canvas>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="chart-container shadow">
+            <h6 class="fw-bold mb-4 small text-uppercase opacity-50">Hali ya Fleet (Fleet Health)</h6>
+            
+            <canvas id="healthChart" height="250"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="chart-container">
+    <h6 class="fw-bold mb-3 small text-uppercase opacity-50"><i class="fas fa-satellite me-2"></i> Fault Codes za Hivi Karibuni</h6>
+    <div class="table-responsive">
+        <table class="table table-dark table-hover mb-0" style="font-size: 0.8rem;">
+            <thead>
+                <tr class="text-warning">
+                    <th>Timestamp</th>
+                    <th>Machine</th>
+                    <th>Fault Code</th>
+                    <th>Severity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>08:12 AM</td>
+                    <td>CAT 336D (MBD02)</td>
+                    <td>102-3 (Boost Pressure)</td>
+                    <td><span class="badge bg-danger">Critical</span></td>
+                </tr>
+                <tr>
+                    <td>07:45 AM</td>
+                    <td>D8R (9EM01)</td>
+                    <td>E361-2 (Fuel Press)</td>
+                    <td><span class="badge bg-warning text-dark">Warning</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Grafu ya Utendaji (Line Chart)
+    const ctx1 = document.getElementById('performanceChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'line',
+        data: {
+            labels: ['Jumatatu', 'Jumanne', 'Jumatano', 'Alhamisi', 'Ijumaa', 'Jumamosi'],
+            datasets: [{
+                label: 'Masaa ya Kazi',
+                data: [12, 19, 15, 17, 22, 10],
+                borderColor: '#FFCD00',
+                backgroundColor: 'rgba(255, 205, 0, 0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { grid: { color: '#222' }, ticks: { color: '#666' } },
+                x: { grid: { display: false }, ticks: { color: '#666' } }
+            }
+        }
+    });
+
+    // Grafu ya Afya (Doughnut Chart)
+    const ctx2 = document.getElementById('healthChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: ['Operational', 'Service', 'Breakdown'],
+            datasets: [{
+                data: [9, 2, 1],
+                backgroundColor: ['#2ecc71', '#FFCD00', '#e74c3c'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { position: 'bottom', labels: { color: '#888', padding: 20 } }
+            },
+            cutout: '70%'
+        }
+    });
+</script>
+{% endblock %}

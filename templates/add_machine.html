@@ -1,1 +1,173 @@
+{% extends "layout.html" %}
+
+{% block title %}Sajili Mtambo Mpya | DR-MITAMBO PRO{% endblock %}
+
+{% block head %}
+<style>
+    :root { --cat: #FFCD00; --bg: #0a0a0a; }
+    
+    .form-container {
+        max-width: 700px;
+        margin: 0 auto;
+        background: #111;
+        padding: 40px;
+        border-radius: 30px;
+        border: 1px solid #222;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+
+    .section-title {
+        font-size: 0.8rem;
+        font-weight: 800;
+        color: var(--cat);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+    }
+    .section-title::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: #333;
+        margin-left: 15px;
+    }
+
+    .form-control, .form-select {
+        background: #000;
+        border: 1px solid #333;
+        color: white;
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 20px;
+    }
+    .form-control:focus {
+        background: #000;
+        border-color: var(--cat);
+        color: white;
+        box-shadow: 0 0 10px rgba(255, 205, 0, 0.1);
+    }
+
+    .machine-type-selector {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+    .type-option {
+        background: #0a0a0a;
+        border: 1px solid #222;
+        padding: 15px;
+        border-radius: 15px;
+        text-align: center;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .type-option i { font-size: 1.5rem; color: #444; margin-bottom: 10px; display: block; }
+    .type-option span { font-size: 0.7rem; font-weight: bold; color: #666; }
+    
+    .type-option:hover, .type-option.active {
+        border-color: var(--cat);
+        background: rgba(255, 205, 0, 0.05);
+    }
+    .type-option.active i, .type-option.active span { color: var(--cat); }
+
+    .btn-save-machine {
+        background: var(--cat);
+        color: #000;
+        font-weight: 800;
+        border-radius: 12px;
+        padding: 15px;
+        width: 100%;
+        border: none;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a href="/machines" class="text-warning text-decoration-none"><i class="fas fa-arrow-left"></i> RUDI</a>
+        <h4 class="brand-font mb-0 text-center flex-grow-1">USAJILI WA <span class="text-warning">MTAMBO</span></h4>
+        <div style="width: 50px;"></div>
+    </div>
+
+    <div class="form-container">
+        <form action="/add_machine" method="POST">
+            
+            <div class="section-title">01. Chagua Aina</div>
+            <div class="machine-type-selector">
+                <div class="type-option active" onclick="selectType(this)">
+                    <i class="fas fa-truck-pickup"></i>
+                    <span>Excavator</span>
+                </div>
+                <div class="type-option" onclick="selectType(this)">
+                    <i class="fas fa-tractor"></i>
+                    <span>Bulldozer</span>
+                </div>
+                <div class="type-option" onclick="selectType(this)">
+                    <i class="fas fa-snowplow"></i>
+                    <span>Grader</span>
+                </div>
+            </div>
+
+            <div class="section-title">02. Taarifa za Msingi</div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="small text-muted mb-2">Model Name</label>
+                    <input type="text" name="model" class="form-control" placeholder="mfano: CAT 336D" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="small text-muted mb-2">Serial Number (S/N)</label>
+                    <input type="text" name="serial" class="form-control" placeholder="mfano: MBD02542" required>
+                </div>
+            </div>
+
+            <div class="section-title">03. Taarifa za Kiufundi</div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="small text-muted mb-2">Engine Model</label>
+                    <input type="text" name="engine" class="form-control" placeholder="mfano: CAT C9 ACERT">
+                </div>
+                <div class="col-md-6">
+                    <label class="small text-muted mb-2">Current Hours (Saa)</label>
+                    <input type="number" name="hours" class="form-control" placeholder="mfano: 4500">
+                </div>
+            </div>
+
+            
+
+            <div class="mb-4">
+                <label class="small text-muted mb-2">Eneo la Kazi (Project Site)</label>
+                <select name="site" class="form-select">
+                    <option value="dar">Dar Es Salaam - HQ</option>
+                    <option value="geita">Geita Gold Mine</option>
+                    <option value="kahama">Kahama Site</option>
+                    <option value="dodoma">Dodoma Road Project</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-save-machine shadow-lg">
+                <i class="fas fa-check-circle me-2"></i> HIFADHI MTAMBO KWENYE FLEET
+            </button>
+        </form>
+    </div>
+
+    <div class="text-center mt-4 opacity-25 small">
+        DR-MITAMBO | ASSET MANAGEMENT MODULE
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function selectType(element) {
+        document.querySelectorAll('.type-option').forEach(opt => opt.classList.remove('active'));
+        element.classList.add('active');
+    }
+</script>
+{% endblock %}
 

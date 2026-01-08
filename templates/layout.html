@@ -1,1 +1,112 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DR-MITAMBO PRO{% endblock %}</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --cat: #FFCD00; --bg: #0a0a0a; --card: #141414; --sidebar-w: 280px; }
+        
+        body { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        
+        /* Sidebar ya Pro */
+        .sidebar { 
+            position: fixed; left: calc(-1 * var(--sidebar-w)); width: var(--sidebar-w); 
+            height: 100vh; background: #000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            z-index: 1100; border-right: 1px solid #222; 
+        }
+        .sidebar.active { left: 0; box-shadow: 10px 0 50px rgba(0,0,0,0.9); }
+        
+        .nav-link-pro { 
+            color: #aaa; padding: 15px 25px; display: flex; align-items: center; 
+            text-decoration: none; transition: 0.3s; margin: 5px 15px; border-radius: 12px;
+        }
+        .nav-link-pro:hover, .nav-link-pro.active { background: rgba(255, 205, 0, 0.1); color: var(--cat); }
+        .nav-link-pro i { width: 30px; font-size: 1.2rem; }
+
+        /* Top Bar */
+        .top-bar { 
+            background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(15px); 
+            padding: 15px 20px; border-bottom: 1px solid #222; 
+            display: flex; justify-content: space-between; align-items: center; 
+            position: sticky; top: 0; z-index: 1000; 
+        }
+        .menu-toggle { font-size: 1.5rem; color: var(--cat); cursor: pointer; }
+
+        /* Overlay wakati menu iko wazi */
+        .sidebar-overlay { 
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+            background: rgba(0,0,0,0.5); display: none; z-index: 1050; 
+        }
+        .sidebar-overlay.active { display: block; }
+
+        .brand-font { font-family: 'Orbitron', sans-serif; letter-spacing: 2px; }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+    <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="p-4 mb-4">
+            <h4 class="brand-font fw-bold text-warning mb-0">DR-MITAMBO</h4>
+            <small class="text-muted">PROFESSIONAL OS</small>
+        </div>
+        
+        <nav>
+            <a href="/" class="nav-link-pro"><i class="fas fa-th-large"></i> Dashboard</a>
+            <a href="/diagnosis" class="nav-link-pro"><i class="fas fa-robot"></i> AI Diagnosis</a>
+            <a href="/electrical" class="nav-link-pro"><i class="fas fa-bolt"></i> Electrical Hub</a>
+            <a href="/systems_op" class="nav-link-pro"><i class="fas fa-cogs"></i> Systems Op</a>
+            <a href="/troubleshooting" class="nav-link-pro"><i class="fas fa-wrench"></i> Troubleshooting</a>
+            <a href="/maintenance" class="nav-link-pro"><i class="fas fa-calendar-check"></i> Maintenance</a>
+            <a href="/parts" class="nav-link-pro"><i class="fas fa-search"></i> Parts Book</a>
+            <a href="/manuals" class="nav-link-pro"><i class="fas fa-book"></i> Manuals</a>
+            <a href="/machines" class="nav-link-pro"><i class="fas fa-truck-monster"></i> My Machines</a>
+            <hr class="mx-3 opacity-10">
+            <a href="/logout" class="nav-link-pro text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="top-bar">
+            <div class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars-staggered"></i></div>
+            <div class="brand-font fw-bold small">DR-MITAMBO <span class="text-warning">PRO</span></div>
+            <div class="user-avatar">
+                <img src="https://ui-avatars.com/api/?name={{ session.get('username', 'Masanja') }}&background=FFCD00&color=000" class="rounded-circle" width="35" alt="Profile">
+            </div>
+        </div>
+
+        <div class="container py-4">
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                {% for message in messages %}
+                  <div class="alert alert-warning alert-dismissible fade show border-0 rounded-4" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
 

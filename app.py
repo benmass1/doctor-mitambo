@@ -1,67 +1,60 @@
-from flask import Flask, render_template, request, flash, redirect, url_for, session
-from datetime import datetime
+import os
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 
 app = Flask(__name__)
-app.secret_key = "masanja_key_2024"
+app.secret_key = "doctor_mitambo_secure_2026"
 
-# FEATURE 1: Database kubwa ya Fault Codes (CAT & Komatsu)
-FAULT_CODES = {
-    "EID 0126-3": {"brand": "CAT", "tatizo": "Transmission Oil Filter Plugged", "gharama": 5, "level": "Critical", "ufumbuzi": "Badilisha filter na kagua presha ya mafuta."},
-    "70-2": {"brand": "Komatsu", "tatizo": "Fuel Injector Sensor Fault", "gharama": 10, "level": "Warning", "ufumbuzi": "Kagua wiring harness ya sensor."},
-    "E360": {"brand": "CAT", "tatizo": "Low Coolant Level", "gharama": 2, "level": "Minor", "ufumbuzi": "Ongeza maji na kagua leaks."},
-    "1500-0": {"brand": "Komatsu", "tatizo": "High Hydraulic Temperature", "gharama": 8, "level": "Critical", "ufumbuzi": "Kagua hydraulic cooler na fan belt."},
-}
-
-# FEATURE 2: User Wallet System Simulation
-# Kwenye mfumo kamili, hizi data zingetoka kwenye Database (SQL)
-user_data = {
-    "wallet": 100,
-    "history": [],
-    "last_login": datetime.now().strftime("%Y-%m-%d %H:%M")
-}
+# Database ya muda kwa ajili ya watumiaji
+users = {"admin": "1234"} 
 
 @app.route('/')
-def index():
-    # FEATURE 3: Dashboard Overview
-    return render_template('index.html', user=user_data)
+def home():
+    # Kama mtumiaji hajaingia, mpeleke Login
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+    return render_template('index.html')
 
-@app.route('/diagnosis', methods=['GET', 'POST'])
-def diagnosis():
-    matokeo = None
+@app.route('/register', methods=['GET', 'POST'])
+def register():
     if request.method == 'POST':
-        code = request.form.get('fault_code').upper().strip()
-        
-        # FEATURE 4: Search & Validation Logic
-        if code in FAULT_CODES:
-            data = FAULT_CODES[code]
-            gharama = data['gharama']
-            
-            # FEATURE 5: Payment Gateway Logic (MGM Token Gate)
-            if user_data["wallet"] >= gharama:
-                user_data["wallet"] -= gharama
-                matokeo = data
-                
-                # FEATURE 6: Transaction History Recording
-                entry = f"Diagnosed {code} (-{gharama} MGM) - {datetime.now().strftime('%H:%M')}"
-                user_data["history"].insert(0, entry)
-                
-                flash(f"Malipo ya MGM {gharama} yamefanikiwa!", "success")
-            else:
-                flash("MGM Hazitoshi! Nunua token uendelee.", "danger")
+        username = request.form.get('username')
+        password = request.form.get('password')
+        users[username] = password
+        flash("Usajili umekamilika! Tafadhali ingia.")
+        return redirect(url_for('login'))
+    return render_template('register.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        if users.get(username) == password:
+            session['logged_in'] = True
+            session['username'] = username
+            return redirect(url_for('index'))
         else:
-            flash("Kodi haipo kwenye mfumo. Wasiliana na Admin.", "warning")
-            
-    return render_template('diagnosis.html', matokeo=matokeo, user=user_data)
+            flash("Username au Password si sahihi!")
+    return render_template('login.html')
 
-# FEATURE 7: Token Top-up (Buy MGM)
-@app.route('/buy-tokens')
-def buy_tokens():
-    return render_template('buy_tokens.html', user=user_data)
+@app.route('/index')
+def index():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+    return render_template('index.html')
 
-# FEATURE 8: Maintenance Schedule (Coming Soon)
-@app.route('/maintenance')
-def maintenance():
-    return render_template('maintenance.html')
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
+
+# ... routes zako nyingine (electrical, diagnosis, nk) ...
+@app.route('/diagnosis')
+def diagnosis(): return render_template('diagnosis.html')
+
+@app.route('/electrical')
+def electrical(): return render_template('electrical.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 8000))
+    app.run(host='0.0.0.0', port=port)

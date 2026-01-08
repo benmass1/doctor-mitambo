@@ -1,1 +1,121 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manuals Library | DR-MITAMBO PRO</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --cat: #FFCD00; --bg: #0a0a0a; --card: #141414; }
+        body { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; padding-bottom: 70px; }
+        
+        .lib-header { background: linear-gradient(180deg, #000 0%, #1a1a1a 100%); padding: 40px 20px; border-bottom: 2px solid var(--cat); }
+        
+        .manual-card { background: var(--card); border-radius: 15px; border: 1px solid #222; margin-bottom: 20px; transition: 0.3s; position: relative; overflow: hidden; }
+        .manual-card:hover { border-color: var(--cat); transform: translateY(-5px); }
+        
+        .doc-icon { width: 60px; height: 80px; background: #222; border-radius: 5px; display: flex; align-items: center; justify-content: center; position: relative; margin-right: 20px; }
+        .doc-icon::after { content: 'PDF'; position: absolute; bottom: 5px; right: -5px; background: #ff4444; color: white; font-size: 0.6rem; padding: 2px 5px; border-radius: 3px; font-weight: bold; }
+        .doc-icon i { font-size: 2rem; color: #888; }
+
+        .manual-info h6 { font-weight: 700; margin-bottom: 5px; font-size: 0.95rem; }
+        .manual-info p { font-size: 0.75rem; color: #666; margin-bottom: 10px; }
+
+        .btn-download { background: rgba(255, 205, 0, 0.1); color: var(--cat); border: 1px solid var(--cat); border-radius: 8px; font-size: 0.8rem; padding: 5px 15px; font-weight: bold; transition: 0.3s; }
+        .btn-download:hover { background: var(--cat); color: #000; }
+
+        .filter-tabs { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 20px; scrollbar-width: none; }
+        .tab-btn { background: #111; border: 1px solid #333; color: white; padding: 8px 20px; border-radius: 50px; font-size: 0.8rem; white-space: nowrap; }
+        .tab-btn.active { background: var(--cat); color: #000; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="lib-header text-center">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <a href="/" class="text-warning text-decoration-none"><i class="fas fa-chevron-left"></i> DASHBOARD</a>
+            <span class="badge bg-dark text-warning border border-warning">PRO ACCESS</span>
+        </div>
+        <h3 class="fw-bold mb-0">TECHNICAL <span class="text-warning">LIBRARY</span></h3>
+        <p class="small opacity-50">Manuals, Schematics & Service Bulletins</p>
+    </div>
+
+    <div class="container mt-4">
+        <div class="filter-tabs">
+            <div class="tab-btn active">Zote</div>
+            <div class="tab-btn">Excavators</div>
+            <div class="tab-btn">Dozers</div>
+            <div class="tab-btn">Wheel Loaders</div>
+            <div class="tab-btn">Engines Only</div>
+        </div>
+
+        <div class="manual-card p-3 shadow-sm">
+            <div class="d-flex align-items-center">
+                <div class="doc-icon"><i class="fas fa-file-alt"></i></div>
+                <div class="manual-info flex-grow-1">
+                    <h6>CAT 336D Service Manual</h6>
+                    <p>Miongozo ya Disassembly & Assembly, Systems Operation.</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="small opacity-50">Size: 42.5 MB</span>
+                        <button class="btn-download"><i class="fas fa-download me-2"></i> PAKUA</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="manual-card p-3 shadow-sm">
+            <div class="d-flex align-items-center">
+                <div class="doc-icon"><i class="fas fa-project-diagram"></i></div>
+                <div class="manual-info flex-grow-1">
+                    <h6>Electrical Schematic - 320D</h6>
+                    <p>Ramani kamili ya wiring, Sensorer, na ECM Pinouts.</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="small opacity-50">Size: 12.1 MB</span>
+                        <button class="btn-download"><i class="fas fa-download me-2"></i> PAKUA</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+
+        <div class="manual-card p-3 shadow-sm">
+            <div class="d-flex align-items-center">
+                <div class="doc-icon"><i class="fas fa-tools"></i></div>
+                <div class="manual-info flex-grow-1">
+                    <h6>D8R Dozer OMM</h6>
+                    <p>Operation & Maintenance Manual kwa ajili ya waendeshaji.</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="small opacity-50">Size: 18.4 MB</span>
+                        <button class="btn-download"><i class="fas fa-download me-2"></i> PAKUA</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+
+        <div class="manual-card p-3 shadow-sm">
+            <div class="d-flex align-items-center">
+                <div class="doc-icon"><i class="fas fa-microchip"></i></div>
+                <div class="manual-info flex-grow-1">
+                    <h6>Komatsu PC200-8 Shop Manual</h6>
+                    <p>Data za kiufundi, Testing & Adjusting kwa Hydraulic system.</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="small opacity-50">Size: 55.0 MB</span>
+                        <button class="btn-download"><i class="fas fa-download me-2"></i> PAKUA</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-warning border-0 rounded-4 mt-4 py-3 shadow">
+            <h6 class="fw-bold mb-1"><i class="fas fa-lightbulb me-2"></i> KUMBUKA</h6>
+            <p class="small mb-0 opacity-75">Tumia **Schematics** kila unapopima voltage kwenye ECM kuzuia "short circuit".</p>
+        </div>
+    </div>
+
+</body>
+</html>
 

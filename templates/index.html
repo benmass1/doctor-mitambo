@@ -8,86 +8,49 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --cat: #FFCD00; --bg: #0a0a0a; --card: #141414; }
-        body { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        body { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; }
         
-        /* Sidebar Navigation */
-        .sidebar { position: fixed; left: -280px; width: 280px; height: 100%; background: #000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1100; border-right: 1px solid #222; padding-top: 60px; }
-        .sidebar.active { left: 0; box-shadow: 10px 0 50px rgba(0,0,0,0.9); }
-        .nav-link-pro { color: #aaa; padding: 15px 25px; display: flex; align-items: center; text-decoration: none; transition: 0.3s; border-radius: 0 50px 50px 0; margin-right: 20px; }
-        .nav-link-pro:hover, .nav-link-pro.active { background: rgba(255, 205, 0, 0.1); color: var(--cat); }
-        .nav-link-pro i { width: 30px; font-size: 1.2rem; }
-
-        .top-bar { background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(10px); padding: 15px 20px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        .menu-toggle { font-size: 1.4rem; color: var(--cat); cursor: pointer; }
-
-        .luxury-card { background: var(--card); border-radius: 24px; padding: 25px; border: 1px solid #1f1f1f; text-decoration: none; color: white; display: block; transition: 0.3s; position: relative; overflow: hidden; }
-        .luxury-card:hover { border-color: var(--cat); transform: translateY(-5px); }
-        .luxury-card i { font-size: 2.2rem; color: var(--cat); margin-bottom: 15px; display: block; }
+        .top-bar { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--bg); z-index: 100; border-bottom: 1px solid #222; }
+        .token-badge { background: var(--cat); color: #000; padding: 5px 15px; border-radius: 50px; font-weight: bold; font-size: 0.8rem; }
         
-        .token-badge { background: linear-gradient(90deg, #FFCD00, #ff9900); color: #000; padding: 5px 15px; border-radius: 50px; font-weight: 800; font-size: 0.8rem; }
+        .luxury-card { background: var(--card); border-radius: 20px; padding: 20px; text-decoration: none; color: white; display: block; border: 1px solid #1f1f1f; transition: 0.3s; height: 100%; position: relative; }
+        .luxury-card:hover { border-color: var(--cat); transform: scale(1.02); }
+        .luxury-card i { font-size: 1.8rem; color: var(--cat); margin-bottom: 10px; display: block; }
+        .luxury-card h6 { font-size: 0.9rem; margin-bottom: 2px; font-weight: 700; }
+        .luxury-card small { font-size: 0.6rem; color: #666; display: block; }
+
+        .sidebar-btn { color: var(--cat); font-size: 1.5rem; }
     </style>
 </head>
 <body>
 
-    <div class="sidebar" id="sidebar">
-        <div class="px-4 mb-4">
-            <h4 class="fw-bold">DR-MITAMBO <span class="text-warning">PRO</span></h4>
-            <small class="text-muted">Mhandisi: {{ session.get('username', 'Mgeni') }}</small>
-        </div>
-        <a href="/" class="nav-link-pro active"><i class="fas fa-th-large"></i> Dashboard</a>
-        <a href="/diagnosis" class="nav-link-pro"><i class="fas fa-robot"></i> AI Diagnosis</a>
-        <a href="/electrical" class="nav-link-pro"><i class="fas fa-bolt"></i> Electrical Hub</a>
-        <a href="/maintenance" class="nav-link-pro"><i class="fas fa-tools"></i> Service Records</a>
-        <div class="mt-5 px-4"><a href="/logout" class="btn btn-outline-danger btn-sm w-100 rounded-pill">LOGOUT</a></div>
-    </div>
-
     <div class="top-bar">
-        <div class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars-staggered"></i></div>
+        <div class="sidebar-btn"><i class="fas fa-bars"></i></div>
         <div class="token-badge">MGM 100</div>
     </div>
 
     <div class="container py-4">
-        <div class="welcome-section mb-4">
-            <h2 class="fw-bold">Habari, {{ session.get('username', 'Fundi') }}!</h2>
-            <p class="text-muted small">Chagua kitengo cha kufanyia kazi leo.</p>
+        <div class="mb-4">
+            <h2 class="fw-bold mb-0">Habari, {{ session.get('username', 'Masanja') }}!</h2>
+            <p class="text-muted small">Mifumo 10 ya matengenezo ipo tayari.</p>
         </div>
 
         <div class="row g-3">
+            {% for btn in buttons %}
             <div class="col-6">
-                <a href="/diagnosis" class="luxury-card shadow-sm">
-                    <i class="fas fa-microchip"></i>
-                    <h6 class="fw-bold mb-1">AI Diagnosis</h6>
-                    <small class="text-muted" style="font-size: 0.65rem;">CAT & Komatsu Experts</small>
+                <a href="{{ url_for(btn.route) }}" class="luxury-card shadow-sm">
+                    <i class="fas {{ btn.icon }}"></i>
+                    <h6>{{ btn.title }}</h6>
+                    <small>{{ btn.desc }}</small>
                 </a>
             </div>
-            <div class="col-6">
-                <a href="/electrical" class="luxury-card shadow-sm">
-                    <i class="fas fa-charging-station"></i>
-                    <h6 class="fw-bold mb-1">Electrical</h6>
-                    <small class="text-muted" style="font-size: 0.65rem;">Wiring & Pinouts</small>
-                </a>
-            </div>
-            <div class="col-6">
-                <a href="/maintenance" class="luxury-card shadow-sm">
-                    <i class="fas fa-calendar-check"></i>
-                    <h6 class="fw-bold mb-1">Service</h6>
-                    <small class="text-muted" style="font-size: 0.65rem;">Maintenance Logs</small>
-                </a>
-            </div>
-            <div class="col-6">
-                <a href="#" class="luxury-card shadow-sm">
-                    <i class="fas fa-book"></i>
-                    <h6 class="fw-bold mb-1">Manuals</h6>
-                    <small class="text-muted" style="font-size: 0.65rem;">Library ya Mitambo</small>
-                </a>
-            </div>
+            {% endfor %}
         </div>
     </div>
 
-    <script>
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-        }
-    </script>
+    <div class="text-center py-4 opacity-25">
+        <small>© 2026 DR-MITAMBO PRO SYSTEMS</small>
+    </div>
+
 </body>
 </html>

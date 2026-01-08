@@ -1,56 +1,257 @@
-<!DOCTYPE html>
-<html lang="sw">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | DR-MITAMBO PRO</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root { --cat: #FFCD00; --bg: #0a0a0a; --card: #141414; }
-        body { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; }
-        
-        .top-bar { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--bg); z-index: 100; border-bottom: 1px solid #222; }
-        .token-badge { background: var(--cat); color: #000; padding: 5px 15px; border-radius: 50px; font-weight: bold; font-size: 0.8rem; }
-        
-        .luxury-card { background: var(--card); border-radius: 20px; padding: 20px; text-decoration: none; color: white; display: block; border: 1px solid #1f1f1f; transition: 0.3s; height: 100%; position: relative; }
-        .luxury-card:hover { border-color: var(--cat); transform: scale(1.02); }
-        .luxury-card i { font-size: 1.8rem; color: var(--cat); margin-bottom: 10px; display: block; }
-        .luxury-card h6 { font-size: 0.9rem; margin-bottom: 2px; font-weight: 700; }
-        .luxury-card small { font-size: 0.6rem; color: #666; display: block; }
+here{% extends "layout.html" %}
 
-        .sidebar-btn { color: var(--cat); font-size: 1.5rem; }
-    </style>
-</head>
-<body>
+{% block title %}Dashboard | DR-MITAMBO PRO{% endblock %}
 
-    <div class="top-bar">
-        <div class="sidebar-btn"><i class="fas fa-bars"></i></div>
-        <div class="token-badge">MGM 100</div>
+{% block head %}
+<style>
+    /* Dashboard Specific Styles */
+    .hero-section {
+        background: linear-gradient(135deg, rgba(255, 205, 0, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+        border-radius: 30px;
+        padding: 30px;
+        border: 1px solid #222;
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+    .hero-section::after {
+        content: '⚙';
+        position: absolute;
+        right: -20px;
+        bottom: -30px;
+        font-size: 150px;
+        opacity: 0.05;
+        transform: rotate(-20deg);
+    }
+    
+    .status-pill {
+        display: inline-block;
+        padding: 5px 15px;
+        background: rgba(46, 204, 113, 0.1);
+        color: #2ecc71;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+    }
+
+    /* Professional Grid Cards */
+    .pro-card {
+        background: var(--card);
+        border-radius: 25px;
+        padding: 25px;
+        border: 1px solid #1f1f1f;
+        text-decoration: none;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+    }
+    .pro-card:hover {
+        border-color: var(--cat);
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+    }
+    .pro-card i {
+        font-size: 2rem;
+        color: var(--cat);
+        margin-bottom: 20px;
+        background: rgba(255, 205, 0, 0.05);
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 18px;
+    }
+    .pro-card h6 {
+        font-weight: 800;
+        font-size: 1rem;
+        margin-bottom: 5px;
+        letter-spacing: 0.5px;
+    }
+    .pro-card p {
+        font-size: 0.7rem;
+        color: #666;
+        margin-bottom: 0;
+        line-height: 1.4;
+    }
+
+    /* Notification Dot */
+    .notify-dot {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 8px;
+        height: 8px;
+        background: var(--cat);
+        border-radius: 50%;
+        box-shadow: 0 0 10px var(--cat);
+    }
+
+    .quick-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+    .stat-box {
+        background: #111;
+        padding: 15px;
+        border-radius: 20px;
+        text-align: center;
+        border: 1px solid #222;
+    }
+    .stat-box small { font-size: 0.6rem; color: #555; text-transform: uppercase; }
+    .stat-box div { font-weight: 800; font-size: 1.1rem; color: #fff; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <span class="status-pill"><i class="fas fa-circle me-1 small"></i> SYSTEM ONLINE</span>
+    <h2 class="fw-bold brand-font">Habari, {{ session.get('username', 'Masanja') }}!</h2>
+    <p class="text-muted small mb-0">Karibu kwenye kituo chako cha udhibiti wa mitambo. Una <span class="text-warning fw-bold">12</span> ya mitambo inayofuatiliwa sasa.</p>
+</div>
+
+<div class="quick-stats">
+    <div class="stat-box">
+        <small>Fleet</small>
+        <div>12</div>
     </div>
+    <div class="stat-box">
+        <small>Active</small>
+        <div class="text-success">09</div>
+    </div>
+    <div class="stat-box">
+        <small>Faults</small>
+        <div class="text-danger">03</div>
+    </div>
+</div>
 
-    <div class="container py-4">
-        <div class="mb-4">
-            <h2 class="fw-bold mb-0">Habari, {{ session.get('username', 'Masanja') }}!</h2>
-            <p class="text-muted small">Mifumo 10 ya matengenezo ipo tayari.</p>
-        </div>
+<h6 class="text-uppercase fw-bold mb-4 opacity-50 small" style="letter-spacing: 3px;">Control Modules</h6>
 
-        <div class="row g-3">
-            {% for btn in buttons %}
-            <div class="col-6">
-                <a href="{{ url_for(btn.route) }}" class="luxury-card shadow-sm">
-                    <i class="fas {{ btn.icon }}"></i>
-                    <h6>{{ btn.title }}</h6>
-                    <small>{{ btn.desc }}</small>
-                </a>
+<div class="row g-3">
+    <div class="col-6 col-md-4">
+        <a href="/diagnosis" class="pro-card">
+            <div class="notify-dot"></div>
+            <i class="fas fa-microchip"></i>
+            <div>
+                <h6>AI Diagnosis</h6>
+                <p>Uchambuzi wa hitilafu kwa akili mnemba.</p>
             </div>
-            {% endfor %}
+        </a>
+    </div>
+
+    <div class="col-6 col-md-4">
+        <a href="/electrical" class="pro-card">
+            <i class="fas fa-bolt"></i>
+            <div>
+                <h6>Electrical</h6>
+                <p>Wiring, Pinouts na Sensor Analysis.</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-6 col-md-4">
+        <a href="/systems_op" class="pro-card">
+            <i class="fas fa-project-diagram"></i>
+            <div>
+                <h6>Systems Op</h6>
+                <p>Jinsi Hydraulic na Engine zinavyofanya kazi.</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-6 col-md-4">
+        <a href="/troubleshooting" class="pro-card">
+            <i class="fas fa-wrench"></i>
+            <div>
+                <h6>Troubleshoot</h6>
+                <p>Miongozo ya kurekebisha matatizo site.</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-6 col-md-4">
+        <a href="/maintenance" class="pro-card">
+            <i class="fas fa-calendar-alt"></i>
+            <div>
+                <h6>Maintenance</h6>
+                <p>Panga na fuatilia Service za masaa.</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-6 col-md-4">
+        <a href="/parts" class="pro-card">
+            <i class="fas fa-search"></i>
+            <div>
+                <h6>Parts Book</h6>
+                <p>Tafuta Spare Parts namba za CAT/Komatsu.</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-6 col-md-4">
+        <a href="/manuals" class="pro-card">
+            <i class="fas fa-book-open"></i>
+            <div>
+                <h6>Manuals</h6>
+                <p>Maktaba ya Schematics na Shop Manuals.</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-6 col-md-4">
+        <a href="/machines" class="pro-card">
+            <i class="fas fa-truck-monster"></i>
+            <div>
+                <h6>My Fleet</h6>
+                <p>Orodha kamili ya mitambo yako yote.</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-6 col-md-4">
+        <a href="/calibration" class="pro-card">
+            <i class="fas fa-sliders-h"></i>
+            <div>
+                <h6>Calibration</h6>
+                <p>Jinsi ya kuset sensorer na solenoid valves.</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-6 col-md-4">
+        <a href="/safety" class="pro-card">
+            <i class="fas fa-hard-hat"></i>
+            <div>
+                <h6>Safety Op</h6>
+                <p>Kanuni muhimu za usalama wa fundi.</p>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="mt-5 p-4 bg-dark rounded-4 border border-secondary">
+    <h6 class="fw-bold mb-3 small"><i class="fas fa-stream me-2 text-warning"></i> LIVE ACTIVITY</h6>
+    <div class="d-flex align-items-start mb-3">
+        <div class="bg-success rounded-circle p-1 me-2 mt-1"></div>
+        <div class="small">
+            <span class="text-white-50">Saa 2 zilizopita:</span> <b>CAT 336D</b> imefanyiwa Diagnosis.
         </div>
     </div>
-
-    <div class="text-center py-4 opacity-25">
-        <small>© 2026 DR-MITAMBO PRO SYSTEMS</small>
+    <div class="d-flex align-items-start">
+        <div class="bg-warning rounded-circle p-1 me-2 mt-1"></div>
+        <div class="small">
+            <span class="text-white-50">Saa 5 zilizopita:</span> <b>D8R Bulldozer</b> inakaribia saa za Service.
+        </div>
     </div>
-
-</body>
-</html>
+</div>
+{% endblock %}

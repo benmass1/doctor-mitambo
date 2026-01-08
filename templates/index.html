@@ -3,164 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MGM TOKEN | Powering Heavy Machinery Systems</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Goldman:wght@400;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>MGM TOKEN | Masanja Business Systems</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --mgm-gold: #ffcc00; /* Rangi ya dhahabu/CAT Yellow */
-            --crypto-blue: #00d4ff;
-            --dark-space: #05080a;
-            --glass: rgba(255, 255, 255, 0.05);
+            --gold: #ffcc00;
+            --dark: #0a0b10;
+            --glass: rgba(255, 255, 255, 0.1);
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Roboto Mono', monospace; 
-            background: radial-gradient(circle at top, #101a20 0%, var(--dark-space) 100%); 
-            color: #e0e0e0;
-            overflow-x: hidden;
+        body {
+            margin: 0;
+            font-family: 'Roboto Mono', monospace;
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
         }
-
-        /* 1. Crypto Header */
-        header { 
-            background: rgba(0,0,0,0.8); padding: 20px 5%; 
-            border-bottom: 2px solid var(--mgm-gold);
-            display: flex; justify-content: space-between; align-items: center;
-            backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000;
+        header {
+            padding: 20px;
+            border-bottom: 1px solid var(--gold);
+            background: rgba(0,0,0,0.8);
         }
-        .logo { font-family: 'Orbitron'; font-weight: bold; color: var(--mgm-gold); font-size: 1.8rem; }
-        .token-price { color: var(--crypto-blue); font-size: 0.9rem; border: 1px solid var(--crypto-blue); padding: 5px 15px; border-radius: 20px; }
-
-        /* 2. Hero Section - Token Launch */
         .hero {
-            height: 90vh; display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; text-align: center;
-            padding: 0 10%; background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            padding: 100px 20px;
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=1500&q=80');
+            background-size: cover;
         }
-        .hero h1 { font-family: 'Goldman'; font-size: 4.5rem; color: #fff; text-shadow: 0 0 20px var(--mgm-gold); margin-bottom: 10px; }
-        .hero p { font-size: 1.5rem; color: var(--mgm-gold); margin-bottom: 30px; letter-spacing: 2px; }
+        h1 { font-family: 'Orbitron', sans-serif; color: var(--gold); font-size: 3rem; }
         
-        .buy-now { 
-            background: linear-gradient(45deg, var(--mgm-gold), #ffa200);
-            color: #000; padding: 18px 45px; font-size: 1.2rem; font-weight: bold;
-            text-decoration: none; border-radius: 5px; font-family: 'Orbitron';
-            box-shadow: 0 0 30px rgba(255, 204, 0, 0.4); transition: 0.3s;
+        /* Token Stats Box */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 900px;
+            margin: -50px auto 50px;
+            padding: 20px;
         }
-        .buy-now:hover { transform: scale(1.1); box-shadow: 0 0 50px var(--mgm-gold); }
+        .stat-card {
+            background: var(--glass);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,200,0.2);
+        }
+        .stat-card h3 { color: var(--gold); margin: 0; font-size: 0.9rem; }
+        .stat-card p { font-size: 1.4rem; font-weight: bold; margin: 10px 0 0; }
 
-        /* 3. Tokenomics Grid */
-        .grid-container { max-width: 1200px; margin: -100px auto 50px; padding: 0 20px; }
-        .token-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .btn-buy {
+            background: var(--gold);
+            color: black;
+            padding: 20px 50px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.4);
+            transition: 0.3s;
+        }
+        .btn-buy:hover { transform: scale(1.1); box-shadow: 0 0 40px var(--gold); }
         
-        .card { 
-            background: var(--glass); padding: 30px; border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 15px; backdrop-filter: blur(5px); transition: 0.4s;
-        }
-        .card:hover { border-color: var(--mgm-gold); background: rgba(255, 204, 0, 0.05); }
-        .card h3 { color: var(--mgm-gold); font-family: 'Orbitron'; margin-bottom: 15px; }
-
-        /* 4. Machinery Ecosystem (Integration) */
-        .ecosystem { padding: 80px 10%; text-align: center; }
-        .eco-box { 
-            display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; margin-top: 50px;
-        }
-        .eco-item { width: 300px; padding: 20px; border-bottom: 3px solid var(--crypto-blue); }
-        .eco-item i { font-size: 3rem; color: var(--crypto-blue); }
-
-        /* 5. Live Stats (Feature) */
-        .live-stats { 
-            background: #000; padding: 50px; border-radius: 20px; margin-top: 50px;
-            border: 1px solid #222; text-align: left;
-        }
-        .stat-line { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #111; }
-        .green { color: #00ff41; }
-
-        footer { padding: 50px; text-align: center; border-top: 1px solid #222; margin-top: 50px; }
-
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
-            .grid-container { margin-top: 20px; }
-        }
+        footer { padding: 50px; font-size: 0.8rem; color: #555; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">MGM TOKEN</div>
-        <div class="token-price">1 MGM = $0.00452 <span class="green">▲ +12.4%</span></div>
+        <div style="font-family: 'Orbitron'; font-size: 1.5rem; color: var(--gold);">MASANJA BS</div>
     </header>
 
     <section class="hero">
-        <p>THE FUTURE OF INDUSTRIAL MAINTENANCE</p>
-        <h1>MGM TOKEN SYSTEM</h1>
-        <p style="color: #888; font-size: 1.1rem; max-width: 700px;">Token pekee inayotumika kulipia huduma za matengenezo (Diagnosis) na vipuri vya CAT & Komatsu kidijitali.</p>
-        <a href="#buy" class="buy-now">NUNUA MGM TOKEN</a>
+        <p style="letter-spacing: 5px;">LAUNCHING THE FUTURE</p>
+        <h1>MGM TOKEN</h1>
+        <p style="max-width: 600px; margin: 20px auto; color: #aaa;">Mfumo wa kwanza wa token nchini Tanzania unaounganisha uwekezaji wa kidijitali na biashara halisi ya mitambo mizito.</p>
+        <button class="btn-buy" onclick="buyMGM()">NUNUA MGM SASA</button>
     </section>
 
-    <div class="grid-container">
-        <div class="token-grid">
-            <div class="card">
-                <h3>UTILITY</h3>
-                <p>Tumia MGM Token kulipia vipuri asilia na huduma za ufundi wa mitambo mizito (CAT/Komatsu).</p>
-            </div>
-            <div class="card">
-                <h3>STAKING</h3>
-                <p>Weka (Stake) MGM zako upate punguzo la 20% kwenye gharama za ukarabati wa Injini na Hydraulic.</p>
-            </div>
-            <div class="card" style="border-color: var(--crypto-blue);">
-                <h3>BURN TECH</h3>
-                <p>Kila ununuzi wa vipuri unapofanyika, 2% ya MGM Tokens zinachomwa ili kuongeza thamani ya token.</p>
-            </div>
+    <div class="stats-container">
+        <div class="stat-card">
+            <h3>BEI YA SASA</h3>
+            <p id="price">$0.00452</p>
         </div>
-
-        <div class="live-stats">
-            <h2 style="font-family: 'Orbitron'; color: var(--mgm-gold); margin-bottom: 20px;">MGM NETWORK LIVE DATA</h2>
-            <div class="stat-line"><span>Current Supply:</span> <span>1,000,000,000 MGM</span></div>
-            <div class="stat-line"><span>Holders:</span> <span class="green">14,250 +</span></div>
-            <div class="stat-line"><span>Market Cap:</span> <span style="color: var(--crypto-blue);">$4.52M</span></div>
-            <div class="stat-line"><span>Burned Token:</span> <span style="color: #ff4444;">150,000,000 MGM</span></div>
+        <div class="stat-card">
+            <h3>MARKET CAP</h3>
+            <p>$4.52M</p>
+        </div>
+        <div class="stat-card">
+            <h3>HOLDERS</h3>
+            <p>12,450+</p>
         </div>
     </div>
 
-    <section class="ecosystem">
-        <h2 style="font-family: 'Orbitron'; font-size: 2rem;">MGM ECOSYSTEM INTEGRATION</h2>
-        <div class="eco-box">
-            <div class="eco-item">
-                <h3>⚙️ Matengenezo</h3>
-                <p>Lipa mafundi (Technicians) kwa MGM Token popote ulipo migodini.</p>
-            </div>
-            <div class="eco-item">
-                <h3>🚜 Vipuri</h3>
-                <p>Soko la kwanza la vipuri vya Komatsu na CAT linalotumia Blockchain.</p>
-            </div>
-            <div class="eco-item">
-                <h3>🖥️ Diagnosis</h3>
-                <p>Fungua (Unlock) programu za kisasa za diagnosis kwa kutumia MGM.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="buy" style="padding: 100px 10%; background: var(--mgm-gold); color: #000; text-align: center;">
-        <h2 style="font-family: 'Goldman'; font-size: 3rem;">JOIN THE REVOLUTION</h2>
-        <p style="font-weight: bold; margin-bottom: 30px;">Kuwa sehemu ya mfumo wa kwanza wa mitambo duniani kutumia Token ya Kidijitali.</p>
-        <button onclick="connectWallet()" style="background: #000; color: #fff; padding: 20px 40px; border: none; font-family: 'Orbitron'; cursor: pointer; font-weight: bold;">CONNECT WALLET (MGM)</button>
+    <section id="about" style="padding: 50px 10%; line-height: 2;">
+        <h2 style="color: var(--gold); font-family: 'Orbitron';">KWANINI MGM TOKEN?</h2>
+        <p>MGM Token inatumika ndani ya mfumo wa Masanja Business Systems kulipia vipuri, diagnosis za mitambo ya CAT & Komatsu, na kutoa gawio kwa wawekezaji wetu kila mwezi.</p>
     </section>
 
     <footer>
-        <p style="color: var(--mgm-gold); font-family: 'Orbitron';">MGM TOKEN &copy; 2026 - POWERED BY BS-OP SYSTEMS</p>
-        <div style="margin-top: 20px;">
-            <a href="#" style="color: #555; margin: 0 10px; text-decoration: none;">Whitepaper</a>
-            <a href="#" style="color: #555; margin: 0 10px; text-decoration: none;">Contract</a>
-            <a href="#" style="color: #555; margin: 0 10px; text-decoration: none;">Telegram</a>
-        </div>
+        <p>&copy; 2026 MASANJA BUSINESS SYSTEMS | MGM TOKEN PROJECT</p>
+        <p>Built on Binance Smart Chain</p>
     </footer>
 
     <script>
-        function connectWallet() {
-            alert("Inaunganisha na TrustWallet/MetaMask...\nTafadhali hakikisha una mtandao wa MGM Smart Chain.");
+        function buyMGM() {
+            let kiasi = prompt("Ingiza kiasi cha MGM unachotaka kununua:");
+            if (kiasi != null && kiasi != "") {
+                let gharama = kiasi * 0.00452;
+                let ujumbe = "Habari Masanja, nahitaji kununua MGM Tokens " + kiasi + ". Jumla ni $" + gharama.toFixed(2);
+                window.location.href = "https://wa.me/255XXXXXXXXX?text=" + encodeURIComponent(ujumbe);
+            }
         }
     </script>
-
 </body>
 </html>
-
+sf

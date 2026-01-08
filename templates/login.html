@@ -1,0 +1,55 @@
+here<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | DR-MITAMBO PRO</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --cat: #FFCD00; --bg: #0d0d0d; }
+        body { background-color: var(--bg); color: #fff; height: 100vh; display: flex; align-items: center; justify-content: center; font-family: 'Inter', sans-serif; }
+        .login-card { background: #1a1a1a; padding: 40px; border-radius: 25px; border: 1px solid #333; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .form-control { background: #111; border: 1px solid #444; color: #fff; border-radius: 12px; padding: 12px; }
+        .form-control:focus { background: #111; border-color: var(--cat); color: #fff; box-shadow: none; }
+        .btn-login { background: var(--cat); color: #000; font-weight: 700; border-radius: 12px; padding: 12px; width: 100%; border: none; transition: 0.3s; }
+        .btn-login:hover { background: #e6b800; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+    <div class="login-card text-center">
+        <div class="mb-4">
+            <i class="fas fa-shield-alt fa-3x text-warning mb-2"></i>
+            <h4 class="fw-bold text-uppercase">Mhandisi <span class="text-warning">Login</span></h4>
+            <p class="small text-muted">Ingia kutumia mfumo wa Doctor-Mitambo</p>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-danger py-2 small" role="alert">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="/login">
+            <div class="mb-3 text-start">
+                <label class="small mb-1 opacity-50">Jina la Mtumiaji</label>
+                <input type="text" name="username" class="form-control" placeholder="Ingiza username" required>
+            </div>
+            <div class="mb-4 text-start">
+                <label class="small mb-1 opacity-50">Nenosiri</label>
+                <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-login">INGIA SASA</button>
+        </form>
+        
+        <div class="mt-4 small">
+            <span class="opacity-50">Huna akaunti?</span> 
+            <a href="/register" class="text-warning text-decoration-none fw-bold">Jisajili hapa</a>
+        </div>
+    </div>
+
+</body>
+</html>

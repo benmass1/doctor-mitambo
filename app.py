@@ -22,7 +22,6 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
-    # Uhusiano na Machine (One-to-Many)
     machines = db.relationship('Machine', backref='owner', lazy=True)
 
     def set_password(self, password):
@@ -37,6 +36,9 @@ class Machine(db.Model):
     brand = db.Column(db.String(50))
     model = db.Column(db.String(50))
     serial = db.Column(db.String(50), unique=True)
+    # Mpya: Saa za matengenezo
+    current_hours = db.Column(db.Integer, default=0)
+    next_service_hours = db.Column(db.Integer, default=250)
     owner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
 @login_manager.user_loader
@@ -48,20 +50,16 @@ def load_user(user_id):
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
-    
     if request.method == "POST":
         u = request.form.get("username")
         p = request.form.get("password")
-        
         if User.query.filter_by(username=u).first():
-            flash("Jina hili la mtumiaji tayari lipo.", "danger")
+            flash("Jina hili tayari lipo.", "danger")
             return redirect(url_for("register"))
-        
         new_user = User(username=u)
         new_user.set_password(p)
         db.session.add(new_user)
         db.session.commit()
-        flash("Akaunti imetengenezwa! Sasa unaweza kuingia.", "success")
         return redirect(url_for("login"))
     return render_template("register.html")
 
@@ -69,17 +67,13 @@ def register():
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
-
     if request.method == "POST":
-        u = request.form.get("username")
-        p = request.form.get("password")
+        u, p = request.form.get("username"), request.form.get("password")
         user = User.query.filter_by(username=u).first()
-        
         if user and user.check_password(p):
             login_user(user)
             return redirect(url_for("index"))
-        else:
-            flash("Kuingia kumeshindikana. Angalia jina au nywila.", "danger")
+        flash("Kuingia kumeshindikana.", "danger")
     return render_template("login.html")
 
 @app.route("/logout")
@@ -88,33 +82,80 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
-# --- CORE & MODULE ROUTES ---
+# --- DASHBOARD & MODULE ROUTES ---
 @app.route("/")
 @app.route("/index")
 @login_required
 def index():
     return render_template("index.html", user=current_user.username)
 
-# Njia za Moduli (Zilizorahisishwa kwa kutumia list ya routes)
-modules = [
-    'diagnosis', 'electrical', 'systems_op', 'troubleshooting', 
-    'maintenance', 'manuals', 'parts', 'calibration', 'harness', 'safety'
-]
-
-@app.route("/module/<module_name>")
+@app.route("/diagnosis", methods=["GET", "POST"])
 @login_required
-def view_module(module_name):
-    if module_name in modules:
-        return render_template(f"{module_name}.html")
-    return "Moduli haipatikani", 404
+def diagnosis():
+    result = None
+    if request.method == "POST":
+        code = request.form.get("error_code", "").upper()
+        solutions = {
+            "P0101": "MAF Sensor: Kagua filter ya hewa na nyaya za sensor.",
+            "E001": "Overheating: Kagua kiwango cha coolant na feni ya redieta.",
+            "HYD-05": "Low Hydraulic Pressure: Kagua kiwango cha mafuta na pampu."
+        }
+        result = solutions.get(code, "Code haitambuliki bado kwenye mfumo.")
+    return render_template("placeholder.html", title="AI Diagnosis", result=result)
+
+@app.route("/electrical")
+@login_required
+def electrical():
+    return render_template("placeholder.html", title="Electrical System")
+
+@app.route("/systems_op")
+@login_required
+def systems_op():
+    return render_template("placeholder.html", title="Systems Operation")
+
+@app.route("/troubleshooting")
+@login_required
+def troubleshooting():
+    return render_template("placeholder.html", title="Troubleshooting")
+
+@app.route("/maintenance")
+@login_required
+def maintenance():
+    # Hapa tunaweza kuweka logic ya kuonyesha list ya mashine na masaa
+    user_machines = Machine.query.filter_by(owner_id=current_user.id).all()
+    return render_template("placeholder.html", title="Maintenance Schedule", machines=user_machines)
+
+@app.route("/manuals")
+@login_required
+def manuals():
+    return render_template("placeholder.html", title="Service Manuals")
+
+@app.route("/parts")
+@login_required
+def parts():
+    return render_template("placeholder.html", title="Parts Book")
+
+@app.route("/calibration")
+@login_required
+def calibration():
+    return render_template("placeholder.html", title="Calibration Tools")
+
+@app.route("/harness")
+@login_required
+def harness():
+    return render_template("placeholder.html", title="Wiring Harness")
+
+@app.route("/safety")
+@login_required
+def safety():
+    return render_template("placeholder.html", title="Safety Standards")
 
 # --- MACHINE MANAGEMENT ---
 @app.route("/machines")
 @login_required
 def machines():
-    # Inachukua mashine za user aliyelog-in pekee
-    user_machines = Machine.query.filter_by(owner_id=current_user.id).all()
-    return render_template("machines.html", machines=user_machines)
+    data = Machine.query.filter_by(owner_id=current_user.id).all()
+    return render_template("machines.html", machines=data)
 
 @app.route("/add-machine", methods=["GET", "POST"])
 @login_required
@@ -126,16 +167,16 @@ def add_machine():
                 brand=request.form.get("brand"),
                 model=request.form.get("model"),
                 serial=request.form.get("serial"),
+                current_hours=request.form.get("hours", 0),
                 owner_id=current_user.id
             )
             db.session.add(m)
             db.session.commit()
-            flash("Mashine imeongezwa kikamilifu!", "success")
+            flash("Mashine imeongezwa!", "success")
             return redirect(url_for("machines"))
-        except Exception as e:
+        except:
             db.session.rollback()
-            flash("Hitilafu imetokea. Huenda serial number tayari ipo.", "danger")
-            
+            flash("Hitilafu imetokea.", "danger")
     return render_template("add_machine.html")
 
 # --- INITIALIZATION ---
@@ -143,5 +184,4 @@ with app.app_context():
     db.create_all()
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8000)), debug=True)
-
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))

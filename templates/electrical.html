@@ -1,1 +1,164 @@
+{% extends "layout.html" %}
+
+{% block title %}Electrical Hub | DR-MITAMBO PRO{% endblock %}
+
+{% block head %}
+<style>
+    :root { --volt: #00d4ff; --bg: #080808; --card: #121212; }
+    
+    .elec-header {
+        background: linear-gradient(135deg, #001a2e 0%, #000 100%);
+        border-radius: 25px;
+        padding: 30px;
+        border: 1px solid #004466;
+        margin-bottom: 25px;
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
+    }
+
+    .circuit-card {
+        background: var(--card);
+        border-radius: 20px;
+        border: 1px solid #222;
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+
+    .voltage-monitor {
+        background: #000;
+        padding: 20px;
+        border-radius: 15px;
+        border: 1px solid #333;
+        display: flex;
+        justify-content: space-around;
+        text-align: center;
+    }
+
+    .v-meter { color: var(--volt); font-family: 'Orbitron', sans-serif; }
+    .v-meter span { font-size: 1.5rem; font-weight: bold; }
+    .v-meter label { display: block; font-size: 0.6rem; color: #666; text-transform: uppercase; }
+
+    .schematic-box {
+        background: #1a1a1a;
+        height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-bottom: 1px solid #333;
+        position: relative;
+    }
+
+    .pinout-table {
+        width: 100%;
+        font-size: 0.8rem;
+        margin-top: 15px;
+    }
+    .pinout-table th { color: var(--volt); padding: 10px; border-bottom: 1px solid #333; }
+    .pinout-table td { padding: 10px; border-bottom: 1px solid #111; }
+
+    .btn-test {
+        background: transparent;
+        border: 1px solid var(--volt);
+        color: var(--volt);
+        border-radius: 8px;
+        padding: 5px 15px;
+        font-size: 0.75rem;
+        transition: 0.3s;
+    }
+    .btn-test:hover { background: var(--volt); color: #000; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="elec-header d-flex justify-content-between align-items-center">
+    <div>
+        <h3 class="fw-bold brand-font text-info mb-1">ELECTRICAL <span class="text-white">HUB</span></h3>
+        <p class="small text-muted mb-0">Usimamizi wa Sensorer, ECM na Wiring Harness</p>
+    </div>
+    <i class="fas fa-bolt fa-3x text-info opacity-25"></i>
+</div>
+
+<div class="voltage-monitor mb-4 shadow">
+    <div class="v-meter">
+        <label>System Voltage</label>
+        <span>27.4V</span>
+    </div>
+    <div class="v-meter">
+        <label>5V Reference</label>
+        <span class="text-warning">4.98V</span>
+    </div>
+    <div class="v-meter">
+        <label>CAN-BUS Hi</label>
+        <span class="text-success">2.6V</span>
+    </div>
+</div>
+
+<div class="circuit-card">
+    <div class="schematic-box">
+        
+        <div class="position-absolute bottom-0 start-0 p-2">
+            <span class="badge bg-dark border border-info text-info">ECM CONNECTOR J1</span>
+        </div>
+    </div>
+    <div class="p-4">
+        <h6 class="fw-bold mb-3"><i class="fas fa-microchip me-2 text-info"></i> CRITICAL PIN ASSIGNMENTS</h6>
+        <table class="pinout-table">
+            <thead>
+                <tr>
+                    <th>Pin No.</th>
+                    <th>Wire Color</th>
+                    <th>Signal Function</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Pin 1</td>
+                    <td>RD/WH</td>
+                    <td>Battery +24V</td>
+                    <td><button class="btn-test">Test</button></td>
+                </tr>
+                <tr>
+                    <td>Pin 15</td>
+                    <td>BK/YL</td>
+                    <td>Engine Speed Sensor</td>
+                    <td><button class="btn-test">Oscilloscope</button></td>
+                </tr>
+                <tr>
+                    <td>Pin 42</td>
+                    <td>GN/BU</td>
+                    <td>Common Ground</td>
+                    <td><button class="btn-test">Ohm Test</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row g-3 mb-5">
+    <div class="col-12">
+        <div class="bg-dark p-4 rounded-4 border border-secondary">
+            <h6 class="fw-bold text-info"><i class="fas fa-satellite-dish me-2"></i> SENSOR DIAGNOSTICS</h6>
+            <p class="small text-muted">Vigezo vya kawaida kwa sensorer za shinikizo (Pressure Sensors):</p>
+            
+            <div class="d-flex justify-content-between align-items-center bg-black p-3 rounded-3 border border-secondary mb-2">
+                <span class="small">Analog Signal (Idle)</span>
+                <span class="fw-bold text-info">0.5V - 1.2V</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center bg-black p-3 rounded-3 border border-secondary">
+                <span class="small">Analog Signal (Full Load)</span>
+                <span class="fw-bold text-info">3.8V - 4.5V</span>
+            </div>
+            
+            <div class="alert alert-info mt-3 py-2 border-0 rounded-3 small" style="background: rgba(0, 212, 255, 0.05);">
+                <i class="fas fa-info-circle me-2"></i> <b>KUMBUKA:</b> Ikiwa sensor inasoma 0.0V au 5.0V moja kwa moja, hiyo ni ishara ya "Short Circuit" au "Open Circuit".
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="fixed-bottom p-3 d-flex gap-2" style="background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);">
+    <a href="/harness" class="btn btn-outline-info flex-grow-1 rounded-pill fw-bold">HARNESS VIEWS</a>
+    <a href="/manuals" class="btn btn-info flex-grow-1 rounded-pill fw-bold text-dark">WIRING DIAGRAMS</a>
+</div>
+{% endblock %}
 

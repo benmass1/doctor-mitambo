@@ -3,43 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Service Center | DR-MITAMBO</title>
+    <title>Fleet Maintenance | DR-MITAMBO PRO</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --cat: #FFCD00; --bg: #0d0d0d; --card: #1a1a1a; }
-        body { background-color: var(--bg); color: #fff; padding-bottom: 80px; }
-        .machine-card { background: var(--card); border-radius: 15px; padding: 15px; border: 1px solid #333; margin-bottom: 15px; }
-        .badge-status { font-size: 0.7rem; padding: 5px 10px; border-radius: 50px; }
+        :root { --cat: #FFCD00; --bg: #0a0a0a; --card: #141414; --success: #2ecc71; --danger: #e74c3c; }
+        body { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; padding-bottom: 80px; }
+        
+        .maint-header { background: #000; padding: 40px 20px; border-bottom: 2px solid var(--cat); }
+        
+        /* Machine Status Cards */
+        .fleet-card { background: var(--card); border-radius: 20px; border: 1px solid #222; margin-bottom: 20px; overflow: hidden; transition: 0.3s; }
+        .fleet-card:hover { border-color: var(--cat); }
+        .status-strip { height: 6px; width: 100%; }
+        .status-operational { background: var(--success); }
+        .status-breakdown { background: var(--danger); }
+        
+        .card-body-pro { padding: 20px; }
+        .machine-icon { width: 50px; height: 50px; background: #222; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--cat); }
+        
+        .hour-meter { background: #000; padding: 10px; border-radius: 10px; border: 1px solid #333; text-align: center; }
+        .hour-meter span { font-family: 'Courier New', monospace; font-weight: bold; font-size: 1.2rem; color: var(--success); letter-spacing: 2px; }
+
+        .service-info { font-size: 0.8rem; margin-top: 15px; }
+        .progress { height: 8px; background: #222; border-radius: 10px; }
+        .progress-bar { background: var(--cat); }
+
+        .btn-log { background: #222; color: #fff; border: 1px solid #333; font-size: 0.75rem; border-radius: 8px; padding: 8px 15px; }
+        .btn-log:hover { background: var(--cat); color: #000; }
     </style>
 </head>
 <body>
-    <div class="p-3 border-bottom border-warning d-flex justify-content-between align-items-center">
-        <a href="{{ url_for('index') }}" class="text-warning"><i class="fas fa-arrow-left"></i></a>
-        <h5 class="mb-0">FLEET MANAGEMENT</h5>
-        <div></div>
+
+    <div class="maint-header">
+        <div class="container text-center">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <a href="/" class="text-warning text-decoration-none"><i class="fas fa-chevron-left"></i> DASHBOARD</a>
+                <span class="badge bg-success">ONLINE MONITORING</span>
+            </div>
+            <h3 class="fw-bold mb-0">FLEET <span class="text-warning">MAINTENANCE</span></h3>
+            <p class="small opacity-50">Ufuatiliaji wa saa na hali ya mitambo site</p>
+        </div>
     </div>
 
-    <div class="container py-4">
-        {% for machine in fleet %}
-        <div class="machine-card">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <h6 class="fw-bold mb-1 text-warning">{{ machine.model }}</h6>
-                    <small class="opacity-50 d-block">S/N: {{ machine.sn }}</small>
+    <div class="container mt-4">
+        
+        <div class="row g-2 mb-4">
+            <div class="col-4">
+                <div class="bg-dark p-2 rounded text-center border border-secondary">
+                    <small class="d-block opacity-50">Jumla</small>
+                    <b class="text-white">12</b>
                 </div>
-                <span class="badge-status {% if machine.status == 'Operational' %}bg-success{% else %}bg-danger{% endif %}">
-                    {{ machine.status }}
-                </span>
             </div>
-            <hr class="opacity-10">
-            <div class="d-flex justify-content-between small">
-                <span><i class="fas fa-clock me-1 text-warning"></i> {{ machine.hours }} hrs</span>
-                <button class="btn btn-sm btn-outline-warning py-0" style="font-size: 0.7rem;">ANGALIA SERVICE</button>
+            <div class="col-4">
+                <div class="bg-dark p-2 rounded text-center border border-secondary">
+                    <small class="d-block opacity-50">Kazi</small>
+                    <b class="text-success">09</b>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="bg-dark p-2 rounded text-center border border-secondary">
+                    <small class="d-block opacity-50">Breakdown</small>
+                    <b class="text-danger">03</b>
+                </div>
             </div>
         </div>
-        {% endfor %}
+
+        <div class="fleet-card">
+            <div class="status-strip status-operational"></div>
+            <div class="card-body-pro">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="d-flex align-items-center">
+                        <div class="machine-icon me-3"><i class="fas fa-truck-monster"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-0">CAT 336D EXCAVATOR</h6>
+                            <small class="text-muted">S/N: MBD02542</small>
+                        </div>
+                    </div>
+                    <span class="badge bg-success-subtle text-success small">OPERATIONAL</span>
+                </div>
+
+                
+
+                <div class="row align-items-center g-3">
+                    <div class="col-6">
+                        <div class="hour-meter">
+                            <small class="d-block opacity-50" style="font-size: 0.6rem;">SERVICE HOUR METER</small>
+                            <span>04250.5</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="service-info">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Next Service</span>
+                                <span class="text-warning fw-bold">4500 hrs</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: 75%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button class="btn-log flex-grow-1"><i class="fas fa-history me-1"></i> LOGS</button>
+                    <button class="btn-log flex-grow-1"><i class="fas fa-plus-circle me-1"></i> UPDATE</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="fleet-card">
+            <div class="status-strip status-breakdown"></div>
+            <div class="card-body-pro">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="d-flex align-items-center">
+                        <div class="machine-icon me-3 text-danger"><i class="fas fa-hammer"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-0">D8R BULLDOZER</h6>
+                            <small class="text-muted">S/N: 9EM01245</small>
+                        </div>
+                    </div>
+                    <span class="badge bg-danger-subtle text-danger small">BREAKDOWN</span>
+                </div>
+
+                
+
+                <div class="alert alert-danger py-2 border-0 rounded-3 small mb-3">
+                    <i class="fas fa-exclamation-triangle me-2"></i> Hitilafu: Hydraulic Oil Leakage (Main Pump)
+                </div>
+
+                <div class="row align-items-center g-3">
+                    <div class="col-6">
+                        <div class="hour-meter border-danger">
+                            <small class="d-block opacity-50" style="font-size: 0.6rem;">CURRENT HOURS</small>
+                            <span class="text-danger">08920.2</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-warning w-100 fw-bold btn-sm rounded-3 py-2">
+                            ANZISHA MATENGENEZO
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-dark p-3 rounded-4 border border-secondary mb-4">
+            <h6 class="fw-bold text-warning small mb-2"><i class="fas fa-oil-can me-2"></i> PREVENTIVE MAINTENANCE</h6>
+            <p class="small opacity-75 mb-0">
+                Kumbuka kufanya **S.O.S (Scheduled Oil Sampling)** kila unapoandalia mtambo Service ya masaa 500 ili kutambua uchakavu wa vyuma ndani ya injini.
+            </p>
+        </div>
     </div>
+
 </body>
 </html>
-

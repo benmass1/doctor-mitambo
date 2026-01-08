@@ -3,117 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MGM TOKEN | Masanja Business Systems</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono&display=swap" rel="stylesheet">
+    <title>Doctor Mitambo | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;500&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --gold: #ffcc00;
-            --dark: #0a0b10;
-            --glass: rgba(255, 255, 255, 0.1);
-        }
-        body {
-            margin: 0;
-            font-family: 'Roboto Mono', monospace;
-            background-color: var(--dark);
-            color: white;
-            text-align: center;
-        }
-        header {
-            padding: 20px;
-            border-bottom: 1px solid var(--gold);
-            background: rgba(0,0,0,0.8);
-        }
-        .hero {
-            padding: 100px 20px;
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=1500&q=80');
-            background-size: cover;
-        }
-        h1 { font-family: 'Orbitron', sans-serif; color: var(--gold); font-size: 3rem; }
+        :root { --cat-yellow: #ffcc00; --komatsu-blue: #0056b3; --dark-bg: #121212; --glass: rgba(255, 255, 255, 0.05); }
+        body { background-color: var(--dark-bg); color: white; font-family: 'Roboto', sans-serif; margin: 0; }
+        header { background: #000; padding: 20px; border-bottom: 2px solid var(--cat-yellow); display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Orbitron', sans-serif; color: var(--cat-yellow); font-size: 1.5rem; font-weight: bold; }
+        .wallet-status { background: var(--glass); padding: 10px 20px; border-radius: 50px; border: 1px solid var(--cat-yellow); }
         
-        /* Token Stats Box */
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            max-width: 900px;
-            margin: -50px auto 50px;
-            padding: 20px;
-        }
-        .stat-card {
-            background: var(--glass);
-            padding: 20px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,200,0.2);
-        }
-        .stat-card h3 { color: var(--gold); margin: 0; font-size: 0.9rem; }
-        .stat-card p { font-size: 1.4rem; font-weight: bold; margin: 10px 0 0; }
+        .hero { text-align: center; padding: 60px 20px; background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1350&q=80'); background-size: cover; }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 2.5rem; margin-bottom: 10px; }
+        
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 40px 10%; }
+        .card { background: var(--glass); padding: 30px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; text-align: center; }
+        .card:hover { border-color: var(--cat-yellow); transform: translateY(-5px); }
+        .btn { display: inline-block; padding: 12px 30px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 20px; transition: 0.3s; }
+        .btn-diag { background: var(--cat-yellow); color: black; }
+        .btn-buy { border: 1px solid var(--cat-yellow); color: var(--cat-yellow); }
 
-        .btn-buy {
-            background: var(--gold);
-            color: black;
-            padding: 20px 50px;
-            font-weight: bold;
-            font-size: 1.2rem;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.4);
-            transition: 0.3s;
-        }
-        .btn-buy:hover { transform: scale(1.1); box-shadow: 0 0 40px var(--gold); }
-        
-        footer { padding: 50px; font-size: 0.8rem; color: #555; }
+        footer { text-align: center; padding: 40px; color: #666; font-size: 0.8rem; border-top: 1px solid #222; }
     </style>
 </head>
 <body>
 
     <header>
-        <div style="font-family: 'Orbitron'; font-size: 1.5rem; color: var(--gold);">MASANJA BS</div>
+        <div class="logo">DOCTOR MITAMBO</div>
+        <div class="wallet-status">Salio: <span style="color:var(--cat-yellow)">MGM {{ user.wallet }}</span></div>
     </header>
 
     <section class="hero">
-        <p style="letter-spacing: 5px;">LAUNCHING THE FUTURE</p>
-        <h1>MGM TOKEN</h1>
-        <p style="max-width: 600px; margin: 20px auto; color: #aaa;">Mfumo wa kwanza wa token nchini Tanzania unaounganisha uwekezaji wa kidijitali na biashara halisi ya mitambo mizito.</p>
-        <button class="btn-buy" onclick="buyMGM()">NUNUA MGM SASA</button>
+        <h1>SULUHISHO LA MITAMBO MIKUBWA</h1>
+        <p>Diagnosis ya CAT & KOMATSU kwa kutumia MGM Token</p>
+        <a href="/diagnosis" class="btn btn-diag">ANZA DIAGNOSIS SASA</a>
     </section>
 
-    <div class="stats-container">
-        <div class="stat-card">
-            <h3>BEI YA SASA</h3>
-            <p id="price">$0.00452</p>
+    <div class="grid-container">
+        <div class="card">
+            <h2 style="color: var(--cat-yellow);">Fault Code Diagnosis</h2>
+            <p>Tafsiri kodi za makosa ya EID na matatizo ya sensor papo hapo site.</p>
+            <a href="/diagnosis" class="btn btn-diag">Ingiza Kodi</a>
         </div>
-        <div class="stat-card">
-            <h3>MARKET CAP</h3>
-            <p>$4.52M</p>
+
+        <div class="card">
+            <h2 style="color: var(--cat-yellow);">MGM Token Center</h2>
+            <p>Nunua token au angalia thamani ya uwekezaji wako kwenye mfumo.</p>
+            <a href="/buy-tokens" class="btn btn-buy">Nunua MGM</a>
         </div>
-        <div class="stat-card">
-            <h3>HOLDERS</h3>
-            <p>12,450+</p>
+
+        <div class="card">
+            <h2 style="color: var(--cat-yellow);">Historia ya Kazi</h2>
+            <p>Kagua ripoti za nyuma za mashine ulizozifanyia ufundi.</p>
+            <div style="text-align: left; font-size: 0.9rem; margin-top: 15px; color: #aaa;">
+                {% for item in user.history[:3] %}
+                    <div>• {{ item }}</div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 
-    <section id="about" style="padding: 50px 10%; line-height: 2;">
-        <h2 style="color: var(--gold); font-family: 'Orbitron';">KWANINI MGM TOKEN?</h2>
-        <p>MGM Token inatumika ndani ya mfumo wa Masanja Business Systems kulipia vipuri, diagnosis za mitambo ya CAT & Komatsu, na kutoa gawio kwa wawekezaji wetu kila mwezi.</p>
+    <footer>
+        <p>&copy; 2026 MASANJA BUSINESS SYSTEMS | extreme-cecile-biashara-50f9d88b.koyeb.app</p>
     </section>
 
-    <footer>
-        <p>&copy; 2026 MASANJA BUSINESS SYSTEMS | MGM TOKEN PROJECT</p>
-        <p>Built on Binance Smart Chain</p>
-    </footer>
-
-    <script>
-        function buyMGM() {
-            let kiasi = prompt("Ingiza kiasi cha MGM unachotaka kununua:");
-            if (kiasi != null && kiasi != "") {
-                let gharama = kiasi * 0.00452;
-                let ujumbe = "Habari Masanja, nahitaji kununua MGM Tokens " + kiasi + ". Jumla ni $" + gharama.toFixed(2);
-                window.location.href = "https://wa.me/255XXXXXXXXX?text=" + encodeURIComponent(ujumbe);
-            }
-        }
-    </script>
 </body>
 </html>
-sf

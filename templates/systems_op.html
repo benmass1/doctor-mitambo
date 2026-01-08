@@ -1,1 +1,135 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Systems Operation | DR-MITAMBO PRO</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --cat: #FFCD00; --bg: #0a0a0a; --card: #141414; --accent: #2ecc71; }
+        body { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; padding-bottom: 60px; }
+        .op-header { background: linear-gradient(135deg, #000 0%, #1a1a1a 100%); padding: 40px 20px; border-bottom: 2px solid var(--cat); }
+        
+        .sys-box { background: var(--card); border-radius: 20px; padding: 30px; margin-bottom: 30px; border: 1px solid #222; position: relative; }
+        .sys-box h5 { color: var(--cat); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
+        
+        /* Flow Diagram Styling */
+        .flow-container { background: #000; padding: 20px; border-radius: 15px; border-left: 4px solid var(--accent); margin: 20px 0; }
+        .flow-step { display: flex; align-items: center; margin-bottom: 15px; }
+        .step-num { width: 30px; height: 30px; background: var(--accent); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px; flex-shrink: 0; }
+        
+        .component-list { list-style: none; padding-left: 0; }
+        .component-list li { padding: 10px 0; border-bottom: 1px solid #222; font-size: 0.9rem; display: flex; justify-content: space-between; }
+        .component-list li span { color: var(--cat); font-weight: bold; }
+
+        .tech-info { font-size: 0.85rem; line-height: 1.8; opacity: 0.8; }
+        .badge-pro { background: rgba(46, 204, 113, 0.1); color: var(--accent); border: 1px solid var(--accent); padding: 5px 12px; border-radius: 50px; font-size: 0.7rem; }
+    </style>
+</head>
+<body>
+
+    <div class="op-header text-center">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <a href="/" class="text-warning text-decoration-none"><i class="fas fa-arrow-left"></i> RUDI DASHBOARD</a>
+                <span class="badge-pro">ADVANCED THEORY</span>
+            </div>
+            <h2 class="fw-bold text-uppercase">Systems <span class="text-warning">Operation</span></h2>
+            <p class="small opacity-50">Kuelewa undani wa utendaji wa mifumo ya mitambo</p>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+
+        <div class="sys-box shadow-lg">
+            <h5><i class="fas fa-oil-can me-2"></i> Hydraulic Main System</h5>
+            <div class="tech-info">
+                Mfumo wa hydraulic unatumia kanuni ya <b>Negative Flow Control (NFC)</b>. Wakati lever ziko katikati (Neutral), pampu inatoa mtiririko mdogo wa mafuta ili kupunguza matumizi ya mafuta. Lever ikisogezwa, shinikizo la NFC linapungua, na kusababisha <i>Swashplate</i> ya pampu kutanuka na kuongeza mtiririko.
+            </div>
+
+            
+
+            <div class="flow-container">
+                <h6 class="text-accent fw-bold small mb-3">MTIRIRIKO WA MAFUTA (OIL FLOW):</h6>
+                <div class="flow-step">
+                    <div class="step-num">1</div>
+                    <div class="small"><b>Tanki la Hydraulic:</b> Mafuta yanatolewa na kuelekea kwenye pampu kuu (Main Pump).</div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-num">2</div>
+                    <div class="small"><b>Main Pump:</b> Inageuza nguvu ya mekanika kuwa nguvu ya hydraulic (Pressure).</div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-num">3</div>
+                    <div class="small"><b>Control Valve:</b> Inagawa mafuta kuelekea kwenye silinda (Boom, Bucket, Stick).</div>
+                </div>
+            </div>
+
+            <ul class="component-list">
+                <li>Main Relief Pressure <span>35,000 kPa (5075 psi)</span></li>
+                <li>Pilot Pressure <span>4,100 kPa (595 psi)</span></li>
+                <li>Pump Type <span>Variable Displacement Piston Pump</span></li>
+            </ul>
+        </div>
+
+        <div class="sys-box shadow-lg">
+            <h5><i class="fas fa-wind me-2"></i> Engine Air & Exhaust</h5>
+            <div class="tech-info mb-3">
+                Mfumo wa hewa ni wa aina ya <b>Turbocharged Aftercooled</b>. Hewa inaingizwa kupitia Turbo, inashindiliwa (compressed), na kisha inapozwa na <i>Aftercooler</i> ili kuongeza msongamano wa oksijeni kabla ya kuingia kwenye chumba cha mlipuko (Cylinder).
+            </div>
+
+            
+
+            <div class="bg-dark p-3 rounded mb-3 border border-secondary">
+                <h6 class="text-warning fw-bold small">PHEASE ZA UTENDAJI:</h6>
+                <p class="small opacity-75">
+                    <b>1. Intake:</b> Turbo inapokea hewa safi na kuisukuma kwa nguvu.<br>
+                    <b>2. Compression:</b> Piston inapanda juu na kushindilia hewa na mafuta.<br>
+                    <b>3. Power:</b> Mlipuko unatokea (Combustion) na kuisukuma piston chini.<br>
+                    <b>4. Exhaust:</b> Gesi iliyotumika inatoka na kuzungusha turbocharger turbine.
+                </p>
+            </div>
+
+            <div class="row g-2">
+                <div class="col-6">
+                    <div class="p-2 border border-secondary rounded text-center">
+                        <small class="d-block opacity-50">Turbo Boost</small>
+                        <b class="text-warning">18-24 PSI</b>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="p-2 border border-secondary rounded text-center">
+                        <small class="d-block opacity-50">Exhaust Temp</small>
+                        <b class="text-warning">450°C - 600°C</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sys-box shadow-lg">
+            <h5><i class="fas fa-gas-pump me-2"></i> Fuel System (Common Rail)</h5>
+            <p class="tech-info">
+                Kwenye mifumo ya <b>HEUI</b> au <b>Common Rail</b>, mafuta yanashindiliwa na <i>High-Pressure Pump</i> kisha yanakaa kwenye bomba la pamoja (Rail). ECM inadhibiti <i>Solenoid Injectors</i> kufungua kwa muda maalum (Micro-seconds) kulingana na mahitaji ya kasi ya injini.
+            </div>
+
+            
+
+            <ul class="component-list mt-3">
+                <li>Rail Pressure <span>120 - 180 MPa</span></li>
+                <li>Injector Voltage <span>70V - 105V Peak</span></li>
+                <li>Fuel Quality Sensor <span>Inductive / Capacitive Type</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+        <div class="alert alert-warning py-3 rounded-4">
+            <h6 class="fw-bold mb-1"><i class="fas fa-lightbulb me-2"></i> KIDOKEZO CHA FUNDI</h6>
+            <p class="small mb-0 opacity-75">Ukiona moshi mweusi, mara nyingi ni hitilafu ya mtiririko wa hewa (Air flow) au turbo kushindwa kutoa presha ya kutosha.</p>
+        </div>
+    </div>
+
+</body>
+</html>
 

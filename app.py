@@ -13,66 +13,47 @@ from flask_login import (
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # =====================================================
-# OPTIONAL AI SERVICE (SAFE IMPORT)
+# AI SERVICE IMPORT
 # =====================================================
 try:
-    from ai_service import analyze_text
+    # Tunatumia ask_expert kwa ajili ya msaada wa kila sehemu
+    from ai_service import analyze_text, ask_expert
 except Exception:
-    def analyze_text(text):
-        return "AI Service haijapatikana kwa sasa."
+    def analyze_text(text): return "AI Service haijapatikana."
+    def ask_expert(query, category): return "Msaidizi wa AI hayupo kwa sasa."
 
 # =====================================================
 # APP INITIALIZATION
 # =====================================================
 app = Flask(__name__)
-
-# =====================================================
-# CONFIGURATION
-# =====================================================
-app.secret_key = os.environ.get(
-    "SECRET_KEY", "DR_MITAMBO_PRO_SECURE_2026_V10"
-)
+app.secret_key = os.environ.get("SECRET_KEY", "DR_MITAMBO_PRO_SECURE_2026_V10")
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-app.config["SQLALCHEMY_DATABASE_URI"] = (
-    "sqlite:///" + os.path.join(BASE_DIR, "mitambo_pro.db")
-)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(BASE_DIR, "mitambo_pro.db")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# =====================================================
-# EXTENSIONS
-# =====================================================
 db = SQLAlchemy(app)
-
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
-login_manager.login_message_category = "info"
 
 # =====================================================
 # DATABASE MODELS
 # =====================================================
 class User(UserMixin, db.Model):
     __tablename__ = "users"
-
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    machines = db.relationship("Machine", backref="owner", lazy=True, cascade="all, delete")
 
-    machines = db.relationship(
-        "Machine", backref="owner", lazy=True, cascade="all, delete"
-    )
-
-    def set_password(self, password: str):
+    def set_password(self, password):
         self.password_hash = generate_password_hash(password)
-
-    def check_password(self, password: str) -> bool:
+    def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-
 
 class Machine(db.Model):
     __tablename__ = "machines"
-
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     brand = db.Column(db.String(50))
@@ -97,67 +78,64 @@ def load_user(user_id):
 def index():
     fleet = Machine.query.filter_by(owner_id=current_user.id).all()
     total_fleet = len(fleet)
-
-    needs_service = sum(
-        1 for m in fleet if m.current_hours >= m.next_service_hours
-    )
-
-    avg_health = (
-        sum(m.health_score for m in fleet) // total_fleet
-        if total_fleet > 0 else 0
-    )
-
-    return render_template(
-        "index.html",
-        user=current_user.username,
-        fleet=fleet,
-        fleet_count=total_fleet,
-        needs_service=needs_service,
-        avg_health=avg_health
-    )
+    needs_service = sum(1 for m in fleet if m.current_hours >= m.next_service_hours)
+    avg_health = (sum(m.health_score for m in fleet) // total_fleet if total_fleet > 0 else 0)
+    return render_template("index.html", user=current_user.username, fleet=fleet, fleet_count=total_fleet, needs_service=needs_service, avg_health=avg_health)
 
 # =====================================================
-# AI DIAGNOSIS
+# AI CONTEXTUAL ASSISTANT (API)
 # =====================================================
-@app.route("/diagnosis")
+@app.route("/api/ask_expert", methods=["POST"])
 @login_required
-def diagnosis():
-    return render_template("diagnosis.html")
+def api_ask_expert():
+    data = request.get_json(silent=True) or {}
+    query = data.get("query", "").strip()
+    category = data.get("category", "general").strip()
 
+    if not query:
+        return jsonify({"error": "Tafadhali andika swali lako"}), 400
 
+    try:
+        # Hii inaita AI kulingana na batani aliyopo mtumiaji
+        result = ask_expert(query, category)
+        return jsonify({"result": result})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Sehemu ya zamani ya Diagnosis
 @app.route("/api/analyze", methods=["POST"])
 @login_required
 def api_analyze():
     data = request.get_json(silent=True) or {}
     text = data.get("text", "").strip()
-
-    if not text:
-        return jsonify({"error": "Hakuna maelezo ya mtambo"}), 400
-
+    if not text: return jsonify({"error": "No text"}), 400
     try:
         result = analyze_text(text)
         return jsonify({"result": result})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    except Exception as e: return jsonify({"error": str(e)}), 500
 
 # =====================================================
 # MODULE ROUTES
 # =====================================================
+@app.route("/diagnosis")
+@login_required
+def diagnosis(): return render_template("diagnosis.html")
+
 @app.route("/electrical")
 @login_required
-def electrical():
-    return render_template("electrical.html")
+def electrical(): return render_template("electrical.html")
 
 @app.route("/systems_op")
 @login_required
-def systems_op():
-    return render_template("systems_op.html")
+def systems_op(): return render_template("systems_op.html")
 
 @app.route("/troubleshooting")
 @login_required
-def troubleshooting():
-    # Imebadilishwa kusoma ukurasa halisi
-    return render_template("troubleshooting.html")
+def troubleshooting(): return render_template("troubleshooting.html")
+
+@app.route("/parts")
+@login_required
+def parts(): return render_template("parts.html")
 
 @app.route("/maintenance")
 @login_required
@@ -165,56 +143,27 @@ def maintenance():
     machines = Machine.query.filter_by(owner_id=current_user.id).all()
     return render_template("maintenance.html", machines=machines)
 
-@app.route("/calibration")
-@login_required
-def calibration():
-    return render_template(
-        "placeholder.html",
-        title="Calibration Tools",
-        icon="fa-compass",
-        desc="Kusawazisha sensorer na valves."
-    )
-
-@app.route("/harness")
-@login_required
-def harness():
-    return render_template(
-        "placeholder.html",
-        title="Harness Layout",
-        icon="fa-network-wired",
-        desc="Ramani za nyaya za mtambo."
-    )
-
-@app.route("/parts")
-@login_required
-def parts():
-     Hii itafungua ukurasa halisi wa kutafuta vipuri
-    return render_template("parts.html")
-
-    )
-
 @app.route("/manuals")
 @login_required
 def manuals():
-    return render_template(
-        "placeholder.html",
-        title="Service Manuals",
-        icon="fa-book",
-        desc="Maktaba ya vitabu vya ufundi."
-    
+    return render_template("placeholder.html", title="Service Manuals", icon="fa-book", desc="Maktaba ya vitabu vya ufundi.")
 
 @app.route("/safety")
 @login_required
 def safety():
-    return render_template(
-        "placeholder.html",
-        title="Safety Standards",
-        icon="fa-shield-halved",
-        desc="Miongozo ya usalama kazini."
-    
+    return render_template("placeholder.html", title="Safety Standards", icon="fa-shield-halved", desc="Miongozo ya usalama kazini.")
+
+# Routes nyingine za placeholder
+@app.route("/calibration")
+@login_required
+def calibration(): return render_template("placeholder.html", title="Calibration", icon="fa-compass")
+
+@app.route("/harness")
+@login_required
+def harness(): return render_template("placeholder.html", title="Harness", icon="fa-network-wired")
 
 # =====================================================
-# MACHINE MANAGEMENT
+# MACHINE MANAGEMENT & AUTH
 # =====================================================
 @app.route("/machines")
 @login_required
@@ -222,103 +171,45 @@ def machines():
     data = Machine.query.filter_by(owner_id=current_user.id).all()
     return render_template("machines.html", machines=data)
 
-
 @app.route("/add-machine", methods=["GET", "POST"])
 @login_required
 def add_machine():
     if request.method == "POST":
         try:
-            machine = Machine(
-                name=request.form.get("name"),
-                brand=request.form.get("brand"),
-                model=request.form.get("model"),
-                serial=request.form.get("serial"),
-                current_hours=int(request.form.get("hours", 0)),
-                owner_id=current_user.id
-            )
-            db.session.add(machine)
-            db.session.commit()
-            flash("Mtambo umeongezwa kikamilifu!", "success")
+            m = Machine(name=request.form.get("name"), brand=request.form.get("brand"), model=request.form.get("model"),
+                        serial=request.form.get("serial"), current_hours=int(request.form.get("hours", 0)), owner_id=current_user.id)
+            db.session.add(m); db.session.commit()
             return redirect(url_for("machines"))
-
-        except Exception:
-            db.session.rollback()
-            flash("Hitilafu: Serial number tayari ipo.", "danger")
-
+        except: db.session.rollback(); flash("Serial tayari ipo.", "danger")
     return render_template("add_machine.html")
 
-# =====================================================
-# AUTHENTICATION
-# =====================================================
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for("index"))
-
     if request.method == "POST":
-        user = User.query.filter_by(
-            username=request.form.get("username")
-        ).first()
-
-        if user and user.check_password(request.form.get("password")):
-            login_user(user)
-            return redirect(url_for("index"))
-
+        u = User.query.filter_by(username=request.form.get("username")).first()
+        if u and u.check_password(request.form.get("password")):
+            login_user(u); return redirect(url_for("index"))
         flash("Jina au Password si sahihi.", "danger")
-
     return render_template("login.html")
-
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        username = request.form.get("username")
-
-        if User.query.filter_by(username=username).first():
-            flash("Jina hili tayari lipo.", "danger")
-            return redirect(url_for("register"))
-
-        user = User(username=username)
-        user.set_password(request.form.get("password"))
-
-        db.session.add(user)
-        db.session.commit()
-
-        flash("Akaunti imetengenezwa kikamilifu.", "success")
+        u = User(username=request.form.get("username"))
+        u.set_password(request.form.get("password"))
+        db.session.add(u); db.session.commit()
         return redirect(url_for("login"))
-
     return render_template("register.html")
-
 
 @app.route("/logout")
 @login_required
 def logout():
-    logout_user()
-    return redirect(url_for("login"))
+    logout_user(); return redirect(url_for("login"))
 
-# =====================================================
-# ERROR HANDLERS
-# =====================================================
 @app.errorhandler(404)
-def not_found(e):
-    return render_template(
-        "placeholder.html",
-        title="Not Found",
-        icon="fa-circle-exclamation",
-        desc="Ukurasa huu haupo."
-    ), 404
+def not_found(e): return render_template("placeholder.html", title="Not Found", icon="fa-exclamation-circle"), 404
 
-# =====================================================
-# DATABASE INIT
-# =====================================================
-with app.app_context():
-    db.create_all()
+with app.app_context(): db.create_all()
 
-# =====================================================
-# ENTRY POINT (LOCAL ONLY)
-# =====================================================
 if __name__ == "__main__":
-    app.run(
-        host="0.0.0.0",
-        port=int(os.environ.get("PORT", 8000))
-    )
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))

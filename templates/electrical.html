@@ -1,92 +1,76 @@
-here{% extends "layout.html" %}
+{% extends "layout.html" %}
 {% block content %}
 <style>
-    .elec-container { background-color: #0a0a0a; color: #eee; padding-bottom: 50px; }
-    .diag-card { background: #141414; border: 1px solid #333; border-radius: 15px; transition: 0.3s; }
-    .diag-card:hover { border-color: #ffcd00; box-shadow: 0 0 20px rgba(255, 205, 0, 0.1); }
-    .wire-table { font-size: 0.85rem; width: 100%; }
-    .wire-table td { padding: 8px; border-bottom: 1px solid #222; }
-    .voltage-badge { background: #222; color: #2ecc71; padding: 2px 8px; border-radius: 4px; font-family: monospace; }
+    .elec-bg { background: #050505; min-height: 100vh; padding-bottom: 50px; }
+    .schematic-box { background: #000; border: 2px solid #222; border-radius: 15px; position: relative; overflow: hidden; }
+    .sensor-card { background: #111; border: 1px solid #333; border-radius: 12px; transition: 0.3s; }
+    .sensor-card:hover { border-color: var(--cat); background: #161616; }
+    .volt-indicator { font-family: 'Courier New', monospace; color: #00ff00; font-weight: bold; }
+    .wire-red { color: #ff4444; } .wire-blue { color: #4444ff; } .wire-yellow { color: #ffff44; }
 </style>
 
-<div class="elec-container container-fluid">
-    <div class="row pt-4 mb-4">
-        <div class="col-12">
-            <h2 class="text-warning fw-bold"><i class="fas fa-bolt me-2"></i> ELECTRICAL HUB</h2>
-            <p class="text-muted">Wiring Schematics, Sensor Logic & Troubleshooting</p>
-        </div>
-    </div>
-
-    <div class="row g-4">
-        <div class="col-lg-8">
-            <div class="diag-card p-4 h-100">
-                <h5 class="text-warning mb-3">Electronic Control System Logic</h5>
-                <p class="small opacity-75">Mchoro huu unaonyesha jinsi ECM inavyopokea data kutoka kwa sensorer na kutoa amri kwa Actuators (Solenoids).</p>
-                
-                
-                
-                <div class="mt-4">
-                    <h6>CAN-BUS Network (Data Link)</h6>
-                    <p class="small text-muted">Mifumo ya kisasa inatumia nyaya mbili (Yellow & Green) kusafirisha data kwa kasi ya 250kbps au 500kbps kati ya ECM, Monitor, na Pump Controller.</p>
-                </div>
+<div class="elec-bg">
+    <div class="container pt-4">
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h2 class="text-warning fw-bold"><i class="fas fa-bolt me-2"></i> ELECTRICAL HUB</h2>
+                <p class="text-muted">Wiring Diagrams, ECM Pinouts, and Sensor Specifications.</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <span class="badge bg-danger p-2 shadow-sm"><i class="fas fa-microchip me-1"></i> ECM: ACTIVE</span>
             </div>
         </div>
 
-        <div class="col-lg-4">
-            <div class="diag-card p-4">
-                <h5 class="text-warning mb-3">Vipimo Standard (24V System)</h5>
-                <table class="wire-table">
-                    <tr>
-                        <td>Battery Static Voltage</td>
-                        <td><span class="voltage-badge">24.5V - 25.5V</span></td>
-                    </tr>
-                    <tr>
-                        <td>Charging (Engine Running)</td>
-                        <td><span class="voltage-badge">27.8V - 28.5V</span></td>
-                    </tr>
-                    <tr>
-                        <td>Sensor 5V Reference</td>
-                        <td><span class="voltage-badge">4.98V - 5.02V</span></td>
-                    </tr>
-                    <tr>
-                        <td>Starter Signal (Pin S)</td>
-                        <td><span class="voltage-badge">24V Peak</span></td>
-                    </tr>
-                </table>
-                
-                <div class="alert alert-dark border-warning mt-4 small">
-                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>
-                    <strong>Muhimu:</strong> Unapopima sensor, hakikisha unatumia multimeter yenye impedance kubwa ili usichome processor ya ECM.
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="schematic-box p-4 shadow-lg">
+                    <h5 class="text-info mb-3"><i class="fas fa-project-diagram me-2"></i> Main Control Harness (Partial View)</h5>
+                    <p class="small text-muted mb-4">Mchoro huu unaonyesha muunganisho kati ya Sensors na Controller (ECM).</p>
+                    
+                    
+                    
+                    <div class="mt-4 p-3 bg-dark rounded border border-secondary">
+                        <h6 class="text-warning small fw-bold">MTANDAO WA CAN-BUS (J1939):</h6>
+                        <p class="small opacity-75 mb-0">
+                            <span class="wire-yellow">■ Yellow (CAN High)</span> | <span class="wire-blue">■ Green (CAN Low)</span><br>
+                            Kama unakagua hitilafu ya mawasiliano, pima **Resistance** kati ya nyaya hizi mbili. Inapaswa kuwa **60 Ohms**.
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="diag-card p-4">
-                <h5 class="text-warning mb-3">Heavy Machine Wire Color Codes</h5>
-                <div class="row text-center">
-                    <div class="col-md-2 col-4 mb-3">
-                        <div class="rounded-circle mx-auto mb-2" style="width:20px; height:20px; background:red;"></div>
-                        <small>Power (+)</small>
+            <div class="col-lg-4">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="sensor-card p-3">
+                            <h6 class="text-warning small mb-3">SENSOR REFERENCE VOLTAGE</h6>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="small">ECM Output:</span>
+                                <span class="volt-indicator">5.02 V</span>
+                            </div>
+                            <div class="progress mt-2" style="height: 5px;">
+                                <div class="progress-bar bg-success" style="width: 100%"></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-2 col-4 mb-3">
-                        <div class="rounded-circle mx-auto mb-2" style="width:20px; height:20px; background:black;"></div>
-                        <small>Ground (-)</small>
+                    
+                    
+
+                    <div class="col-12">
+                        <div class="sensor-card p-3">
+                            <h6 class="text-warning small mb-3">BATTERY SYSTEM (24V)</h6>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="small">Alternator Charge:</span>
+                                <span class="volt-indicator">28.4 V</span>
+                            </div>
+                            <p class="x-small text-muted mt-2 mb-0">Chini ya 24V inaweza kusababisha ECM kutoa "Intermittent Faults".</p>
+                        </div>
                     </div>
-                    <div class="col-md-2 col-4 mb-3">
-                        <div class="rounded-circle mx-auto mb-2" style="width:20px; height:20px; background:orange;"></div>
-                        <small>Key Switch</small>
-                    </div>
-                    <div class="col-md-2 col-4 mb-3">
-                        <div class="rounded-circle mx-auto mb-2" style="width:20px; height:20px; background:green;"></div>
-                        <small>CAN High</small>
-                    </div>
-                    <div class="col-md-2 col-4 mb-3">
-                        <div class="rounded-circle mx-auto mb-2" style="width:20px; height:20px; background:yellow;"></div>
-                        <small>CAN Low</small>
-                    </div>
+                </div>
+
+                <div class="alert alert-warning mt-4 border-0 rounded-4 py-3">
+                    <h6 class="fw-bold small"><i class="fas fa-robot me-2"></i> ELECTRICAL EXPERT AI</h6>
+                    <p class="x-small mb-0">Tumia Chat Box hapo chini kuuliza kuhusu **Pinouts** za ECM au maana ya **CID/FMI Codes** za umeme.</p>
                 </div>
             </div>
         </div>

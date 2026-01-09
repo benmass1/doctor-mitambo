@@ -14,7 +14,7 @@
         
         body { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
         
-        /* Sidebar ya Pro */
+        /* Sidebar Navigation */
         .sidebar { 
             position: fixed; left: calc(-1 * var(--sidebar-w)); width: var(--sidebar-w); 
             height: 100vh; background: #000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
@@ -23,29 +23,35 @@
         .sidebar.active { left: 0; box-shadow: 10px 0 50px rgba(0,0,0,0.9); }
         
         .nav-link-pro { 
-            color: #aaa; padding: 15px 25px; display: flex; align-items: center; 
-            text-decoration: none; transition: 0.3s; margin: 5px 15px; border-radius: 12px;
+            color: #aaa; padding: 12px 20px; display: flex; align-items: center; 
+            text-decoration: none; transition: 0.3s; margin: 4px 15px; border-radius: 12px;
+            font-size: 0.95rem;
         }
-        .nav-link-pro:hover, .nav-link-pro.active { background: rgba(255, 205, 0, 0.1); color: var(--cat); }
-        .nav-link-pro i { width: 30px; font-size: 1.2rem; }
+        .nav-link-pro:hover, .nav-link-pro.active-page { background: rgba(255, 205, 0, 0.1); color: var(--cat); }
+        .nav-link-pro i { width: 35px; font-size: 1.1rem; }
 
+        /* Content Wrapper */
+        .main-wrapper { transition: 0.4s; min-height: 100vh; }
+        
         /* Top Bar */
         .top-bar { 
             background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(15px); 
-            padding: 15px 20px; border-bottom: 1px solid #222; 
+            padding: 12px 20px; border-bottom: 1px solid #222; 
             display: flex; justify-content: space-between; align-items: center; 
             position: sticky; top: 0; z-index: 1000; 
         }
         .menu-toggle { font-size: 1.5rem; color: var(--cat); cursor: pointer; }
 
-        /* Overlay wakati menu iko wazi */
         .sidebar-overlay { 
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
-            background: rgba(0,0,0,0.5); display: none; z-index: 1050; 
+            background: rgba(0,0,0,0.7); display: none; z-index: 1050; 
         }
         .sidebar-overlay.active { display: block; }
 
         .brand-font { font-family: 'Orbitron', sans-serif; letter-spacing: 2px; }
+        
+        /* Alert Styling */
+        .alert-custom { background: #1a1a1a; border-left: 4px solid var(--cat); color: white; }
     </style>
     {% block head %}{% endblock %}
 </head>
@@ -54,23 +60,31 @@
     <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
 
     <div class="sidebar" id="sidebar">
-        <div class="p-4 mb-4">
+        <div class="p-4 mb-2">
             <h4 class="brand-font fw-bold text-warning mb-0">DR-MITAMBO</h4>
             <small class="text-muted">PROFESSIONAL OS</small>
         </div>
         
         <nav>
-            <a href="/" class="nav-link-pro"><i class="fas fa-th-large"></i> Dashboard</a>
-            <a href="/diagnosis" class="nav-link-pro"><i class="fas fa-robot"></i> AI Diagnosis</a>
-            <a href="/electrical" class="nav-link-pro"><i class="fas fa-bolt"></i> Electrical Hub</a>
-            <a href="/systems_op" class="nav-link-pro"><i class="fas fa-cogs"></i> Systems Op</a>
-            <a href="/troubleshooting" class="nav-link-pro"><i class="fas fa-wrench"></i> Troubleshooting</a>
-            <a href="/maintenance" class="nav-link-pro"><i class="fas fa-calendar-check"></i> Maintenance</a>
-            <a href="/parts" class="nav-link-pro"><i class="fas fa-search"></i> Parts Book</a>
-            <a href="/manuals" class="nav-link-pro"><i class="fas fa-book"></i> Manuals</a>
-            <a href="/machines" class="nav-link-pro"><i class="fas fa-truck-monster"></i> My Machines</a>
+            <a href="{{ url_for('index') }}" class="nav-link-pro {% if request.endpoint == 'index' %}active-page{% endif %}">
+                <i class="fas fa-th-large"></i> Dashboard
+            </a>
+            <a href="{{ url_for('diagnosis') }}" class="nav-link-pro {% if request.endpoint == 'diagnosis' %}active-page{% endif %}">
+                <i class="fas fa-robot"></i> AI Diagnosis
+            </a>
+            <a href="{{ url_for('maintenance') }}" class="nav-link-pro {% if request.endpoint == 'maintenance' %}active-page{% endif %}">
+                <i class="fas fa-calendar-check"></i> Maintenance
+            </a>
+            <a href="{{ url_for('machines') }}" class="nav-link-pro {% if request.endpoint == 'machines' %}active-page{% endif %}">
+                <i class="fas fa-truck-monster"></i> My Machines
+            </a>
+            <a href="{{ url_for('electrical') }}" class="nav-link-pro"><i class="fas fa-bolt"></i> Electrical Hub</a>
+            <a href="{{ url_for('troubleshooting') }}" class="nav-link-pro"><i class="fas fa-wrench"></i> Troubleshooting</a>
+            <a href="{{ url_for('parts') }}" class="nav-link-pro"><i class="fas fa-search"></i> Parts Book</a>
+            <a href="{{ url_for('manuals') }}" class="nav-link-pro"><i class="fas fa-book"></i> Manuals</a>
+            
             <hr class="mx-3 opacity-10">
-            <a href="/logout" class="nav-link-pro text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <a href="{{ url_for('logout') }}" class="nav-link-pro text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </nav>
     </div>
 
@@ -79,15 +93,15 @@
             <div class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars-staggered"></i></div>
             <div class="brand-font fw-bold small">DR-MITAMBO <span class="text-warning">PRO</span></div>
             <div class="user-avatar">
-                <img src="https://ui-avatars.com/api/?name={{ session.get('username', 'Masanja') }}&background=FFCD00&color=000" class="rounded-circle" width="35" alt="Profile">
+                <img src="https://ui-avatars.com/api/?name={{ current_user.username if current_user.is_authenticated else 'User' }}&background=FFCD00&color=000" class="rounded-circle" width="35" alt="Profile">
             </div>
         </div>
 
         <div class="container py-4">
-            {% with messages = get_flashed_messages() %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
               {% if messages %}
-                {% for message in messages %}
-                  <div class="alert alert-warning alert-dismissible fade show border-0 rounded-4" role="alert">
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category if category != 'message' else 'warning' }} alert-dismissible fade show border-0 rounded-4" role="alert">
                     {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                   </div>
@@ -105,8 +119,15 @@
             document.getElementById('sidebar').classList.toggle('active');
             document.getElementById('overlay').classList.toggle('active');
         }
+        
+        // Funga sidebar ukibonyeza link (kwajili ya simu)
+        document.querySelectorAll('.nav-link-pro').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('sidebar').classList.remove('active');
+                document.getElementById('overlay').classList.remove('active');
+            });
+        });
     </script>
     {% block scripts %}{% endblock %}
 </body>
 </html>
-

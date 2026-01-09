@@ -1,4 +1,4 @@
-import os
+itimport os
 import google.generativeai as genai
 from flask import Flask, render_template, redirect, url_for, session, request, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -74,8 +74,7 @@ def index():
                            fleet_count=total_fleet,
                            needs_service=needs_service,
                            avg_health=avg_health)
-
-# --- AI DIAGNOSIS ENGINE (SASA IMEREKEBISHWA) ---
+)# --- AI DIAGNOSIS ENGINE ---
 @app.route("/diagnosis", methods=["GET", "POST"])
 @login_required
 def diagnosis():
@@ -83,25 +82,25 @@ def diagnosis():
     if request.method == "POST":
         query = request.form.get("error_code", "").strip()
         try:
-            # Mabadiliko: Tumetumia 'gemini-1.5-flash' moja kwa moja
+            # Tunatumia jina fupi la model ili kuzuia kosa la 404
             model = genai.GenerativeModel('gemini-1.5-flash')
 
-            prompt = (f"Wewe ni DR-MITAMBO AI, Fundi Mkuu wa mitambo mizito. Mteja anasema: '{query}'. "
-                      f"Chambua tatizo hili kwa kina: 1. Sababu zinazoweza kusababisha. "
-                      f"2. Vipimo vya kufanya. 3. Hatua za kurekebisha. Jibu kwa Kiswahili fasaha.")
+            prompt = (f"Wewe ni DR-MITAMBO PRO AI. Mteja ana tatizo hili: '{query}'. "
+                      f"Chambua kitaalamu na utoe hatua za kurekebisha kwa Kiswahili.")
             
             response = model.generate_content(prompt)
             
             if response and response.text:
                 result = response.text
             else:
-                result = "AI imeshindwa kutoa jibu kwa sasa. Jaribu kuelezea tatizo zaidi."
-
+                result = "AI imeshindwa kutoa jibu kwa sasa."
+                
         except Exception as e:
-            # Hii itatusaidia kuona kosa halisi kama bado lipo
+            # Hii itakuonyesha kosa halisi kama bado kuna shida
             result = f"Hitilafu ya Kiufundi: AI haijaweza kuwasiliana. (Sababu: {str(e)})"
             
     return render_template("diagnosis.html", result=result)
+
 
 # --- ROUTES ZA MODULI ZOTE ---
 @app.route("/electrical")

@@ -138,12 +138,11 @@ def api_analyze():
 # =====================================================
 @app.route("/electrical")
 @login_required
+@app.route("/electrical")
+@login_required
 def electrical():
-    return render_template(
-        "placeholder.html",
-        title="Electrical Hub",
-        icon="fa-bolt",
-        desc="Michoro ya mifumo ya umeme."
+    return render_template("electrical.html") # <--- Iwe hivi, bila neno placeholder
+
     ) # <-- Hapa mabano yalikuwa yamefunguliwa yakasahaulika
 
 @app.route("/systems_op")

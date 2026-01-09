@@ -1,292 +1,162 @@
 {% extends "layout.html" %}
 
-{% block title %}Dashboard | DR-MITAMBO PRO{% endblock %}
-
-{% block head %}
-<style>
-    :root { 
-        --cat: #FFCD00; 
-        --bg: #050505; 
-        --card: #111111;
-        --neon: #00ffcc;
-    }
-
-    /* Hero Section Imekuwa Polished */
-    .hero-section {
-        background: linear-gradient(135deg, rgba(255, 205, 0, 0.12) 0%, rgba(0, 0, 0, 0) 100%);
-        border-radius: 30px;
-        padding: 40px 30px;
-        border: 1px solid #222;
-        margin-bottom: 30px;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-    .hero-section::after {
-        content: '⚙';
-        position: absolute;
-        right: -20px;
-        bottom: -30px;
-        font-size: 180px;
-        opacity: 0.03;
-        transform: rotate(-20deg);
-        pointer-events: none;
-    }
-    
-    .status-pill {
-        display: inline-block;
-        padding: 6px 18px;
-        background: rgba(46, 204, 113, 0.1);
-        color: #2ecc71;
-        border: 1px solid rgba(46, 204, 113, 0.2);
-        border-radius: 50px;
-        font-size: 0.65rem;
-        font-weight: 800;
-        letter-spacing: 1.5px;
-        margin-bottom: 20px;
-        animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-        0% { opacity: 1; }
-        50% { opacity: 0.6; }
-        100% { opacity: 1; }
-    }
-
-    /* Grid ya Kadi Mbili-Mbili kwa Simu */
-    .module-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr); /* Lazima mbili kwa upana */
-        gap: 15px;
-        margin-bottom: 30px;
-    }
-
-    @media (min-width: 768px) {
-        .module-grid { grid-template-columns: repeat(3, 1fr); }
-    }
-    @media (min-width: 1200px) {
-        .module-grid { grid-template-columns: repeat(4, 1fr); }
-    }
-
-    /* Professional Grid Cards */
-    .pro-card {
-        background: linear-gradient(145deg, #111, #080808);
-        border-radius: 25px;
-        padding: 22px;
-        border: 1px solid #1f1f1f;
-        text-decoration: none !important;
-        color: white !important;
-        display: flex;
-        flex-direction: column;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        position: relative;
-        min-height: 160px;
-    }
-    .pro-card:hover {
-        border-color: var(--cat);
-        transform: translateY(-8px);
-        box-shadow: 0 15px 35px rgba(0,0,0,0.7);
-        background: #161616;
-    }
-    .pro-card i {
-        font-size: 1.6rem;
-        color: var(--cat);
-        margin-bottom: 15px;
-        background: rgba(255, 205, 0, 0.05);
-        width: 50px;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 15px;
-        transition: 0.3s;
-    }
-    .pro-card:hover i {
-        background: var(--cat);
-        color: #000;
-        transform: scale(1.1);
-    }
-    .pro-card h6 {
-        font-weight: 800;
-        font-size: 0.9rem;
-        margin-bottom: 5px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    .pro-card p {
-        font-size: 0.68rem;
-        color: #666;
-        margin-bottom: 0;
-        line-height: 1.3;
-    }
-
-    /* Analytics Dashboard Styling */
-    .stat-container {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
-        margin-bottom: 35px;
-    }
-    .stat-box {
-        background: rgba(20, 20, 20, 0.6);
-        padding: 18px 10px;
-        border-radius: 20px;
-        text-align: center;
-        border: 1px solid #222;
-        transition: 0.3s;
-    }
-    .stat-box:hover { border-color: #444; background: #111; }
-    .stat-box small { font-size: 0.55rem; color: #555; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
-    .stat-box div { font-weight: 800; font-size: 1.2rem; color: #fff; margin-top: 5px; }
-
-    .live-feed {
-        background: rgba(10, 10, 10, 0.8);
-        border: 1px solid #222;
-        border-radius: 25px;
-        padding: 25px;
-    }
-</style>
-{% endblock %}
-
 {% block content %}
-<div class="dashboard-container">
-    <div class="hero-section">
-        <span class="status-pill"><i class="fas fa-circle me-1" style="font-size: 0.5rem;"></i> SYSTEM TELEMETRY ACTIVE</span>
-        <h2 class="fw-bold brand-font text-white">Habari, {{ user if user else 'Masanja' }}!</h2>
-        <p class="text-muted small mb-0">Operator Node: <span class="text-warning fw-bold">DR-PRO-10</span> | Mitambo iliyounganishwa: <span class="text-white fw-bold">12</span></p>
+<style>
+    /* Hii inalazimisha Dashboard iwe na mpangilio wa gridi mbili kwa upana */
+    .industrial-container {
+        padding: 10px 5px;
+        background: #050505;
+    }
+
+    .main-grid {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        margin: 0 -8px !important;
+        padding: 0 !important;
+        list-style: none;
+    }
+
+    .grid-item {
+        flex: 0 0 50% !important; /* Inalazimisha nusu ya kioo (mbili kwa upana) */
+        max-width: 50% !important;
+        padding: 8px !important;
+        box-sizing: border-box !important;
+    }
+
+    .menu-btn {
+        background: linear-gradient(145deg, #111, #0a0a0a) !important;
+        border: 1px solid #222 !important;
+        border-radius: 15px !important;
+        padding: 20px 15px !important;
+        text-decoration: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        height: 100% !important;
+        transition: 0.3s !important;
+    }
+
+    .menu-btn:active {
+        transform: scale(0.95);
+        border-color: #ffcd00;
+        background: #151515 !important;
+    }
+
+    .menu-btn i {
+        font-size: 1.8rem !important;
+        margin-bottom: 12px !important;
+        display: block !important;
+    }
+
+    .menu-btn span {
+        color: #ffffff !important;
+        font-weight: 800 !important;
+        font-size: 0.85rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+        display: block !important;
+    }
+
+    .menu-btn small {
+        color: #555 !important;
+        font-size: 0.65rem !important;
+        margin-top: 5px !important;
+        line-height: 1.2 !important;
+        display: block !important;
+    }
+
+    /* Rangi za Icons */
+    .text-cat { color: #ffcd00; }
+    .text-neon { color: #00ffcc; }
+    .text-safety { color: #ff4444; }
+</style>
+
+<div class="industrial-container">
+    <div class="row g-2 mb-4 px-2">
+        <div class="col-4">
+            <div class="bg-dark p-2 rounded text-center border border-secondary">
+                <small class="d-block text-muted" style="font-size: 0.6rem;">FLEET</small>
+                <div class="fw-bold">12</div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="bg-dark p-2 rounded text-center border border-secondary">
+                <small class="d-block text-muted" style="font-size: 0.6rem;">ACTIVE</small>
+                <div class="fw-bold text-success">09</div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="bg-dark p-2 rounded text-center border border-secondary">
+                <small class="d-block text-muted" style="font-size: 0.6rem;">ALERTS</small>
+                <div class="fw-bold text-danger">03</div>
+            </div>
+        </div>
     </div>
 
-    <div class="stat-container">
-        <div class="stat-box">
-            <small>Active Fleet</small>
-            <div class="text-success">09</div>
-        </div>
-        <div class="stat-box">
-            <small>System Health</small>
-            <div class="text-warning">94%</div>
-        </div>
-        <div class="stat-box">
-            <small>Active Alerts</small>
-            <div class="text-danger">03</div>
-        </div>
-    </div>
-
-    <h6 class="text-uppercase fw-bold mb-4 opacity-50 small" style="letter-spacing: 3px; padding-left: 10px;">Control Modules</h6>
-    
-    <div class="module-grid">
-        <a href="{{ url_for('diagnosis') }}" class="pro-card">
-            <div style="position: absolute; top: 15px; right: 15px; width: 8px; height: 8px; background: #00ffcc; border-radius: 50%; box-shadow: 0 0 10px #00ffcc;"></div>
-            <i class="fas fa-robot"></i>
-            <div>
-                <h6>AI Diagnosis</h6>
-                <p>Uchambuzi wa hitilafu kwa akili mnemba.</p>
-            </div>
-        </a>
-
-        <a href="{{ url_for('electrical') }}" class="pro-card">
-            <i class="fas fa-bolt"></i>
-            <div>
-                <h6>Electrical</h6>
-                <p>Wiring, Pinouts na Sensor Analysis.</p>
-            </div>
-        </a>
-
-        <a href="{{ url_for('systems_op') }}" class="pro-card">
-            <i class="fas fa-project-diagram"></i>
-            <div>
-                <h6>Systems Op</h6>
-                <p>Jinsi Hydraulic na Engine zinavyofanya kazi.</p>
-            </div>
-        </a>
-
-        <a href="{{ url_for('troubleshooting') }}" class="pro-card">
-            <i class="fas fa-screwdriver-wrench"></i>
-            <div>
-                <h6>Troubleshoot</h6>
-                <p>Miongozo ya kurekebisha matatizo site.</p>
-            </div>
-        </a>
-
-        <a href="{{ url_for('maintenance') }}" class="pro-card">
-            <i class="fas fa-calendar-check"></i>
-            <div>
-                <h6>Maintenance</h6>
-                <p>Panga na fuatilia Service za masaa.</p>
-            </div>
-        </a>
-
-        <a href="{{ url_for('parts') }}" class="pro-card">
-            <i class="fas fa-gears"></i>
-            <div>
-                <h6>Parts Book</h6>
-                <p>Tafuta Spare Parts namba za CAT/Komatsu.</p>
-            </div>
-        </a>
-
-        <a href="{{ url_for('manuals') }}" class="pro-card">
-            <i class="fas fa-book-open"></i>
-            <div>
-                <h6>Manuals</h6>
-                <p>Maktaba ya Schematics na Shop Manuals.</p>
-            </div>
-        </a>
-
-        <a href="{{ url_for('machines') }}" class="pro-card">
-            <i class="fas fa-truck-monster"></i>
-            <div>
-                <h6>My Fleet</h6>
-                <p>Orodha kamili ya mitambo yako yote.</p>
-            </div>
-        </a>
-
-        <a href="{{ url_for('calibration') }}" class="pro-card">
-            <i class="fas fa-sliders-h"></i>
-            <div>
-                <h6>Calibration</h6>
-                <p>Jinsi ya kuset sensorer na valves.</p>
-            </div>
-        </a>
-
-        <a href="{{ url_for('harness') }}" class="pro-card">
-            <i class="fas fa-network-wired"></i>
-            <div>
-                <h6>Harness</h6>
-                <p>Ramani za nyaya za mtambo (Layouts).</p>
-            </div>
-        </a>
-
-        <a href="{{ url_for('safety') }}" class="pro-card">
-            <i class="fas fa-hard-hat"></i>
-            <div>
-                <h6>Safety Op</h6>
-                <p>Kanuni muhimu za usalama wa fundi.</p>
-            </div>
-        </a>
-
-        <a href="#" class="pro-card">
-            <i class="fas fa-chart-line"></i>
-            <div>
-                <h6>Analytics</h6>
-                <p>Ripoti za utendaji na fuel consumption.</p>
-            </div>
-        </a>
-    </div>
-
-    <div class="live-feed shadow-lg">
-        <h6 class="fw-bold mb-4 small text-uppercase" style="letter-spacing: 2px;"><i class="fas fa-stream me-2 text-warning"></i> LIVE ACTIVITY FEED</h6>
-        
-        <div class="d-flex align-items-center mb-4">
-            <div style="width: 12px; height: 12px; background: #2ecc71; border-radius: 50%;" class="me-3"></div>
-            <div class="small">
-                <span class="text-white-50">Saa 2 zilizopita:</span> <b class="text-white">CAT 336D</b> imefanyiwa Diagnosis ya Engine.
-            </div>
+    <div class="main-grid">
+        <div class="grid-item">
+            <a href="{{ url_for('diagnosis') }}" class="menu-btn">
+                <i class="fas fa-robot text-neon"></i>
+                <span>AI Diagnosis</span>
+                <small>Uchambuzi wa hitilafu</small>
+            </a>
         </div>
 
-        <div class="d-flex align-items-center">
-            <div style="width: 12px; height: 12px; background: #f1c40f; border-radius: 50%;" class="me-3"></div>
-            <div class="small">
-                <span class="text-white-50">Saa 5 zilizopita:</span> <b class="text-white">D8R Bulldozer</b> inakaribia saa za Service.
-            </div>
+        <div class="grid-item">
+            <a href="{{ url_for('electrical') }}" class="menu-btn">
+                <i class="fas fa-bolt text-cat"></i>
+                <span>Electrical</span>
+                <small>Wiring & Sensors</small>
+            </a>
+        </div>
+
+        <div class="grid-item">
+            <a href="{{ url_for('systems_op') }}" class="menu-btn">
+                <i class="fas fa-microchip text-info"></i>
+                <span>Systems Op</span>
+                <small>Hydraulic & Engine</small>
+            </a>
+        </div>
+
+        <div class="grid-item">
+            <a href="{{ url_for('troubleshooting') }}" class="menu-btn">
+                <i class="fas fa-screwdriver-wrench text-secondary"></i>
+                <span>Troubleshoot</span>
+                <small>Miongozo ya ufundi</small>
+            </a>
+        </div>
+
+        <div class="grid-item">
+            <a href="{{ url_for('maintenance') }}" class="menu-btn">
+                <i class="fas fa-calendar-check text-success"></i>
+                <span>Maintenance</span>
+                <small>Service Tracking</small>
+            </a>
+        </div>
+
+        <div class="grid-item">
+            <a href="{{ url_for('parts') }}" class="menu-btn">
+                <i class="fas fa-gears text-safety"></i>
+                <span>Parts Book</span>
+                <small>Katalogi ya vipuri</small>
+            </a>
+        </div>
+
+        <div class="grid-item">
+            <a href="{{ url_for('manuals') }}" class="menu-btn">
+                <i class="fas fa-book-open text-primary"></i>
+                <span>Manuals</span>
+                <small>Service Manuals</small>
+            </a>
+        </div>
+
+        <div class="grid-item">
+            <a href="{{ url_for('machines') }}" class="menu-btn">
+                <i class="fas fa-truck-monster text-warning"></i>
+                <span>My Fleet</span>
+                <small>Orodha ya mitambo</small>
+            </a>
         </div>
     </div>
 </div>

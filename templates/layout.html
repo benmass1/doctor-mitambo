@@ -40,7 +40,7 @@
         }
         .nav-link-pro i { width: 30px; font-size: 1.1rem; }
 
-        /* Top Bar & Branding */
+        /* Top Bar */
         .top-bar { 
             background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(20px); 
             padding: 12px 20px; border-bottom: 1px solid #222; 
@@ -48,29 +48,42 @@
             position: sticky; top: 0; z-index: 1000; 
         }
         .menu-toggle { font-size: 1.4rem; color: var(--cat); cursor: pointer; transition: 0.3s; }
-        .menu-toggle:hover { color: var(--neon); transform: scale(1.1); }
 
-        .sidebar-overlay { 
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
-            background: rgba(0,0,0,0.8); display: none; z-index: 1050; 
+        /* Floating AI Chatbot CSS */
+        #ai-chat-btn {
+            position: fixed; bottom: 25px; right: 25px; 
+            width: 60px; height: 60px; background: var(--cat); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 20px rgba(255, 205, 0, 0.4); cursor: pointer; z-index: 2000;
+            transition: 0.3s; border: none;
         }
-        .sidebar-overlay.active { display: block; }
+        #ai-chat-btn:hover { transform: scale(1.1) rotate(15deg); }
 
+        #chat-window {
+            position: fixed; bottom: 100px; right: 25px; 
+            width: 350px; height: 500px; background: #111; 
+            border: 1px solid #333; border-radius: 20px; 
+            display: none; flex-direction: column; z-index: 2000;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8); overflow: hidden;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .chat-header { background: #222; padding: 15px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
+        .chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #0a0a0a; display: flex; flex-direction: column; gap: 10px; }
+        .chat-footer { padding: 10px; background: #1a1a1a; border-top: 1px solid #333; }
+        
+        .msg { padding: 10px 15px; border-radius: 15px; max-width: 85%; font-size: 0.85rem; line-height: 1.4; }
+        .msg-ai { background: #222; color: #eee; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .msg-user { background: var(--cat); color: #000; align-self: flex-end; border-bottom-right-radius: 2px; font-weight: 600; }
+
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); display: none; z-index: 1050; }
+        .sidebar-overlay.active { display: block; }
         .brand-font { font-family: 'Orbitron', sans-serif; letter-spacing: 2px; }
         .neon-text { text-shadow: 0 0 10px rgba(0, 255, 204, 0.5); }
 
-        /* Mobile Friendly Adjustments */
-        @media (max-width: 768px) {
-            .nav-link-pro { padding: 15px 20px; font-size: 1rem; }
-        }
-
-        /* Scrollbar ya Kurembesha */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--neon); }
+        @media (max-width: 500px) { #chat-window { width: calc(100% - 40px); height: 70vh; right: 20px; } }
     </style>
-    {% block head %}{% endblock %}
 </head>
 <body>
 
@@ -101,15 +114,6 @@
             <a href="{{ url_for('maintenance') }}" class="nav-link-pro {% if request.endpoint == 'maintenance' %}active-page{% endif %}">
                 <i class="fas fa-calendar-check text-success"></i> Maintenance
             </a>
-            <a href="{{ url_for('calibration') }}" class="nav-link-pro {% if request.endpoint == 'calibration' %}active-page{% endif %}">
-                <i class="fas fa-compass"></i> Calibration Tools
-            </a>
-            <a href="{{ url_for('harness') }}" class="nav-link-pro {% if request.endpoint == 'harness' %}active-page{% endif %}">
-                <i class="fas fa-network-wired"></i> Harness Layout
-            </a>
-            <a href="{{ url_for('machines') }}" class="nav-link-pro {% if request.endpoint == 'machines' %}active-page{% endif %}">
-                <i class="fas fa-truck-monster"></i> My Machines
-            </a>
             <a href="{{ url_for('parts') }}" class="nav-link-pro {% if request.endpoint == 'parts' %}active-page{% endif %}">
                 <i class="fas fa-gears"></i> Parts Book
             </a>
@@ -128,11 +132,11 @@
     </div>
 
     <div class="main-wrapper">
-        <div class="top-bar shadow-sm">
+        <div class="top-bar">
             <div class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars-staggered"></i></div>
             <div class="brand-font fw-bold small neon-text">DR-MITAMBO <span class="text-warning">PRO</span></div>
-            <div class="user-avatar border border-secondary rounded-circle p-1">
-                <img src="https://ui-avatars.com/api/?name={{ current_user.username if current_user.is_authenticated else 'User' }}&background=00ffcc&color=000&bold=true" class="rounded-circle" width="30" alt="Profile">
+            <div class="user-avatar">
+                <img src="https://ui-avatars.com/api/?name={{ current_user.username if current_user.is_authenticated else 'User' }}&background=00ffcc&color=000&bold=true" class="rounded-circle border border-secondary" width="35" alt="Profile">
             </div>
         </div>
 
@@ -140,8 +144,8 @@
             {% with messages = get_flashed_messages(with_categories=true) %}
               {% if messages %}
                 {% for category, message in messages %}
-                  <div class="alert alert-{{ category if category != 'message' else 'dark' }} alert-dismissible fade show border-0 rounded-4 shadow-lg text-white" role="alert" style="background: #1a1a1a; border-left: 5px solid var(--neon) !important;">
-                    <i class="fas fa-info-circle me-2 text-info"></i> {{ message }}
+                  <div class="alert alert-dark alert-dismissible fade show border-0 rounded-4 shadow mb-4" role="alert" style="border-left: 5px solid var(--neon) !important;">
+                    <i class="fas fa-bell me-2 text-warning"></i> {{ message }}
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
                   </div>
                 {% endfor %}
@@ -152,21 +156,83 @@
         </div>
     </div>
 
+    <button id="ai-chat-btn" onclick="toggleChat()">
+        <i class="fas fa-comment-dots fa-xl text-dark"></i>
+    </button>
+
+    <div id="chat-window">
+        <div class="chat-header">
+            <div class="d-flex align-items-center">
+                <div class="bg-success rounded-circle me-2" style="width: 10px; height: 10px;"></div>
+                <span class="fw-bold small brand-font text-warning">MITAMBO-AI</span>
+            </div>
+            <button class="btn-close btn-close-white btn-sm" onclick="toggleChat()"></button>
+        </div>
+        <div class="chat-body" id="chat-body">
+            <div class="msg msg-ai">
+                Habari! Mimi ni msaidizi wako wa <strong>{{ request.endpoint.replace('_', ' ').title() if request.endpoint else 'Mitambo' }}</strong>. 
+                Una swali lolote kuhusu sehemu hii?
+            </div>
+        </div>
+        <div class="chat-footer">
+            <div class="input-group">
+                <input type="text" id="ai-msg-input" class="form-control bg-dark text-white border-0 small" placeholder="Andika swali lako..." onkeypress="handleKeyPress(event)">
+                <button class="btn btn-warning btn-sm px-3" onclick="sendChatMsg()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Sidebar Logic
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
             document.getElementById('overlay').classList.toggle('active');
         }
-        
-        // Auto-close sidebar on mobile after clicking a link
-        document.querySelectorAll('.nav-link-pro').forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth < 992) {
-                    toggleSidebar();
-                }
-            });
-        });
+
+        // Chatbot Logic
+        function toggleChat() {
+            const win = document.getElementById('chat-window');
+            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function handleKeyPress(e) { if (e.key === 'Enter') sendChatMsg(); }
+
+        async function sendChatMsg() {
+            const input = document.getElementById('ai-msg-input');
+            const body = document.getElementById('chat-body');
+            const msg = input.value.trim();
+            
+            if (!msg) return;
+
+            // Add user message
+            body.innerHTML += `<div class="msg msg-user">${msg}</div>`;
+            input.value = '';
+            body.scrollTop = body.scrollHeight;
+
+            // Loading state
+            const loadingId = 'load-' + Date.now();
+            body.innerHTML += `<div class="msg msg-ai" id="${loadingId}"><i class="fas fa-spinner fa-spin"></i> Inatafuta majibu...</div>`;
+            body.scrollTop = body.scrollHeight;
+
+            try {
+                const response = await fetch('/api/ask_expert', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        query: msg,
+                        category: "{{ request.endpoint if request.endpoint else 'general' }}"
+                    })
+                });
+                const data = await response.json();
+                document.getElementById(loadingId).innerHTML = data.result;
+            } catch (e) {
+                document.getElementById(loadingId).innerHTML = "Samahani, nimepata hitilafu. Jaribu tena.";
+            }
+            body.scrollTop = body.scrollHeight;
+        }
     </script>
     {% block scripts %}{% endblock %}
 </body>

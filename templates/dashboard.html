@@ -1,114 +1,183 @@
 {% extends "layout.html" %}
 
-{% block title %}Analytics Dashboard | DR-MITAMBO PRO{% endblock %}
+{% block title %}Professional Dashboard | DR-MITAMBO PRO{% endblock %}
 
 {% block head %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-    :root { --cat: #FFCD00; --bg: #0a0a0a; }
+    :root { --cat: #FFCD00; --bg: #050505; --neon: #00ffcc; }
     
+    /* Analytics Styling */
     .stat-card-pro {
-        background: #111;
-        border-radius: 20px;
-        padding: 20px;
+        background: rgba(17, 17, 17, 0.8);
+        border-radius: 15px;
+        padding: 15px;
         border: 1px solid #222;
         transition: 0.3s;
     }
-    .stat-card-pro:hover { border-color: var(--cat); }
-    
     .chart-container {
         background: #111;
-        border-radius: 25px;
-        padding: 20px;
+        border-radius: 20px;
+        padding: 15px;
         border: 1px solid #222;
-        margin-bottom: 25px;
+        margin-bottom: 20px;
     }
 
-    .indicator {
-        width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 8px;
+    /* Menu Grid Styling (Marekebisho ya Layout) */
+    .module-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Hapa ndipo kadi 2 kila mstari zinapokaa */
+        gap: 15px;
+        margin-top: 20px;
     }
-    .online { background: #2ecc71; box-shadow: 0 0 10px #2ecc71; }
+    
+    .module-card {
+        background: linear-gradient(145deg, #111, #080808);
+        border: 1px solid #222;
+        border-radius: 18px;
+        padding: 18px;
+        text-decoration: none;
+        transition: 0.3s;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .module-card:hover {
+        border-color: var(--neon);
+        background: #161616;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 255, 204, 0.1);
+    }
+
+    .module-card i { font-size: 1.4rem; margin-bottom: 12px; }
+    .module-card h6 { color: #fff; font-weight: 700; margin-bottom: 4px; font-size: 0.9rem; letter-spacing: 0.5px; }
+    .module-card p { color: #666; font-size: 0.7rem; margin: 0; line-height: 1.2; }
+
+    .indicator { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+    .online { background: #2ecc71; box-shadow: 0 0 10px #2ecc71; animation: pulse 2s infinite; }
+
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+    @media (max-width: 480px) {
+        .stat-card-pro h4 { font-size: 1.2rem; }
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h3 class="fw-bold brand-font mb-0">ANALYTICS <span class="text-warning">CENTER</span></h3>
-        <p class="small text-muted mb-0"><span class="indicator online"></span> Mfumo unasoma data za Live kutoka site.</p>
+        <h4 class="fw-bold brand-font mb-0">DR-MITAMBO <span class="text-warning">ANALYTICS</span></h4>
+        <p class="small text-muted mb-0"><span class="indicator online"></span> Live Fleet Connection</p>
     </div>
-    <button class="btn btn-dark btn-sm rounded-pill border-secondary px-3">
-        <i class="fas fa-download me-2"></i> Report
-    </button>
+    <div class="user-avatar border border-secondary rounded-pill px-3 py-1 bg-dark">
+        <small class="text-warning fw-bold">{{ user }}</small>
+    </div>
 </div>
 
-<div class="row g-3 mb-4 text-center">
+<div class="row g-2 mb-4">
     <div class="col-6 col-md-3">
-        <div class="stat-card-pro">
-            <small class="text-muted d-block text-uppercase small">Fuel Efficiency</small>
-            <h4 class="fw-bold text-success mt-2">84%</h4>
+        <div class="stat-card-pro text-center">
+            <small class="text-muted d-block x-small text-uppercase">Fuel Eff.</small>
+            <h4 class="fw-bold text-success mt-1">84%</h4>
         </div>
     </div>
     <div class="col-6 col-md-3">
-        <div class="stat-card-pro">
-            <small class="text-muted d-block text-uppercase small">Fleet Uptime</small>
-            <h4 class="fw-bold text-warning mt-2">92%</h4>
+        <div class="stat-card-pro text-center">
+            <small class="text-muted d-block x-small text-uppercase">Uptime</small>
+            <h4 class="fw-bold text-warning mt-1">92%</h4>
         </div>
     </div>
     <div class="col-6 col-md-3">
-        <div class="stat-card-pro">
-            <small class="text-muted d-block text-uppercase small">Active Alerts</small>
-            <h4 class="fw-bold text-danger mt-2">03</h4>
+        <div class="stat-card-pro text-center">
+            <small class="text-muted d-block x-small text-uppercase">Alerts</small>
+            <h4 class="fw-bold text-danger mt-1">03</h4>
         </div>
     </div>
     <div class="col-6 col-md-3">
-        <div class="stat-card-pro">
-            <small class="text-muted d-block text-uppercase small">Total Hours</small>
-            <h4 class="fw-bold text-white mt-2">1,240</h4>
+        <div class="stat-card-pro text-center">
+            <small class="text-muted d-block x-small text-uppercase">Fleet</small>
+            <h4 class="fw-bold text-white mt-1">{{ fleet_count }}</h4>
         </div>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-md-8">
-        <div class="chart-container shadow">
-            <h6 class="fw-bold mb-4 small text-uppercase opacity-50">Utendaji wa Wiki (Machine Utilization)</h6>
-            
-            <canvas id="performanceChart" height="200"></canvas>
+    <div class="col-lg-8">
+        <div class="chart-container">
+            <h6 class="fw-bold mb-3 small opacity-50 text-uppercase">Machine Utilization (Week)</h6>
+            <canvas id="performanceChart" height="180"></canvas>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="chart-container shadow">
-            <h6 class="fw-bold mb-4 small text-uppercase opacity-50">Hali ya Fleet (Fleet Health)</h6>
-            
-            <canvas id="healthChart" height="250"></canvas>
+    <div class="col-lg-4">
+        <div class="chart-container">
+            <h6 class="fw-bold mb-3 small opacity-50 text-uppercase">Fleet Health Status</h6>
+            <canvas id="healthChart" height="200"></canvas>
         </div>
     </div>
 </div>
 
-<div class="chart-container">
-    <h6 class="fw-bold mb-3 small text-uppercase opacity-50"><i class="fas fa-satellite me-2"></i> Fault Codes za Hivi Karibuni</h6>
+<h6 class="fw-bold text-muted small text-uppercase mb-3 mt-2"><i class="fas fa-th-large me-2"></i> Control Modules</h6>
+<div class="module-grid">
+    <a href="{{ url_for('diagnosis') }}" class="module-card">
+        <i class="fas fa-robot text-info"></i>
+        <h6>AI Diagnosis</h6>
+        <p>Uchambuzi wa hitilafu.</p>
+    </a>
+
+    <a href="{{ url_for('electrical') }}" class="module-card">
+        <i class="fas fa-bolt text-warning"></i>
+        <h6>Electrical Hub</h6>
+        <p>Wiring & Sensor Analysis.</p>
+    </a>
+
+    <a href="{{ url_for('systems_op') }}" class="module-card">
+        <i class="fas fa-microchip text-primary"></i>
+        <h6>Systems Op</h6>
+        <p>Hydraulic & Engine Logic.</p>
+    </a>
+
+    <a href="{{ url_for('troubleshooting') }}" class="module-card">
+        <i class="fas fa-screwdriver-wrench text-secondary"></i>
+        <h6>Troubleshoot</h6>
+        <p>Miongozo ya kurekebisha.</p>
+    </a>
+
+    <a href="{{ url_for('maintenance') }}" class="module-card">
+        <i class="fas fa-calendar-alt text-success"></i>
+        <h6>Maintenance</h6>
+        <p>Service & Fleet tracking.</p>
+    </a>
+
+    <a href="{{ url_for('parts') }}" class="module-card">
+        <i class="fas fa-gears text-danger"></i>
+        <h6>Parts Book</h6>
+        <p>Catalog ya vipuri.</p>
+    </a>
+</div>
+
+<div class="chart-container mt-4">
+    <h6 class="fw-bold mb-3 small text-uppercase opacity-50"><i class="fas fa-satellite me-2"></i> Recent Fault Alerts</h6>
     <div class="table-responsive">
-        <table class="table table-dark table-hover mb-0" style="font-size: 0.8rem;">
+        <table class="table table-dark table-hover mb-0" style="font-size: 0.75rem;">
             <thead>
                 <tr class="text-warning">
-                    <th>Timestamp</th>
                     <th>Machine</th>
-                    <th>Fault Code</th>
+                    <th>Code</th>
                     <th>Severity</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>08:12 AM</td>
-                    <td>CAT 336D (MBD02)</td>
-                    <td>102-3 (Boost Pressure)</td>
+                    <td>CAT 336D</td>
+                    <td>102-3</td>
                     <td><span class="badge bg-danger">Critical</span></td>
                 </tr>
                 <tr>
-                    <td>07:45 AM</td>
-                    <td>D8R (9EM01)</td>
-                    <td>E361-2 (Fuel Press)</td>
+                    <td>D8R Dozer</td>
+                    <td>E361-2</td>
                     <td><span class="badge bg-warning text-dark">Warning</span></td>
                 </tr>
             </tbody>
@@ -119,17 +188,16 @@
 
 {% block scripts %}
 <script>
-    // Grafu ya Utendaji (Line Chart)
+    // Performance Chart
     const ctx1 = document.getElementById('performanceChart').getContext('2d');
     new Chart(ctx1, {
         type: 'line',
         data: {
-            labels: ['Jumatatu', 'Jumanne', 'Jumatano', 'Alhamisi', 'Ijumaa', 'Jumamosi'],
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
             datasets: [{
-                label: 'Masaa ya Kazi',
                 data: [12, 19, 15, 17, 22, 10],
                 borderColor: '#FFCD00',
-                backgroundColor: 'rgba(255, 205, 0, 0.1)',
+                backgroundColor: 'rgba(255, 205, 0, 0.05)',
                 fill: true,
                 tension: 0.4
             }]
@@ -137,13 +205,13 @@
         options: {
             plugins: { legend: { display: false } },
             scales: {
-                y: { grid: { color: '#222' }, ticks: { color: '#666' } },
+                y: { grid: { color: '#222' }, ticks: { display: false } },
                 x: { grid: { display: false }, ticks: { color: '#666' } }
             }
         }
     });
 
-    // Grafu ya Afya (Doughnut Chart)
+    // Health Chart
     const ctx2 = document.getElementById('healthChart').getContext('2d');
     new Chart(ctx2, {
         type: 'doughnut',
@@ -156,10 +224,8 @@
             }]
         },
         options: {
-            plugins: {
-                legend: { position: 'bottom', labels: { color: '#888', padding: 20 } }
-            },
-            cutout: '70%'
+            plugins: { legend: { position: 'bottom', labels: { color: '#888', boxWidth: 10 } } },
+            cutout: '75%'
         }
     });
 </script>

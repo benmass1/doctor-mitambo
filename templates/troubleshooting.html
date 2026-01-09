@@ -1,130 +1,163 @@
-<!DOCTYPE html>
-<html lang="sw">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Troubleshooting Center | DR-MITAMBO PRO</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root { --cat: #FFCD00; --bg: #0a0a0a; --card: #141414; }
-        body { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; padding-bottom: 50px; }
-        .header-pro { background: linear-gradient(180deg, #000 0%, #111 100%); padding: 30px 20px; border-bottom: 2px solid var(--cat); }
-        .search-box { background: #1a1a1a; border: 1px solid #333; border-radius: 50px; padding: 10px 20px; margin-top: -25px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        .search-box input { background: transparent; border: none; color: white; width: 90%; }
-        
-        /* Step-by-Step Cards */
-        .trouble-section { background: var(--card); border-radius: 20px; padding: 25px; margin-bottom: 25px; border: 1px solid #222; }
-        .guide-step { border-left: 2px solid var(--cat); padding-left: 20px; position: relative; margin-bottom: 20px; }
-        .guide-step::before { content: ''; position: absolute; left: -9px; top: 0; width: 16px; height: 16px; background: var(--cat); border-radius: 50%; border: 4px solid var(--bg); }
-        
-        .spec-table { width: 100%; font-size: 0.85rem; margin-top: 15px; background: #000; border-radius: 10px; overflow: hidden; }
-        .spec-table th { background: #222; color: var(--cat); padding: 10px; }
-        .spec-table td { padding: 10px; border-bottom: 1px solid #111; }
-        
-        .warning-box { background: rgba(255, 0, 0, 0.1); border: 1px solid #ff4444; color: #ff4444; padding: 15px; border-radius: 10px; font-size: 0.85rem; margin-bottom: 15px; }
-        .btn-back { color: var(--cat); text-decoration: none; font-weight: bold; }
-    </style>
-</head>
-<body>
+here{% extends "layout.html" %}
+{% block content %}
+<style>
+    :root { --cat: #FFCD00; --bg: #0a0a0a; --card: #141414; --text-muted: #a0a0a0; }
+    body { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; padding-bottom: 80px; }
+    
+    .header-pro { background: linear-gradient(180deg, #000 0%, #111 100%); padding: 30px 20px; border-bottom: 2px solid var(--cat); }
+    
+    .search-box { 
+        background: #1a1a1a; 
+        border: 1px solid #333; 
+        border-radius: 50px; 
+        padding: 12px 25px; 
+        margin-top: -30px; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.6); 
+        max-width: 600px;
+    }
+    .search-box input { background: transparent; border: none; color: white; width: 100%; outline: none; }
+    
+    .trouble-section { background: var(--card); border-radius: 20px; padding: 25px; margin-bottom: 25px; border: 1px solid #222; }
+    .trouble-section h5 { letter-spacing: 1px; }
 
-    <div class="header-pro text-center">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <a href="/" class="btn-back"><i class="fas fa-chevron-left me-1"></i> DASHBOARD</a>
-            <span class="badge bg-warning text-dark">PRO GUIDE</span>
-        </div>
-        <h3 class="fw-bold mb-0">TROUBLESHOOTING <span class="text-warning">HUB</span></h3>
-        <p class="small opacity-50">Miongozo ya hatua kwa hatua kwa mafundi wa site</p>
+    .guide-step { border-left: 2px solid var(--cat); padding-left: 25px; position: relative; margin-bottom: 30px; }
+    .guide-step::before { 
+        content: ''; 
+        position: absolute; 
+        left: -9px; 
+        top: 0; 
+        width: 16px; 
+        height: 16px; 
+        background: var(--cat); 
+        border-radius: 50%; 
+        border: 4px solid var(--bg); 
+    }
+    
+    .spec-table { width: 100%; font-size: 0.85rem; margin-top: 15px; background: #000; border-radius: 10px; overflow: hidden; border-collapse: collapse; }
+    .spec-table th { background: #222; color: var(--cat); padding: 12px; text-align: left; }
+    .spec-table td { padding: 12px; border-bottom: 1px solid #111; }
+    
+    .warning-box { background: rgba(255, 68, 68, 0.1); border: 1px solid #ff4444; color: #ffbbbb; padding: 15px; border-radius: 12px; font-size: 0.85rem; margin: 15px 0; }
+    .tech-badge { background: #333; color: var(--cat); padding: 3px 10px; border-radius: 5px; font-family: monospace; font-size: 0.8rem; }
+</style>
+
+<div class="header-pro text-center">
+    <div class="container d-flex justify-content-between align-items-center mb-3">
+        <a href="/" class="text-warning text-decoration-none fw-bold"><i class="fas fa-chevron-left me-1"></i> DASHBOARD</a>
+        <span class="badge rounded-pill bg-warning text-dark px-3 py-2">ADVANCED DIAGNOSIS</span>
+    </div>
+    <h3 class="fw-bold mb-0">TROUBLESHOOTING <span class="text-warning">HUB</span></h3>
+    <p class="small text-muted">Miongozo ya hatua kwa hatua ya kutatua hitilafu za mitambo (Site Guides)</p>
+</div>
+
+<div class="container">
+    <div class="search-box mx-auto d-flex align-items-center">
+        <i class="fas fa-search text-warning me-3"></i>
+        <input type="text" id="faultSearch" placeholder="Tafuta CID-FMI, Error Code au Tatizo...">
     </div>
 
+    <div class="mt-5">
+        <div class="trouble-section">
+            <h5 class="fw-bold text-warning mb-4"><i class="fas fa-triangle-exclamation me-2"></i>ENGINE SYSTEM</h5>
+            
+            <div class="guide-step">
+                <h6 class="fw-bold text-white">Tatizo: Injini Kupata Joto (Overheating)</h6>
+                <p class="small text-muted">Miongozo kwa injini za Common Rail (CAT C-Series, Komatsu SAA n.k)</p>
+                
+                <div class="warning-box">
+                    <i class="fas fa-skull-crossbones me-2"></i> <strong>ONYO LA USALAMA:</strong> Usifungue kifuniko cha radiator (Radiator Cap) wakati injini ni ya moto. Shinikizo la mvuke linaweza kusababisha majeraha makubwa.
+                </div>
+                
+                <ul class="small opacity-75 list-unstyled">
+                    <li class="mb-2"><i class="fas fa-check text-warning me-2"></i><b>Hatua ya 1:</b> Kagua kiwango cha coolant na uvujaji (external leaks).</li>
+                    <li class="mb-2"><i class="fas fa-check text-warning me-2"></i><b>Hatua ya 2:</b> Kagua Fan Belt na Hydraulic Fan Speed (ikiwa inatumia fan motor).</li>
+                    <li class="mb-2"><i class="fas fa-check text-warning me-2"></i><b>Hatua ya 3:</b> Safisha "Radiator Fins" kwa kutumia hewa au maji ya presha (chini ya 30 psi).</li>
+                </ul>
+
+                <div class="table-responsive">
+                    <table class="spec-table">
+                        <thead><tr><th>Component</th><th>Spec/Tolerance</th><th>Recommended Action</th></tr></thead>
+                        <tbody>
+                            <tr><td>Radiator Cap</td><td>1.1 Bar (16 PSI)</td><td>Replace if seal is cracked</td></tr>
+                            <tr><td>Thermostat</td><td>82°C (Opens fully)</td><td>Test in boiling water</td></tr>
+                            <tr><td>Engine Load</td><td>80% - 95%</td><td>Downshift if temp rises</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            [attachment_0](attachment)
+
+            <div class="guide-step">
+                <h6 class="fw-bold text-white">Tatizo: Black Smoke & Low Power</h6>
+                <p class="small text-muted">Uchambuzi wa mchanganyiko wa hewa na mafuta (Air-to-Fuel Ratio).</p>
+                <ul class="small opacity-75 list-unstyled">
+                    <li class="mb-2"><i class="fas fa-tools text-warning me-2"></i><b>Turbo Check:</b> Kagua uvujaji wa hewa kwenye "Intercooler Hoses".</li>
+                    <li class="mb-2"><i class="fas fa-tools text-warning me-2"></i><b>Fuel Check:</b> Badilisha Fuel Filters na pima "Primary Fuel Pressure".</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="trouble-section">
+            <h5 class="fw-bold text-warning mb-4"><i class="fas fa-faucet-drip me-2"></i>HYDRAULIC SYSTEM</h5>
+            
+            <div class="guide-step">
+                <h6 class="fw-bold text-white">Tatizo: Mitambo Kuwa Mizito (Slow Response)</h6>
+                <p class="small text-muted">Uchunguzi wa Negative Flow Control (NFC) na Pilot Pressure.</p>
+                
+                <div class="p-3 bg-dark border border-secondary rounded mb-3">
+                    <span class="tech-badge mb-2 d-inline-block">TECHNICAL TEST</span><br>
+                    <p class="small mb-0 text-light">Pima voltage kwenye <b>Pump Solenoid (PRV)</b>: 
+                    Ikiwa lever iko neutral: <b>0.5V - 1.2V</b>. 
+                    Ikiwa lever imeshikwa (full stroke): <b>3.5V - 4.2V</b>.</p>
+                </div>
+
+                <ul class="small opacity-75 list-unstyled">
+                    <li class="mb-2"><i class="fas fa-wrench text-warning me-2"></i><b>Pilot Pressure:</b> Pima kwenye block ya pilot (Standard: 35-40 Bar).</li>
+                    <li class="mb-2"><i class="fas fa-wrench text-warning me-2"></i><b>Main Relief:</b> Kagua Main Relief Valve ikiwa imekwama wazi (Stuck Open).</li>
+                </ul>
+            </div>
+            
+            
+        </div>
+
+        <div class="trouble-section">
+            <h5 class="fw-bold text-warning mb-4"><i class="fas fa-microchip me-2"></i>ELECTRICAL CODES</h5>
+            <div class="guide-step">
+                <h6 class="fw-bold text-danger">Fault Code: 5V Sensor Supply (Short/Open)</h6>
+                <p class="small text-muted">ECM inashindwa kutoa voltaji ya kurejelea (Reference Voltage) kwa sensorer.</p>
+                <div class="table-responsive">
+                    <table class="spec-table">
+                        <thead><tr><th>ECM Pin Out</th><th>Wire Color</th><th>Expected Signal</th></tr></thead>
+                        <tbody>
+                            <tr><td>Digital Ref +5V</td><td>Red/White</td><td>5.02V Constant</td></tr>
+                            <tr><td>Sensor Return</td><td>Black/Yellow</td><td>0.01V - 0.05V</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="fixed-bottom p-3 bg-dark border-top border-secondary text-center">
     <div class="container">
-        <div class="search-box mx-auto d-flex align-items-center">
-            <i class="fas fa-search text-warning me-2"></i>
-            <input type="text" placeholder="Tafuta Fault Code au Tatizo (e.g E15)...">
-        </div>
-
-        <div class="mt-5">
-            <div class="trouble-section">
-                <h5 class="fw-bold text-warning mb-4"><i class="fas fa-engine-warning me-2"></i>ENGINE SYSTEM</h5>
-                
-                <div class="guide-step">
-                    <h6 class="fw-bold">Tatizo: Engine Overheating (Mizunguko ya Joto)</h6>
-                    <p class="small text-muted">Hutokea mara nyingi kwenye CAT 336D au Komatsu PC200.</p>
-                    
-                    <div class="warning-box">
-                        <i class="fas fa-exclamation-triangle me-2"></i> USIFUNGUE kifuniko cha radiator wakati injini ni ya moto. Hatari ya kuungua!
-                    </div>
-                    
-                    <ul class="small opacity-75">
-                        <li><b>Hatua ya 1:</b> Kagua kiwango cha coolant. Ongeza kama kimepungua.</li>
-                        <li><b>Hatua ya 2:</b> Kagua Fan Belt. Hakikisha haina "slips" na tension ni sahihi.</li>
-                        <li><b>Hatua ya 3:</b> Safisha Radiator Core. Tumia hewa ya presha kupuliza vumbi na takataka.</li>
-                        <li><b>Hatua ya 4:</b> Check Thermostat. Itoe na uichemshe kwenye maji kuona kama inafungua.</li>
-                    </ul>
-
-                    <table class="spec-table">
-                        <thead><tr><th>Component</th><th>Spec</th><th>Action</th></tr></thead>
-                        <tbody>
-                            <tr><td>Radiator Cap</td><td>15-20 PSI</td><td>Replace if weak</td></tr>
-                            <tr><td>Coolant Temp</td><td>85°C - 98°C</td><td>Stop at 105°C</td></tr>
-                            <tr><td>Fan Speed</td><td>800 - 1200 RPM</td><td>Check pump flow</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="guide-step">
-                    <h6 class="fw-bold">Tatizo: Injini Haina Nguvu (Low Power / Black Smoke)</h6>
-                    <ul class="small opacity-75">
-                        <li><b>Hatua ya 1:</b> Kagua Air Filters. Ikiwa ni chafu, injini hukosa hewa ya kutosha.</li>
-                        <li><b>Hatua ya 2:</b> Kagua Fuel Pressure. Pima baada ya Fuel Filter.</li>
-                        <li><b>Hatua ya 3:</b> Turbocharger Check. Sikiliza sauti ya "whistling" au kagua "play" kwenye shaft.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="trouble-section">
-                <h5 class="fw-bold text-warning mb-4"><i class="fas fa-water me-2"></i>HYDRAULIC SYSTEM</h5>
-                
-                <div class="guide-step">
-                    <h6 class="fw-bold">Tatizo: Slow Movement (Mitambo kuwa Mizito)</h6>
-                    <p class="small text-muted">Mara nyingi husababishwa na "Low Main Relief Pressure".</p>
-                    
-                    <div class="p-3 bg-dark rounded small mb-3">
-                        <b class="text-warning">Voltage Check (Pump Solenoid):</b><br>
-                        Wakati lever imeshikwa, voltage inapaswa kuwa kati ya <b>2.5V - 4.5V</b>. Ikiwa ni 0V, kagua wiring harness.
-                    </div>
-
-                    <ul class="small opacity-75">
-                        <li><b>Step 1:</b> Pima Pilot Pressure (Standard: 450 - 550 PSI).</li>
-                        <li><b>Step 2:</b> Kagua Hydraulic Oil Quality. Ikiwa ni nyeusi, imechoma (overheated).</li>
-                        <li><b>Step 3:</b> Adjust Main Relief Valve. Ongeza robo mzunguko na uone mabadiliko.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="trouble-section">
-                <h5 class="fw-bold text-warning mb-4"><i class="fas fa-bolt me-2"></i>ELECTRICAL CODES</h5>
-                <div class="guide-step">
-                    <h6 class="fw-bold text-danger">Fault Code: E15 (Sensor Power Supply)</h6>
-                    <p class="small opacity-75">Inamaanisha ECM haitumi 5V reference kwa sensorer.</p>
-                    <table class="spec-table">
-                        <thead><tr><th>Pin Location</th><th>Wire Color</th><th>Expected V</th></tr></thead>
-                        <tbody>
-                            <tr><td>J1 - Pin 2</td><td>Yellow</td><td>5.0V ± 0.1</td></tr>
-                            <tr><td>J2 - Pin 10</td><td>Black</td><td>0.02V (Ground)</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="fixed-bottom p-3 bg-dark border-top border-secondary">
-        <button class="btn btn-warning w-100 fw-bold rounded-pill" onclick="window.print()">
+        <button class="btn btn-warning w-100 fw-bold rounded-pill py-3 shadow" onclick="window.print()">
             <i class="fas fa-file-pdf me-2"></i> PAKUA MWONGOZO (PDF)
         </button>
     </div>
+</div>
 
-</body>
-</html>
-
+<script>
+    // Simple search filter
+    document.getElementById('faultSearch').addEventListener('keyup', function() {
+        let filter = this.value.toUpperCase();
+        let sections = document.querySelectorAll('.trouble-section');
+        
+        sections.forEach(section => {
+            let text = section.innerText.toUpperCase();
+            section.style.display = text.includes(filter) ? "" : "none";
+        });
+    });
+</script>
+{% endblock %}

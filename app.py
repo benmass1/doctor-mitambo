@@ -1,4 +1,4 @@
-hereimport os
+import os
 from datetime import datetime
 
 from flask import (
@@ -84,9 +84,6 @@ class Machine(db.Model):
     last_service_date = db.Column(db.DateTime, default=datetime.utcnow)
     owner_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
-# =====================================================
-# LOGIN MANAGER
-# =====================================================
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -151,30 +148,22 @@ def api_analyze():
 def electrical():
     return render_template("electrical.html")
 
-
 @app.route("/systems_op")
 @login_required
 def systems_op():
     return render_template("systems_op.html")
 
-
 @app.route("/troubleshooting")
 @login_required
 def troubleshooting():
-    return render_template(
-        "placeholder.html",
-        title="Troubleshooting Guide",
-        icon="fa-wrench",
-        desc="Mwongozo wa kutatua hitilafu za mitambo."
-    )
-
+    # Imebadilishwa kusoma ukurasa halisi
+    return render_template("troubleshooting.html")
 
 @app.route("/maintenance")
 @login_required
 def maintenance():
     machines = Machine.query.filter_by(owner_id=current_user.id).all()
     return render_template("maintenance.html", machines=machines)
-
 
 @app.route("/calibration")
 @login_required
@@ -186,7 +175,6 @@ def calibration():
         desc="Kusawazisha sensorer na valves."
     )
 
-
 @app.route("/harness")
 @login_required
 def harness():
@@ -196,7 +184,6 @@ def harness():
         icon="fa-network-wired",
         desc="Ramani za nyaya za mtambo."
     )
-
 
 @app.route("/parts")
 @login_required
@@ -208,7 +195,6 @@ def parts():
         desc="Katalogi ya vipuri asilia."
     )
 
-
 @app.route("/manuals")
 @login_required
 def manuals():
@@ -218,7 +204,6 @@ def manuals():
         icon="fa-book",
         desc="Maktaba ya vitabu vya ufundi."
     )
-
 
 @app.route("/safety")
 @login_required
@@ -338,4 +323,4 @@ if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
         port=int(os.environ.get("PORT", 8000))
-)
+    )

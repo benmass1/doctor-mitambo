@@ -8,6 +8,23 @@ from datetime import datetime
 
 # --- INITIALIZATION ---
 app = Flask(__name__)
+from ai_service import analyze_text
+
+@app.route("/diagnosis")
+def diagnosis():
+    return render_template("diagnosis.html")
+
+@app.route("/api/analyze", methods=["POST"])
+def api_analyze():
+    user_input = request.json.get("text", "")
+    if not user_input:
+        return jsonify({"error": "Hakuna maelezo ya mtambo"}), 400
+
+    try:
+        result = analyze_text(user_input)
+        return jsonify({"result": result})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # --- CONFIGURATION ---
 app.secret_key = os.environ.get("SECRET_KEY", "DR_MITAMBO_PRO_SECURE_2026_V10")

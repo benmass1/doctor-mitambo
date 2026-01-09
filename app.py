@@ -4,13 +4,14 @@ from flask import Flask, render_template, redirect, url_for, session, request, f
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 
 app = Flask(__name__)
 
 # --- CONFIGURATION ---
-app.secret_key = os.environ.get("SECRET_KEY", "dr_mitambo_super_secret_key_2026")
+app.secret_key = os.environ.get("SECRET_KEY", "dr_mitambo_super_secret_key_2026_professional_edition")
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(BASE_DIR, "mitambo.db")
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(BASE_DIR, "mitambo_pro.db")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # --- GEMINI AI CONFIGURATION ---
@@ -20,12 +21,14 @@ genai.configure(api_key=API_KEY)
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
+login_manager.login_message_category = "info"
 
-# --- DATABASE MODELS ---
+# --- DATABASE MODELS (PRO SCHEMA) ---
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     machines = db.relationship('Machine', backref='owner', lazy=True)
 
     def set_password(self, password):
@@ -37,25 +40,32 @@ class User(db.Model, UserMixin):
 class Machine(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    brand = db.Column(db.String(50))
+    brand = db.Column(db.String(50)) # Mf: CAT, KOMATSU, SINOTRUK
     model = db.Column(db.String(50))
     serial = db.Column(db.String(50), unique=True)
     current_hours = db.Column(db.Integer, default=0)
     next_service_hours = db.Column(db.Integer, default=250)
+    last_update = db.Column(db.DateTime, default=datetime.utcnow)
     owner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# --- CORE ROUTES ---
+# --- CORE DASHBOARD ---
 @app.route("/")
 @app.route("/index")
 @login_required
 def index():
-    fleet = Machine.query.filter_by(owner_id=current_user.id).all()
-    return render_template("index.html", user=current_user.username, fleet=fleet, fleet_count=len(fleet))
+    user_machines = Machine.query.filter_by(owner_id=current_user.id).all()
+    fleet_count = len(user_machines)
+    return render_template("index.html", 
+                           user=current_user.username, 
+                           fleet=user_machines, 
+                           fleet_count=fleet_count,
+                           now=datetime.utcnow())
 
+# --- AI DIAGNOSIS PRO ---
 @app.route("/diagnosis", methods=["GET", "POST"])
 @login_required
 def diagnosis():
@@ -64,29 +74,31 @@ def diagnosis():
         query = request.form.get("error_code", "").strip()
         try:
             model = genai.GenerativeModel('gemini-1.5-flash')
-            prompt = f"Wewe ni DR-MITAMBO AI. Mteja anauliza: '{query}'. Jibu kitaalamu kwa Kiswahili."
+            prompt = (f"Wewe ni DR-MITAMBO PRO AI, fundi mkuu wa mitambo mizito. "
+                      f"Chambua tatizo hili la kiufundi: '{query}'. "
+                      f"Toa maelezo ya kina, sababu za kitaalamu, na hatua za kurekebisha kwa Kiswahili fasaha.")
             response = model.generate_content(prompt)
             result = response.text
-        except:
-            result = "Hitilafu: AI imeshindwa kuunganishwa."
+        except Exception as e:
+            result = f"Hitilafu ya Kiufundi: AI imeshindwa kuchakata. (Error: {str(e)})"
     return render_template("diagnosis.html", result=result)
 
-# --- MODULI ZILIZOBAKI (SASA ZIPO ZOTE) ---
+# --- MODULI ZOTE ZA SIDEBAR (FULL LIST) ---
 
 @app.route("/electrical")
 @login_required
-def electrical(): 
-    return render_template("placeholder.html", title="Electrical Hub", icon="fa-bolt")
+def electrical():
+    return render_template("placeholder.html", title="Electrical System Hub", icon="fa-bolt")
 
 @app.route("/systems_op")
 @login_required
-def systems_op(): 
-    return render_template("placeholder.html", title="Systems Operation", icon="fa-cogs")
+def systems_op():
+    return render_template("placeholder.html", title="Systems Operation", icon="fa-microchip")
 
 @app.route("/troubleshooting")
 @login_required
-def troubleshooting(): 
-    return render_template("placeholder.html", title="Troubleshooting Guide", icon="fa-wrench")
+def troubleshooting():
+    return render_template("placeholder.html", title="Troubleshooting Guide", icon="fa-screwdriver-wrench")
 
 @app.route("/maintenance")
 @login_required
@@ -94,26 +106,32 @@ def maintenance():
     data = Machine.query.filter_by(owner_id=current_user.id).all()
     return render_template("maintenance.html", machines=data)
 
-@app.route("/calibration") # <--- IMEONGEZWA
+@app.route("/calibration")
 @login_required
-def calibration(): 
-    return render_template("placeholder.html", title="Sensor Calibration", icon="fa-compass")
+def calibration():
+    return render_template("placeholder.html", title="Sensor & Valve Calibration", icon="fa-compass")
 
-@app.route("/safety") # <--- IMEONGEZWA
+@app.route("/harness")
 @login_required
-def safety(): 
-    return render_template("placeholder.html", title="Safety & Regulations", icon="fa-shield-halved")
+def harness():
+    return render_template("placeholder.html", title="Wiring Harness Layouts", icon="fa-network-wired")
 
 @app.route("/parts")
 @login_required
-def parts(): 
-    return render_template("placeholder.html", title="Parts Book", icon="fa-search")
+def parts():
+    return render_template("placeholder.html", title="Parts Catalogue", icon="fa-gears")
 
 @app.route("/manuals")
 @login_required
-def manuals(): 
-    return render_template("placeholder.html", title="Service Manuals", icon="fa-book")
+def manuals():
+    return render_template("placeholder.html", title="Service & Shop Manuals", icon="fa-book-open")
 
+@app.route("/safety")
+@login_required
+def safety():
+    return render_template("placeholder.html", title="Safety Standards (HSE)", icon="fa-shield-heart")
+
+# --- MACHINE MANAGEMENT ---
 @app.route("/machines")
 @login_required
 def machines():
@@ -124,28 +142,51 @@ def machines():
 @login_required
 def add_machine():
     if request.method == "POST":
-        m = Machine(name=request.form.get("name"), brand=request.form.get("brand"),
-                    model=request.form.get("model"), serial=request.form.get("serial"),
-                    current_hours=int(request.form.get("hours", 0)), owner_id=current_user.id)
-        db.session.add(m); db.session.commit()
-        return redirect(url_for("machines"))
+        try:
+            new_m = Machine(
+                name=request.form.get("name"),
+                brand=request.form.get("brand"),
+                model=request.form.get("model"),
+                serial=request.form.get("serial"),
+                current_hours=int(request.form.get("hours", 0)),
+                owner_id=current_user.id
+            )
+            db.session.add(new_m)
+            db.session.commit()
+            flash("Mtambo mpya umesajiliwa kwenye mfumo!", "success")
+            return redirect(url_for("machines"))
+        except Exception:
+            db.session.rollback()
+            flash("Kosa: Serial number inatumika na mtambo mwingine.", "danger")
     return render_template("add_machine.html")
 
-# --- AUTH ---
+# --- USER AUTHENTICATION ---
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
     if request.method == "POST":
         user = User.query.filter_by(username=request.form.get("username")).first()
         if user and user.check_password(request.form.get("password")):
-            login_user(user); return redirect(url_for("index"))
+            login_user(user)
+            return redirect(url_for("index"))
+        flash("Login Imefeli: Jina au Nywila si sahihi.", "danger")
     return render_template("login.html")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
     if request.method == "POST":
-        u = User(username=request.form.get("username"))
-        u.set_password(request.form.get("password"))
-        db.session.add(u); db.session.commit()
+        u_name = request.form.get("username")
+        if User.query.filter_by(username=u_name).first():
+            flash("Jina hili limesajiliwa tayari.", "danger")
+            return redirect(url_for("register"))
+        new_u = User(username=u_name)
+        new_u.set_password(request.form.get("password"))
+        db.session.add(new_u)
+        db.session.commit()
+        flash("Usajili umekamilika! Karibu DR-MITAMBO.", "success")
         return redirect(url_for("login"))
     return render_template("register.html")
 
@@ -155,6 +196,7 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
+# --- INITIALIZE DATABASE ---
 with app.app_context():
     db.create_all()
 

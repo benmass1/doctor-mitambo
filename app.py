@@ -68,16 +68,13 @@ def index():
     if total_fleet > 0:
         avg_health = sum(m.health_score for m in fleet) // total_fleet
         
-    return render_template("index.html", 
-                           user=current_user.username, 
-                           fleet=fleet, 
-                           fleet_count=total_fleet,
-                           needs_service=needs_service,
-                           avg_health=avg_health)
+    return render_template("index.html", user=current_user.username, fleet=fleet, fleet_count=total_fleet, needs_service=needs_service, avg_health=avg_health)
+
 # --- AI DIAGNOSIS ENGINE ---
 @app.route("/diagnosis", methods=["GET", "POST"])
 @login_required
 def diagnosis():
+
     result = None
     if request.method == "POST":
         query = request.form.get("error_code", "").strip()

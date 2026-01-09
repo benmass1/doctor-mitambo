@@ -138,12 +138,9 @@ def api_analyze():
 # =====================================================
 @app.route("/electrical")
 @login_required
-@app.route("/electrical")
-@login_required
 def electrical():
-    return render_template("electrical.html") # <--- Iwe hivi, bila neno placeholder
-
-    ) # <-- Hapa mabano yalikuwa yamefunguliwa yakasahaulika
+    # Hii sasa imerekebishwa, haina mabano ya ziada
+    return render_template("electrical.html")
 
 @app.route("/systems_op")
 @login_required

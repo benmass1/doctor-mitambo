@@ -1,4 +1,4 @@
-itimport os
+import os
 import google.generativeai as genai
 from flask import Flask, render_template, redirect, url_for, session, request, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy

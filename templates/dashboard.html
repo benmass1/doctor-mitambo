@@ -1,222 +1,87 @@
+<div class="module-grid">
 
-{% extends "layout.html" %}
+    <!-- 1 -->
+    <a href="{{ url_for('diagnosis') }}" class="module-card">
+        <i class="fas fa-robot text-info"></i>
+        <h6>AI Diagnosis</h6>
+        <p>Uchambuzi wa hitilafu.</p>
+    </a>
 
-{% block title %}Professional Dashboard | DR-MITAMBO PRO{% endblock %}
+    <!-- 2 -->
+    <a href="{{ url_for('electrical') }}" class="module-card">
+        <i class="fas fa-bolt text-warning"></i>
+        <h6>Electrical Hub</h6>
+        <p>Wiring & Sensor Analysis.</p>
+    </a>
 
-{% block head %}
+    <!-- 3 -->
+    <a href="{{ url_for('systems_op') }}" class="module-card">
+        <i class="fas fa-microchip text-primary"></i>
+        <h6>Systems Op</h6>
+        <p>Hydraulic & Engine Logic.</p>
+    </a>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  <style>  
-    :root { --cat: #FFCD00; --bg: #050505; --neon: #00ffcc; }  
-      
-    /* Analytics Styling */  
-    .stat-card-pro {  
-        background: rgba(17, 17, 17, 0.8);  
-        border-radius: 15px;  
-        padding: 15px;  
-        border: 1px solid #222;  
-        transition: 0.3s;  
-    }  
-    .chart-container {  
-        background: #111;  
-        border-radius: 20px;  
-        padding: 15px;  
-        border: 1px solid #222;  
-        margin-bottom: 20px;  
-    }  
-  
-    /* Menu Grid Styling (Marekebisho ya Layout) */  
-    .module-grid {  
-        display: grid;  
-        grid-template-columns: repeat(2, 1fr); /* Hapa ndipo kadi 2 kila mstari zinapokaa */  
-        gap: 15px;  
-        margin-top: 20px;  
-    }  
-      
-    .module-card {  
-        background: linear-gradient(145deg, #111, #080808);  
-        border: 1px solid #222;  
-        border-radius: 18px;  
-        padding: 18px;  
-        text-decoration: none;  
-        transition: 0.3s;  
-        display: flex;  
-        flex-direction: column;  
-        position: relative;  
-        overflow: hidden;  
-    }  
-      
-    .module-card:hover {  
-        border-color: var(--neon);  
-        background: #161616;  
-        transform: translateY(-5px);  
-        box-shadow: 0 10px 20px rgba(0, 255, 204, 0.1);  
-    }  
-  
-    .module-card i { font-size: 1.4rem; margin-bottom: 12px; }  
-    .module-card h6 { color: #fff; font-weight: 700; margin-bottom: 4px; font-size: 0.9rem; letter-spacing: 0.5px; }  
-    .module-card p { color: #666; font-size: 0.7rem; margin: 0; line-height: 1.2; }  
-  
-    .indicator { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }  
-    .online { background: #2ecc71; box-shadow: 0 0 10px #2ecc71; animation: pulse 2s infinite; }  
-  
-    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }  
-  
-    @media (max-width: 480px) {  
-        .stat-card-pro h4 { font-size: 1.2rem; }  
-    }  
-</style>  {% endblock %}
+    <!-- 4 -->
+    <a href="{{ url_for('troubleshooting') }}" class="module-card">
+        <i class="fas fa-screwdriver-wrench text-secondary"></i>
+        <h6>Troubleshoot</h6>
+        <p>Miongozo ya kurekebisha.</p>
+    </a>
 
-{% block content %}
+    <!-- 5 -->
+    <a href="{{ url_for('maintenance') }}" class="module-card">
+        <i class="fas fa-calendar-alt text-success"></i>
+        <h6>Maintenance</h6>
+        <p>Service & Fleet tracking.</p>
+    </a>
 
-<div class="d-flex justify-content-between align-items-center mb-4">  
-    <div>  
-        <h4 class="fw-bold brand-font mb-0">DR-MITAMBO <span class="text-warning">ANALYTICS</span></h4>  
-        <p class="small text-muted mb-0"><span class="indicator online"></span> Live Fleet Connection</p>  
-    </div>  
-    <div class="user-avatar border border-secondary rounded-pill px-3 py-1 bg-dark">  
-        <small class="text-warning fw-bold">{{ user }}</small>  
-    </div>  
-</div>  <div class="row g-2 mb-4">  
-    <div class="col-6 col-md-3">  
-        <div class="stat-card-pro text-center">  
-            <small class="text-muted d-block x-small text-uppercase">Fuel Eff.</small>  
-            <h4 class="fw-bold text-success mt-1">84%</h4>  
-        </div>  
-    </div>  
-    <div class="col-6 col-md-3">  
-        <div class="stat-card-pro text-center">  
-            <small class="text-muted d-block x-small text-uppercase">Uptime</small>  
-            <h4 class="fw-bold text-warning mt-1">92%</h4>  
-        </div>  
-    </div>  
-    <div class="col-6 col-md-3">  
-        <div class="stat-card-pro text-center">  
-            <small class="text-muted d-block x-small text-uppercase">Alerts</small>  
-            <h4 class="fw-bold text-danger mt-1">03</h4>  
-        </div>  
-    </div>  
-    <div class="col-6 col-md-3">  
-        <div class="stat-card-pro text-center">  
-            <small class="text-muted d-block x-small text-uppercase">Fleet</small>  
-            <h4 class="fw-bold text-white mt-1">{{ fleet_count }}</h4>  
-        </div>  
-    </div>  
-</div>  <div class="row">  
-    <div class="col-lg-8">  
-        <div class="chart-container">  
-            <h6 class="fw-bold mb-3 small opacity-50 text-uppercase">Machine Utilization (Week)</h6>  
-            <canvas id="performanceChart" height="180"></canvas>  
-        </div>  
-    </div>  
-    <div class="col-lg-4">  
-        <div class="chart-container">  
-            <h6 class="fw-bold mb-3 small opacity-50 text-uppercase">Fleet Health Status</h6>  
-            <canvas id="healthChart" height="200"></canvas>  
-        </div>  
-    </div>  
-</div>  <h6 class="fw-bold text-muted small text-uppercase mb-3 mt-2"><i class="fas fa-th-large me-2"></i> Control Modules</h6>  
-<div class="module-grid">  
-    <a href="{{ url_for('diagnosis') }}" class="module-card">  
-        <i class="fas fa-robot text-info"></i>  
-        <h6>AI Diagnosis</h6>  
-        <p>Uchambuzi wa hitilafu.</p>  
-    </a>  <a href="{{ url_for('electrical') }}" class="module-card">  
-    <i class="fas fa-bolt text-warning"></i>  
-    <h6>Electrical Hub</h6>  
-    <p>Wiring & Sensor Analysis.</p>  
-</a>  
+    <!-- 6 -->
+    <a href="{{ url_for('parts') }}" class="module-card">
+        <i class="fas fa-gears text-danger"></i>
+        <h6>Parts Book</h6>
+        <p>Catalog ya vipuri.</p>
+    </a>
 
-<a href="{{ url_for('systems_op') }}" class="module-card">  
-    <i class="fas fa-microchip text-primary"></i>  
-    <h6>Systems Op</h6>  
-    <p>Hydraulic & Engine Logic.</p>  
-</a>  
+    <!-- 7 -->
+    <a href="{{ url_for('manuals') }}" class="module-card">
+        <i class="fas fa-book text-info"></i>
+        <h6>Manuals</h6>
+        <p>Service & Repair manuals.</p>
+    </a>
 
-<a href="{{ url_for('troubleshooting') }}" class="module-card">  
-    <i class="fas fa-screwdriver-wrench text-secondary"></i>  
-    <h6>Troubleshoot</h6>  
-    <p>Miongozo ya kurekebisha.</p>  
-</a>  
+    <!-- 8 -->
+    <a href="{{ url_for('schematics') }}" class="module-card">
+        <i class="fas fa-project-diagram text-warning"></i>
+        <h6>Schematics</h6>
+        <p>Wiring & hydraulic diagrams.</p>
+    </a>
 
-<a href="{{ url_for('maintenance') }}" class="module-card">  
-    <i class="fas fa-calendar-alt text-success"></i>  
-    <h6>Maintenance</h6>  
-    <p>Service & Fleet tracking.</p>  
-</a>  
+    <!-- 9 -->
+    <a href="{{ url_for('fleet') }}" class="module-card">
+        <i class="fas fa-truck-moving text-primary"></i>
+        <h6>My Fleet</h6>
+        <p>Orodha ya mitambo.</p>
+    </a>
 
-<a href="{{ url_for('parts') }}" class="module-card">  
-    <i class="fas fa-gears text-danger"></i>  
-    <h6>Parts Book</h6>  
-    <p>Catalog ya vipuri.</p>  
-</a>
+    <!-- 10 -->
+    <a href="{{ url_for('reports') }}" class="module-card">
+        <i class="fas fa-chart-line text-success"></i>
+        <h6>Reports</h6>
+        <p>Ripoti za matumizi.</p>
+    </a>
 
-</div>  <div class="chart-container mt-4">  
-    <h6 class="fw-bold mb-3 small text-uppercase opacity-50"><i class="fas fa-satellite me-2"></i> Recent Fault Alerts</h6>  
-    <div class="table-responsive">  
-        <table class="table table-dark table-hover mb-0" style="font-size: 0.75rem;">  
-            <thead>  
-                <tr class="text-warning">  
-                    <th>Machine</th>  
-                    <th>Code</th>  
-                    <th>Severity</th>  
-                </tr>  
-            </thead>  
-            <tbody>  
-                <tr>  
-                    <td>CAT 336D</td>  
-                    <td>102-3</td>  
-                    <td><span class="badge bg-danger">Critical</span></td>  
-                </tr>  
-                <tr>  
-                    <td>D8R Dozer</td>  
-                    <td>E361-2</td>  
-                    <td><span class="badge bg-warning text-dark">Warning</span></td>  
-                </tr>  
-            </tbody>  
-        </table>  
-    </div>  
-</div>  
-{% endblock %}  {% block scripts %}
+    <!-- 11 -->
+    <a href="{{ url_for('alerts') }}" class="module-card">
+        <i class="fas fa-bell text-danger"></i>
+        <h6>Alerts Center</h6>
+        <p>Faults & warnings.</p>
+    </a>
 
-<script>  
-    // Performance Chart  
-    const ctx1 = document.getElementById('performanceChart').getContext('2d');  
-    new Chart(ctx1, {  
-        type: 'line',  
-        data: {  
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],  
-            datasets: [{  
-                data: [12, 19, 15, 17, 22, 10],  
-                borderColor: '#FFCD00',  
-                backgroundColor: 'rgba(255, 205, 0, 0.05)',  
-                fill: true,  
-                tension: 0.4  
-            }]  
-        },  
-        options: {  
-            plugins: { legend: { display: false } },  
-            scales: {  
-                y: { grid: { color: '#222' }, ticks: { display: false } },  
-                x: { grid: { display: false }, ticks: { color: '#666' } }  
-            }  
-        }  
-    });  
-  
-    // Health Chart  
-    const ctx2 = document.getElementById('healthChart').getContext('2d');  
-    new Chart(ctx2, {  
-        type: 'doughnut',  
-        data: {  
-            labels: ['Operational', 'Service', 'Breakdown'],  
-            datasets: [{  
-                data: [9, 2, 1],  
-                backgroundColor: ['#2ecc71', '#FFCD00', '#e74c3c'],  
-                borderWidth: 0  
-            }]  
-        },  
-        options: {  
-            plugins: { legend: { position: 'bottom', labels: { color: '#888', boxWidth: 10 } } },  
-            cutout: '75%'  
-        }  
-    });  
-</script>  {% endblock %}
+    <!-- 12 -->
+    <a href="{{ url_for('settings') }}" class="module-card">
+        <i class="fas fa-sliders-h text-secondary"></i>
+        <h6>System Settings</h6>
+        <p>Usimamizi wa mfumo.</p>
+    </a>
+
+</div>

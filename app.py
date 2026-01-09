@@ -201,7 +201,7 @@ def manuals():
         title="Service Manuals",
         icon="fa-book",
         desc="Maktaba ya vitabu vya ufundi."
-    )
+    
 
 @app.route("/safety")
 @login_required
@@ -211,7 +211,7 @@ def safety():
         title="Safety Standards",
         icon="fa-shield-halved",
         desc="Miongozo ya usalama kazini."
-    )
+    
 
 # =====================================================
 # MACHINE MANAGEMENT

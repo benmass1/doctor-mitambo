@@ -1,164 +1,95 @@
-{% extends "layout.html" %}
-
-{% block title %}Electrical Hub | DR-MITAMBO PRO{% endblock %}
-
-{% block head %}
-<style>
-    :root { --volt: #00d4ff; --bg: #080808; --card: #121212; }
-    
-    .elec-header {
-        background: linear-gradient(135deg, #001a2e 0%, #000 100%);
-        border-radius: 25px;
-        padding: 30px;
-        border: 1px solid #004466;
-        margin-bottom: 25px;
-        box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
-    }
-
-    .circuit-card {
-        background: var(--card);
-        border-radius: 20px;
-        border: 1px solid #222;
-        margin-bottom: 20px;
-        overflow: hidden;
-    }
-
-    .voltage-monitor {
-        background: #000;
-        padding: 20px;
-        border-radius: 15px;
-        border: 1px solid #333;
-        display: flex;
-        justify-content: space-around;
-        text-align: center;
-    }
-
-    .v-meter { color: var(--volt); font-family: 'Orbitron', sans-serif; }
-    .v-meter span { font-size: 1.5rem; font-weight: bold; }
-    .v-meter label { display: block; font-size: 0.6rem; color: #666; text-transform: uppercase; }
-
-    .schematic-box {
-        background: #1a1a1a;
-        height: 250px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-bottom: 1px solid #333;
-        position: relative;
-    }
-
-    .pinout-table {
-        width: 100%;
-        font-size: 0.8rem;
-        margin-top: 15px;
-    }
-    .pinout-table th { color: var(--volt); padding: 10px; border-bottom: 1px solid #333; }
-    .pinout-table td { padding: 10px; border-bottom: 1px solid #111; }
-
-    .btn-test {
-        background: transparent;
-        border: 1px solid var(--volt);
-        color: var(--volt);
-        border-radius: 8px;
-        padding: 5px 15px;
-        font-size: 0.75rem;
-        transition: 0.3s;
-    }
-    .btn-test:hover { background: var(--volt); color: #000; }
-</style>
-{% endblock %}
-
+here{% extends "layout.html" %}
 {% block content %}
-<div class="elec-header d-flex justify-content-between align-items-center">
-    <div>
-        <h3 class="fw-bold brand-font text-info mb-1">ELECTRICAL <span class="text-white">HUB</span></h3>
-        <p class="small text-muted mb-0">Usimamizi wa Sensorer, ECM na Wiring Harness</p>
-    </div>
-    <i class="fas fa-bolt fa-3x text-info opacity-25"></i>
-</div>
+<style>
+    .elec-container { background-color: #0a0a0a; color: #eee; padding-bottom: 50px; }
+    .diag-card { background: #141414; border: 1px solid #333; border-radius: 15px; transition: 0.3s; }
+    .diag-card:hover { border-color: #ffcd00; box-shadow: 0 0 20px rgba(255, 205, 0, 0.1); }
+    .wire-table { font-size: 0.85rem; width: 100%; }
+    .wire-table td { padding: 8px; border-bottom: 1px solid #222; }
+    .voltage-badge { background: #222; color: #2ecc71; padding: 2px 8px; border-radius: 4px; font-family: monospace; }
+</style>
 
-<div class="voltage-monitor mb-4 shadow">
-    <div class="v-meter">
-        <label>System Voltage</label>
-        <span>27.4V</span>
-    </div>
-    <div class="v-meter">
-        <label>5V Reference</label>
-        <span class="text-warning">4.98V</span>
-    </div>
-    <div class="v-meter">
-        <label>CAN-BUS Hi</label>
-        <span class="text-success">2.6V</span>
-    </div>
-</div>
-
-<div class="circuit-card">
-    <div class="schematic-box">
-        
-        <div class="position-absolute bottom-0 start-0 p-2">
-            <span class="badge bg-dark border border-info text-info">ECM CONNECTOR J1</span>
+<div class="elec-container container-fluid">
+    <div class="row pt-4 mb-4">
+        <div class="col-12">
+            <h2 class="text-warning fw-bold"><i class="fas fa-bolt me-2"></i> ELECTRICAL HUB</h2>
+            <p class="text-muted">Wiring Schematics, Sensor Logic & Troubleshooting</p>
         </div>
     </div>
-    <div class="p-4">
-        <h6 class="fw-bold mb-3"><i class="fas fa-microchip me-2 text-info"></i> CRITICAL PIN ASSIGNMENTS</h6>
-        <table class="pinout-table">
-            <thead>
-                <tr>
-                    <th>Pin No.</th>
-                    <th>Wire Color</th>
-                    <th>Signal Function</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Pin 1</td>
-                    <td>RD/WH</td>
-                    <td>Battery +24V</td>
-                    <td><button class="btn-test">Test</button></td>
-                </tr>
-                <tr>
-                    <td>Pin 15</td>
-                    <td>BK/YL</td>
-                    <td>Engine Speed Sensor</td>
-                    <td><button class="btn-test">Oscilloscope</button></td>
-                </tr>
-                <tr>
-                    <td>Pin 42</td>
-                    <td>GN/BU</td>
-                    <td>Common Ground</td>
-                    <td><button class="btn-test">Ohm Test</button></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
 
-<div class="row g-3 mb-5">
-    <div class="col-12">
-        <div class="bg-dark p-4 rounded-4 border border-secondary">
-            <h6 class="fw-bold text-info"><i class="fas fa-satellite-dish me-2"></i> SENSOR DIAGNOSTICS</h6>
-            <p class="small text-muted">Vigezo vya kawaida kwa sensorer za shinikizo (Pressure Sensors):</p>
-            
-            <div class="d-flex justify-content-between align-items-center bg-black p-3 rounded-3 border border-secondary mb-2">
-                <span class="small">Analog Signal (Idle)</span>
-                <span class="fw-bold text-info">0.5V - 1.2V</span>
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="diag-card p-4 h-100">
+                <h5 class="text-warning mb-3">Electronic Control System Logic</h5>
+                <p class="small opacity-75">Mchoro huu unaonyesha jinsi ECM inavyopokea data kutoka kwa sensorer na kutoa amri kwa Actuators (Solenoids).</p>
+                
+                
+                
+                <div class="mt-4">
+                    <h6>CAN-BUS Network (Data Link)</h6>
+                    <p class="small text-muted">Mifumo ya kisasa inatumia nyaya mbili (Yellow & Green) kusafirisha data kwa kasi ya 250kbps au 500kbps kati ya ECM, Monitor, na Pump Controller.</p>
+                </div>
             </div>
-            <div class="d-flex justify-content-between align-items-center bg-black p-3 rounded-3 border border-secondary">
-                <span class="small">Analog Signal (Full Load)</span>
-                <span class="fw-bold text-info">3.8V - 4.5V</span>
-            </div>
-            
-            <div class="alert alert-info mt-3 py-2 border-0 rounded-3 small" style="background: rgba(0, 212, 255, 0.05);">
-                <i class="fas fa-info-circle me-2"></i> <b>KUMBUKA:</b> Ikiwa sensor inasoma 0.0V au 5.0V moja kwa moja, hiyo ni ishara ya "Short Circuit" au "Open Circuit".
+        </div>
+
+        <div class="col-lg-4">
+            <div class="diag-card p-4">
+                <h5 class="text-warning mb-3">Vipimo Standard (24V System)</h5>
+                <table class="wire-table">
+                    <tr>
+                        <td>Battery Static Voltage</td>
+                        <td><span class="voltage-badge">24.5V - 25.5V</span></td>
+                    </tr>
+                    <tr>
+                        <td>Charging (Engine Running)</td>
+                        <td><span class="voltage-badge">27.8V - 28.5V</span></td>
+                    </tr>
+                    <tr>
+                        <td>Sensor 5V Reference</td>
+                        <td><span class="voltage-badge">4.98V - 5.02V</span></td>
+                    </tr>
+                    <tr>
+                        <td>Starter Signal (Pin S)</td>
+                        <td><span class="voltage-badge">24V Peak</span></td>
+                    </tr>
+                </table>
+                
+                <div class="alert alert-dark border-warning mt-4 small">
+                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                    <strong>Muhimu:</strong> Unapopima sensor, hakikisha unatumia multimeter yenye impedance kubwa ili usichome processor ya ECM.
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="fixed-bottom p-3 d-flex gap-2" style="background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);">
-    <a href="/harness" class="btn btn-outline-info flex-grow-1 rounded-pill fw-bold">HARNESS VIEWS</a>
-    <a href="/manuals" class="btn btn-info flex-grow-1 rounded-pill fw-bold text-dark">WIRING DIAGRAMS</a>
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="diag-card p-4">
+                <h5 class="text-warning mb-3">Heavy Machine Wire Color Codes</h5>
+                <div class="row text-center">
+                    <div class="col-md-2 col-4 mb-3">
+                        <div class="rounded-circle mx-auto mb-2" style="width:20px; height:20px; background:red;"></div>
+                        <small>Power (+)</small>
+                    </div>
+                    <div class="col-md-2 col-4 mb-3">
+                        <div class="rounded-circle mx-auto mb-2" style="width:20px; height:20px; background:black;"></div>
+                        <small>Ground (-)</small>
+                    </div>
+                    <div class="col-md-2 col-4 mb-3">
+                        <div class="rounded-circle mx-auto mb-2" style="width:20px; height:20px; background:orange;"></div>
+                        <small>Key Switch</small>
+                    </div>
+                    <div class="col-md-2 col-4 mb-3">
+                        <div class="rounded-circle mx-auto mb-2" style="width:20px; height:20px; background:green;"></div>
+                        <small>CAN High</small>
+                    </div>
+                    <div class="col-md-2 col-4 mb-3">
+                        <div class="rounded-circle mx-auto mb-2" style="width:20px; height:20px; background:yellow;"></div>
+                        <small>CAN Low</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
-

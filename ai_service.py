@@ -1,36 +1,21 @@
 import os
-import requests
+import google.generativeai as genai
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-MODEL = "models/gemini-1.0-pro"
+# Hii amri inachukua Key kisiri kutoka kule Koyeb
+API_KEY = os.environ.get("GEMINI_KEY")
 
-def analyze_text(prompt: str) -> str:
-    if not GEMINI_API_KEY:
-        raise Exception("GEMINI_API_KEY haijawekwa kwenye Environment Variables")
+if API_KEY:
+    genai.configure(api_key=API_KEY)
+else:
+    # Hii itatokea kama ukisahau kubandika kule Koyeb
+    print("Onyo: GEMINI_KEY haijapatikana!")
 
-    url = (
-        "https://generativelanguage.googleapis.com/v1/"
-        f"{MODEL}:generateContent?key={GEMINI_API_KEY}"
-    )
-
-    payload = {
-        "contents": [
-            {
-                "parts": [
-                    {
-                        "text": (
-                            "Wewe ni DR-MITAMBO PRO AI. "
-                            "Jibu kwa Kiswahili kwa mtindo wa fundi mtaalamu. "
-                            f"Tatizo la mtambo: {prompt}"
-                        )
-                    }
-                ]
-            }
-        ]
-    }
-
-    response = requests.post(url, json=payload, timeout=30)
-    response.raise_for_status()
-
-    data = response.json()
-    return data["candidates"][0]["content"]["parts"][0]["text"]
+def ask_expert(query, category):
+    try:
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        # Tunampa AI maelekezo kulingana na sehemu aliyopo mtumiaji
+        full_prompt = f"Wewe ni mtaalamu wa {category}. Jibu hili kwa Kiswahili: {query}"
+        response = model.generate_content(full_prompt)
+        return response.text
+    except Exception as e:
+        return f"Msaidizi wa AI amepata hitilafu: {str(e)}"

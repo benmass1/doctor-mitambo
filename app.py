@@ -49,7 +49,7 @@ class Machine(db.Model):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# --- CORE ROUTES ---
+# --- DASHBOARD & CORE ---
 @app.route("/")
 @app.route("/index")
 @login_required
@@ -57,7 +57,7 @@ def index():
     fleet = Machine.query.filter_by(owner_id=current_user.id).all()
     return render_template("index.html", user=current_user.username, fleet=fleet, fleet_count=len(fleet))
 
-# --- AI DIAGNOSIS ---
+# --- AI DIAGNOSIS ENGINE ---
 @app.route("/diagnosis", methods=["GET", "POST"])
 @login_required
 def diagnosis():
@@ -66,21 +66,45 @@ def diagnosis():
         query = request.form.get("error_code", "").strip()
         try:
             model = genai.GenerativeModel('gemini-1.5-flash')
-            prompt = (f"Wewe ni DR-MITAMBO PRO, fundi bingwa wa mitambo ya ujenzi na malori. "
+            prompt = (f"Wewe ni DR-MITAMBO PRO, fundi bingwa wa mitambo. "
                       f"Mteja anaelezea tatizo hili: '{query}'. "
-                      f"Chambua kitaalamu, taja vyanzo 3 vinavyowezekana, na toa maelekezo ya kurekebisha kwa Kiswahili.")
+                      f"Chambua kitaalamu kwa Kiswahili.")
             response = model.generate_content(prompt)
             result = response.text
         except Exception:
-            result = "Hitilafu: AI imeshindwa kuunganishwa. Hakikisha API Key na internet ziko sawa."
+            result = "Hitilafu: AI imeshindwa kuunganishwa."
     return render_template("diagnosis.html", result=result)
 
-# --- MACHINE MANAGEMENT ---
+# --- ELECTRICAL HUB ---
+@app.route("/electrical")
+@login_required
+def electrical():
+    return render_template("placeholder.html", title="Electrical Hub", icon="fa-bolt")
+
+# --- SYSTEMS OPERATION ---
+@app.route("/systems_op")
+@login_required
+def systems_op():
+    return render_template("placeholder.html", title="Systems Operation", icon="fa-cogs")
+
+# --- TROUBLESHOOTING ---
+@app.route("/troubleshooting")
+@login_required
+def troubleshooting():
+    return render_template("placeholder.html", title="Troubleshooting Guide", icon="fa-wrench")
+
+# --- MAINTENANCE & MACHINES ---
+@app.route("/maintenance")
+@login_required
+def maintenance():
+    data = Machine.query.filter_by(owner_id=current_user.id).all()
+    return render_template("maintenance.html", machines=data)
+
 @app.route("/machines")
 @login_required
 def machines():
-    user_machines = Machine.query.filter_by(owner_id=current_user.id).all()
-    return render_template("machines.html", machines=user_machines)
+    data = Machine.query.filter_by(owner_id=current_user.id).all()
+    return render_template("machines.html", machines=data)
 
 @app.route("/add-machine", methods=["GET", "POST"])
 @login_required
@@ -97,42 +121,25 @@ def add_machine():
             )
             db.session.add(m)
             db.session.commit()
-            flash("Mtambo umeongezwa kikamilifu!", "success")
+            flash("Mtambo umeongezwa!", "success")
             return redirect(url_for("machines"))
-        except Exception:
+        except:
             db.session.rollback()
             flash("Hitilafu: Serial number tayari ipo.", "danger")
     return render_template("add_machine.html")
 
-# --- MAINTENANCE ---
-@app.route("/maintenance")
-@login_required
-def maintenance():
-    user_machines = Machine.query.filter_by(owner_id=current_user.id).all()
-    return render_template("maintenance.html", machines=user_machines)
-
-# --- PLACEHOLDER ROUTES (Zinazozuia 'Not Found') ---
-@app.route("/electrical")
-@login_required
-def electrical(): return render_template("placeholder.html", title="Electrical Hub")
-
-@app.route("/systems_op")
-@login_required
-def systems_op(): return render_template("placeholder.html", title="Systems Operation")
-
-@app.route("/troubleshooting")
-@login_required
-def troubleshooting(): return render_template("placeholder.html", title="Troubleshooting")
-
+# --- RESOURCES ---
 @app.route("/parts")
 @login_required
-def parts(): return render_template("placeholder.html", title="Parts Book")
+def parts():
+    return render_template("placeholder.html", title="Parts Book", icon="fa-search")
 
 @app.route("/manuals")
 @login_required
-def manuals(): return render_template("placeholder.html", title="Service Manuals")
+def manuals():
+    return render_template("placeholder.html", title="Service Manuals", icon="fa-book")
 
-# --- AUTH ROUTES ---
+# --- AUTHENTICATION ---
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
@@ -152,13 +159,12 @@ def register():
     if request.method == "POST":
         u_name = request.form.get("username")
         if User.query.filter_by(username=u_name).first():
-            flash("Jina hili tayari lipo.", "danger")
+            flash("User tayari yupo.", "danger")
             return redirect(url_for("register"))
         u = User(username=u_name)
         u.set_password(request.form.get("password"))
         db.session.add(u)
         db.session.commit()
-        flash("Akaunti imetengenezwa! Sasa unaweza kuingia.", "success")
         return redirect(url_for("login"))
     return render_template("register.html")
 
@@ -168,7 +174,7 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
-# --- INITIALIZATION ---
+# --- DB INIT ---
 with app.app_context():
     db.create_all()
 

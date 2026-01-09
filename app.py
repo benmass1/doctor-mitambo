@@ -83,7 +83,8 @@ def diagnosis():
     if request.method == "POST":
         query = request.form.get("error_code", "").strip()
         try:
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            model = genai.GenerativeModel('models/gemini-1.5-flash')
+
             # Custom prompt for professional engineer response
             prompt = (f"Wewe ni DR-MITAMBO AI, Fundi Mkuu. Mteja anasema: '{query}'. "
                       f"Chambua tatizo hili kwa kina: 1. Sababu zinazoweza kusababisha. "

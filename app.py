@@ -74,7 +74,7 @@ def index():
                            fleet_count=total_fleet,
                            needs_service=needs_service,
                            avg_health=avg_health)
-)# --- AI DIAGNOSIS ENGINE ---
+# --- AI DIAGNOSIS ENGINE ---
 @app.route("/diagnosis", methods=["GET", "POST"])
 @login_required
 def diagnosis():

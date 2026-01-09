@@ -12,7 +12,11 @@ from flask_login import (
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from ai_service import analyze_text
+# Hakikisha faili la ai_service.py lipo ili isilete error hapa
+try:
+    from ai_service import analyze_text
+except ImportError:
+    def analyze_text(text): return "AI Service haijapatikana."
 
 # =====================================================
 # INITIALIZATION
@@ -140,13 +144,12 @@ def electrical():
         title="Electrical Hub",
         icon="fa-bolt",
         desc="Michoro ya mifumo ya umeme."
-    
+    ) # <-- Hapa mabano yalikuwa yamefunguliwa yakasahaulika
+
 @app.route("/systems_op")
 @login_required
 def systems_op():
     return render_template("systems_op.html")
-
-    
 
 @app.route("/troubleshooting")
 @login_required

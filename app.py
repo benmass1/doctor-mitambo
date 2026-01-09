@@ -140,17 +140,13 @@ def electrical():
         title="Electrical Hub",
         icon="fa-bolt",
         desc="Michoro ya mifumo ya umeme."
-    )
-
+    
 @app.route("/systems_op")
 @login_required
 def systems_op():
-    return render_template(
-        "placeholder.html",
-        title="Systems Operation",
-        icon="fa-cogs",
-        desc="Uelewa wa hydraulic na engine systems."
-    )
+    return render_template("systems_op.html")
+
+    
 
 @app.route("/troubleshooting")
 @login_required

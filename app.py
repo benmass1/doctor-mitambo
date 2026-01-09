@@ -188,11 +188,9 @@ def harness():
 @app.route("/parts")
 @login_required
 def parts():
-    return render_template(
-        "placeholder.html",
-        title="Parts Book",
-        icon="fa-search",
-        desc="Katalogi ya vipuri asilia."
+    # Hii itafungua ukurasa halisi wa kutafuta vipuri
+    return render_template("parts.html")
+
     )
 
 @app.route("/manuals")

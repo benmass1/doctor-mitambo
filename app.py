@@ -1,9 +1,9 @@
-import os
+hereimport os
 from datetime import datetime
 
 from flask import (
     Flask, render_template, redirect, url_for,
-    session, request, flash, jsonify
+    request, flash, jsonify
 )
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import (
@@ -12,14 +12,17 @@ from flask_login import (
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# Hakikisha faili la ai_service.py lipo ili isilete error hapa
+# =====================================================
+# OPTIONAL AI SERVICE (SAFE IMPORT)
+# =====================================================
 try:
     from ai_service import analyze_text
-except ImportError:
-    def analyze_text(text): return "AI Service haijapatikana."
+except Exception:
+    def analyze_text(text):
+        return "AI Service haijapatikana kwa sasa."
 
 # =====================================================
-# INITIALIZATION
+# APP INITIALIZATION
 # =====================================================
 app = Flask(__name__)
 
@@ -48,34 +51,42 @@ login_manager.login_message_category = "info"
 # =====================================================
 # DATABASE MODELS
 # =====================================================
-class User(db.Model, UserMixin):
+class User(UserMixin, db.Model):
+    __tablename__ = "users"
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    machines = db.relationship("Machine", backref="owner", lazy=True)
+    machines = db.relationship(
+        "Machine", backref="owner", lazy=True, cascade="all, delete"
+    )
 
-    def set_password(self, password):
+    def set_password(self, password: str):
         self.password_hash = generate_password_hash(password)
 
-    def check_password(self, password):
+    def check_password(self, password: str) -> bool:
         return check_password_hash(self.password_hash, password)
 
 
 class Machine(db.Model):
+    __tablename__ = "machines"
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     brand = db.Column(db.String(50))
     model = db.Column(db.String(50))
-    serial = db.Column(db.String(50), unique=True)
+    serial = db.Column(db.String(50), unique=True, nullable=False)
     current_hours = db.Column(db.Integer, default=0)
     next_service_hours = db.Column(db.Integer, default=250)
     health_score = db.Column(db.Integer, default=100)
     last_service_date = db.Column(db.DateTime, default=datetime.utcnow)
-    owner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    owner_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
-
+# =====================================================
+# LOGIN MANAGER
+# =====================================================
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -89,6 +100,7 @@ def load_user(user_id):
 def index():
     fleet = Machine.query.filter_by(owner_id=current_user.id).all()
     total_fleet = len(fleet)
+
     needs_service = sum(
         1 for m in fleet if m.current_hours >= m.next_service_hours
     )
@@ -108,21 +120,19 @@ def index():
     )
 
 # =====================================================
-# AI DIAGNOSIS (UI)
+# AI DIAGNOSIS
 # =====================================================
 @app.route("/diagnosis")
 @login_required
 def diagnosis():
     return render_template("diagnosis.html")
 
-# =====================================================
-# AI DIAGNOSIS (API)
-# =====================================================
+
 @app.route("/api/analyze", methods=["POST"])
 @login_required
 def api_analyze():
-    data = request.get_json(silent=True)
-    text = (data or {}).get("text", "").strip()
+    data = request.get_json(silent=True) or {}
+    text = data.get("text", "").strip()
 
     if not text:
         return jsonify({"error": "Hakuna maelezo ya mtambo"}), 400
@@ -139,13 +149,14 @@ def api_analyze():
 @app.route("/electrical")
 @login_required
 def electrical():
-    # Hii sasa imerekebishwa, haina mabano ya ziada
     return render_template("electrical.html")
+
 
 @app.route("/systems_op")
 @login_required
 def systems_op():
     return render_template("systems_op.html")
+
 
 @app.route("/troubleshooting")
 @login_required
@@ -154,14 +165,16 @@ def troubleshooting():
         "placeholder.html",
         title="Troubleshooting Guide",
         icon="fa-wrench",
-        desc="Mwongozo wa kutatua hitilafu."
+        desc="Mwongozo wa kutatua hitilafu za mitambo."
     )
+
 
 @app.route("/maintenance")
 @login_required
 def maintenance():
-    data = Machine.query.filter_by(owner_id=current_user.id).all()
-    return render_template("maintenance.html", machines=data)
+    machines = Machine.query.filter_by(owner_id=current_user.id).all()
+    return render_template("maintenance.html", machines=machines)
+
 
 @app.route("/calibration")
 @login_required
@@ -173,6 +186,7 @@ def calibration():
         desc="Kusawazisha sensorer na valves."
     )
 
+
 @app.route("/harness")
 @login_required
 def harness():
@@ -182,6 +196,7 @@ def harness():
         icon="fa-network-wired",
         desc="Ramani za nyaya za mtambo."
     )
+
 
 @app.route("/parts")
 @login_required
@@ -193,6 +208,7 @@ def parts():
         desc="Katalogi ya vipuri asilia."
     )
 
+
 @app.route("/manuals")
 @login_required
 def manuals():
@@ -203,6 +219,7 @@ def manuals():
         desc="Maktaba ya vitabu vya ufundi."
     )
 
+
 @app.route("/safety")
 @login_required
 def safety():
@@ -210,7 +227,7 @@ def safety():
         "placeholder.html",
         title="Safety Standards",
         icon="fa-shield-halved",
-        desc="Usalama kazini na HSE."
+        desc="Miongozo ya usalama kazini."
     )
 
 # =====================================================
@@ -222,12 +239,13 @@ def machines():
     data = Machine.query.filter_by(owner_id=current_user.id).all()
     return render_template("machines.html", machines=data)
 
+
 @app.route("/add-machine", methods=["GET", "POST"])
 @login_required
 def add_machine():
     if request.method == "POST":
         try:
-            m = Machine(
+            machine = Machine(
                 name=request.form.get("name"),
                 brand=request.form.get("brand"),
                 model=request.form.get("model"),
@@ -235,10 +253,11 @@ def add_machine():
                 current_hours=int(request.form.get("hours", 0)),
                 owner_id=current_user.id
             )
-            db.session.add(m)
+            db.session.add(machine)
             db.session.commit()
             flash("Mtambo umeongezwa kikamilifu!", "success")
             return redirect(url_for("machines"))
+
         except Exception:
             db.session.rollback()
             flash("Hitilafu: Serial number tayari ipo.", "danger")
@@ -266,6 +285,7 @@ def login():
 
     return render_template("login.html")
 
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -275,14 +295,17 @@ def register():
             flash("Jina hili tayari lipo.", "danger")
             return redirect(url_for("register"))
 
-        u = User(username=username)
-        u.set_password(request.form.get("password"))
-        db.session.add(u)
+        user = User(username=username)
+        user.set_password(request.form.get("password"))
+
+        db.session.add(user)
         db.session.commit()
 
+        flash("Akaunti imetengenezwa kikamilifu.", "success")
         return redirect(url_for("login"))
 
     return render_template("register.html")
+
 
 @app.route("/logout")
 @login_required
@@ -291,7 +314,7 @@ def logout():
     return redirect(url_for("login"))
 
 # =====================================================
-# ERRORS
+# ERROR HANDLERS
 # =====================================================
 @app.errorhandler(404)
 def not_found(e):
@@ -309,10 +332,10 @@ with app.app_context():
     db.create_all()
 
 # =====================================================
-# ENTRY POINT
+# ENTRY POINT (LOCAL ONLY)
 # =====================================================
 if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
         port=int(os.environ.get("PORT", 8000))
-    )
+)

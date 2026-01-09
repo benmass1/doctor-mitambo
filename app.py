@@ -16,8 +16,9 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(BASE_DIR, "m
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # --- GEMINI AI CONFIGURATION ---
-API_KEY = "AIzaSyCt3qnEOM3CXBIbtd5aIW_p-qS4iFShh7Q"
+API_KEY = "AIzaSyAswGa6VlXflWcPWRFyboki55RuI5LMV00"
 genai.configure(api_key=API_KEY)
+
 
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)

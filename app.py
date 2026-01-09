@@ -188,7 +188,7 @@ def harness():
 @app.route("/parts")
 @login_required
 def parts():
-    # Hii itafungua ukurasa halisi wa kutafuta vipuri
+     Hii itafungua ukurasa halisi wa kutafuta vipuri
     return render_template("parts.html")
 
     )

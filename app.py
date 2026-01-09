@@ -1,4 +1,4 @@
-import os
+hereimport os
 import google.generativeai as genai
 from flask import Flask, render_template, redirect, url_for, session, request, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -16,9 +16,9 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(BASE_DIR, "m
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # --- GEMINI AI CONFIGURATION ---
+# API Key mpya uliyotoa imewekwa hapa
 API_KEY = "AIzaSyAswGa6VlXflWcPWRFyboki55RuI5LMV00"
 genai.configure(api_key=API_KEY)
-
 
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
@@ -64,7 +64,6 @@ def index():
     total_fleet = len(fleet)
     needs_service = sum(1 for m in fleet if m.current_hours >= m.next_service_hours)
     
-    # Calculate average health
     avg_health = 0
     if total_fleet > 0:
         avg_health = sum(m.health_score for m in fleet) // total_fleet
@@ -76,7 +75,7 @@ def index():
                            needs_service=needs_service,
                            avg_health=avg_health)
 
-# --- AI DIAGNOSIS ENGINE ---
+# --- AI DIAGNOSIS ENGINE (SASA IMEREKEBISHWA) ---
 @app.route("/diagnosis", methods=["GET", "POST"])
 @login_required
 def diagnosis():
@@ -84,74 +83,73 @@ def diagnosis():
     if request.method == "POST":
         query = request.form.get("error_code", "").strip()
         try:
-            model = genai.GenerativeModel('models/gemini-1.5-flash')
+            # Mabadiliko: Tumetumia 'gemini-1.5-flash' moja kwa moja
+            model = genai.GenerativeModel('gemini-1.5-flash')
 
-            # Custom prompt for professional engineer response
-            prompt = (f"Wewe ni DR-MITAMBO AI, Fundi Mkuu. Mteja anasema: '{query}'. "
+            prompt = (f"Wewe ni DR-MITAMBO AI, Fundi Mkuu wa mitambo mizito. Mteja anasema: '{query}'. "
                       f"Chambua tatizo hili kwa kina: 1. Sababu zinazoweza kusababisha. "
                       f"2. Vipimo vya kufanya. 3. Hatua za kurekebisha. Jibu kwa Kiswahili fasaha.")
+            
             response = model.generate_content(prompt)
-            result = response.text
+            
+            if response and response.text:
+                result = response.text
+            else:
+                result = "AI imeshindwa kutoa jibu kwa sasa. Jaribu kuelezea tatizo zaidi."
+
         except Exception as e:
-            result = f"Hitilafu: AI imeshindwa kuunganishwa. {str(e)}"
+            # Hii itatusaidia kuona kosa halisi kama bado lipo
+            result = f"Hitilafu ya Kiufundi: AI haijaweza kuwasiliana. (Sababu: {str(e)})"
+            
     return render_template("diagnosis.html", result=result)
 
-# --- 1. ELECTRICAL HUB ---
+# --- ROUTES ZA MODULI ZOTE ---
 @app.route("/electrical")
 @login_required
 def electrical():
-    return render_template("placeholder.html", title="Electrical Hub", icon="fa-bolt", desc="Michoro na uchambuzi wa mifumo ya umeme.")
+    return render_template("placeholder.html", title="Electrical Hub", icon="fa-bolt", desc="Michoro ya mifumo ya umeme.")
 
-# --- 2. SYSTEMS OPERATION ---
 @app.route("/systems_op")
 @login_required
 def systems_op():
     return render_template("placeholder.html", title="Systems Operation", icon="fa-cogs", desc="Uelewa wa hydraulic na engine systems.")
 
-# --- 3. TROUBLESHOOTING ---
 @app.route("/troubleshooting")
 @login_required
 def troubleshooting():
-    return render_template("placeholder.html", title="Troubleshooting Guide", icon="fa-wrench", desc="Mwongozo wa kutatua matatizo kwa hatua.")
+    return render_template("placeholder.html", title="Troubleshooting Guide", icon="fa-wrench", desc="Mwongozo wa kutatua hitilafu.")
 
-# --- 4. MAINTENANCE ---
 @app.route("/maintenance")
 @login_required
 def maintenance():
     data = Machine.query.filter_by(owner_id=current_user.id).all()
     return render_template("maintenance.html", machines=data)
 
-# --- 5. CALIBRATION ---
 @app.route("/calibration")
 @login_required
 def calibration():
-    return render_template("placeholder.html", title="Calibration Tools", icon="fa-compass", desc="Namna ya kusawazisha sensorer na valves.")
+    return render_template("placeholder.html", title="Calibration Tools", icon="fa-compass", desc="Kusawazisha sensorer na valves.")
 
-# --- 6. HARNESS LAYOUT ---
 @app.route("/harness")
 @login_required
 def harness():
-    return render_template("placeholder.html", title="Harness Layout", icon="fa-network-wired", desc="Ramani za viunganishi na nyaya za mtambo.")
+    return render_template("placeholder.html", title="Harness Layout", icon="fa-network-wired", desc="Ramani za nyaya za mtambo.")
 
-# --- 7. PARTS BOOK ---
 @app.route("/parts")
 @login_required
 def parts():
-    return render_template("placeholder.html", title="Parts Book", icon="fa-search", desc="Katalogi ya vipuri asilia vya mitambo.")
+    return render_template("placeholder.html", title="Parts Book", icon="fa-search", desc="Katalogi ya vipuri asilia.")
 
-# --- 8. MANUALS ---
 @app.route("/manuals")
 @login_required
 def manuals():
-    return render_template("placeholder.html", title="Service Manuals", icon="fa-book", desc="Maktaba ya vitabu vya ufundi (Service & Shop).")
+    return render_template("placeholder.html", title="Service Manuals", icon="fa-book", desc="Maktaba ya vitabu vya ufundi.")
 
-# --- 9. SAFETY MODULE ---
 @app.route("/safety")
 @login_required
 def safety():
-    return render_template("placeholder.html", title="Safety Standards", icon="fa-shield-halved", desc="Viwango vya usalama kazini na HSE.")
+    return render_template("placeholder.html", title="Safety Standards", icon="fa-shield-halved", desc="Usalama kazini na HSE.")
 
-# --- 10. MACHINE MANAGEMENT ---
 @app.route("/machines")
 @login_required
 def machines():
@@ -175,12 +173,12 @@ def add_machine():
             db.session.commit()
             flash("Mtambo umeongezwa kikamilifu!", "success")
             return redirect(url_for("machines"))
-        except Exception as e:
+        except Exception:
             db.session.rollback()
             flash("Hitilafu: Serial number tayari ipo.", "danger")
     return render_template("add_machine.html")
 
-# --- AUTHENTICATION ROUTES ---
+# --- AUTHENTICATION ---
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
@@ -190,7 +188,7 @@ def login():
         if user and user.check_password(request.form.get("password")):
             login_user(user)
             return redirect(url_for("index"))
-        flash("Login Imefeli. Hakikisha Jina na Password ni sahihi.", "danger")
+        flash("Jina au Password si sahihi.", "danger")
     return render_template("login.html")
 
 @app.route("/register", methods=["GET", "POST"])
@@ -198,13 +196,12 @@ def register():
     if request.method == "POST":
         u_name = request.form.get("username")
         if User.query.filter_by(username=u_name).first():
-            flash("Jina hili tayari limesajiliwa.", "danger")
+            flash("Jina hili tayari lipo.", "danger")
             return redirect(url_for("register"))
         u = User(username=u_name)
         u.set_password(request.form.get("password"))
         db.session.add(u)
         db.session.commit()
-        flash("Usajili Umekamilika!", "success")
         return redirect(url_for("login"))
     return render_template("register.html")
 
@@ -214,15 +211,13 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
-# --- ERROR HANDLING ---
 @app.errorhandler(404)
 def not_found(e):
     return render_template("placeholder.html", title="Not Found", icon="fa-circle-exclamation", desc="Ukurasa huu haupo."), 404
 
-# --- DATABASE INITIALIZATION ---
+# --- DATABASE START ---
 with app.app_context():
     db.create_all()
 
 if __name__ == "__main__":
-    # Inaruhusu ufikiaji wa simu (mobile friendly server)
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))

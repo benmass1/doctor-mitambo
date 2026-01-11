@@ -1,4 +1,4 @@
-import os
+hereimport os
 import json
 import io
 from datetime import datetime
@@ -36,15 +36,16 @@ GEMINI_KEY = os.environ.get("GEMINI_KEY")
 groq_client = None
 if Groq and GROQ_API_KEY:
     try:
+        # Toleo hili linatumia mipangilio ya msingi kuzuia kosa la 'proxies'
         groq_client = Groq(api_key=GROQ_API_KEY)
     except Exception as e:
-        print(f"Groq imefeli: {e}")
+        print(f"Groq imefeli kuanza: {e}")
 
 if genai and GEMINI_KEY:
     try:
         genai.configure(api_key=GEMINI_KEY)
     except Exception as e:
-        print(f"Gemini imefeli: {e}")
+        print(f"Gemini imefeli kuanza: {e}")
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////" + os.path.join(BASE_DIR, "mitambo_pro.db")
@@ -88,7 +89,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 # =====================================================
-# ROUTES (Zote zimerudi 100%)
+# ROUTES
 # =====================================================
 @app.route("/")
 @app.route("/index")
@@ -159,21 +160,27 @@ def alerts(): return render_template("placeholder.html", title="Alerts", icon="f
 def settings(): return render_template("placeholder.html", title="Settings", icon="fa-cog")
 
 # =====================================================
-# AI SCAN & CHAT (Imerekebishwa)
+# AI SCAN & CHAT (MAREKEBISHO YA MODEL)
 # =====================================================
 @app.route("/api/scan-nameplate", methods=["POST"])
 @login_required
 def api_scan_nameplate():
-    if 'image' not in request.files or not genai:
-        return jsonify({"error": "Gemini haijasanidiwa vizuri."})
+    if 'image' not in request.files or not GEMINI_KEY:
+        return jsonify({"error": "Gemini haijasanidiwa vizuri kule Koyeb."})
     
-    file = request.files['image']
-    img = Image.open(io.BytesIO(file.read()))
-    model = genai.GenerativeModel('gemini-1.5-flash')
-    
-    prompt = "Soma nameplate hii na utoe JSON pekee: {brand, model, serial}."
-    response = model.generate_content([prompt, img])
-    return jsonify(json.loads(response.text.replace("```json", "").replace("```", "").strip()))
+    try:
+        file = request.files['image']
+        img = Image.open(io.BytesIO(file.read()))
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        
+        prompt = "Soma nameplate hii na utoe JSON pekee: {brand, model, serial}. Usiongeze maneno mengine."
+        response = model.generate_content([prompt, img])
+        
+        # Kusafisha jibu la JSON
+        clean_text = response.text.replace("```json", "").replace("```", "").strip()
+        return jsonify(json.loads(clean_text))
+    except Exception as e:
+        return jsonify({"error": f"Hitilafu ya Picha: {str(e)}"}), 500
 
 @app.route("/api/ask_expert", methods=["POST"])
 @login_required
@@ -183,20 +190,22 @@ def api_ask_expert():
     category = data.get("category", "Diagnosis").strip()
 
     if not groq_client:
-        return jsonify({"result": "Msaidizi hayupo. Weka GROQ_API_KEY kule Koyeb."})
+        return jsonify({"result": "Msaidizi hayupo. Hakikisha GROQ_API_KEY ipo Koyeb."})
 
     try:
+        # MAREKEBISHO: Tumia llama-3.3-70b-versatile badala ya llama-3.1
         response = groq_client.chat.completions.create(
-            model="llama-3.1-70b-versatile",
+            model="llama-3.3-70b-versatile",
             messages=[
-                {"role": "system", "content": f"Wewe ni Dr. Mitambo Pro. Jibu swali la {category} kwa Kiswahili."},
+                {"role": "system", "content": f"Wewe ni Dr. Mitambo Pro, mtaalamu wa ufundi Tanzania. Unasaidia kwenye {category}. Jibu kwa Kiswahili fasaha."},
                 {"role": "user", "content": query}
             ],
             temperature=0.6,
         )
         return jsonify({"result": response.choices[0].message.content})
     except Exception as e:
-        return jsonify({"result": f"Kosa: {str(e)}"}), 200
+        # Hii itarudisha kosa halisi badala ya "Samahani nimepata hitilafu"
+        return jsonify({"result": f"Kosa la AI: {str(e)}"}), 200
 
 # =====================================================
 # AUTH & MANAGEMENT
@@ -213,12 +222,17 @@ def login():
         u = User.query.filter_by(username=request.form.get("username")).first()
         if u and u.check_password(request.form.get("password")):
             login_user(u); return redirect(url_for("index"))
+        flash("Username au password si sahihi", "danger")
     return render_template("login.html")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        u = User(username=request.form.get("username"))
+        username = request.form.get("username")
+        if User.query.filter_by(username=username).first():
+            flash("Username tayari ipo", "danger")
+            return redirect(url_for("register"))
+        u = User(username=username)
         u.set_password(request.form.get("password"))
         db.session.add(u); db.session.commit()
         return redirect(url_for("login"))

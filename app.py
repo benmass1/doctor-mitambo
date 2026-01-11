@@ -14,11 +14,23 @@ from flask_login import (
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 
+# --- GROQ INTEGRATION ---
+try:
+    from groq import Groq
+except ImportError:
+    Groq = None
+
 # =====================================================
 # APP INITIALIZATION
 # =====================================================
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "DR_MITAMBO_PRO_SECURE_2026_V10")
+
+# --- ANZA GROQ CLIENT ---
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+groq_client = None
+if Groq and GROQ_API_KEY:
+    groq_client = Groq(api_key=GROQ_API_KEY)
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(BASE_DIR, "mitambo_pro.db")
@@ -62,17 +74,6 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 # =====================================================
-# AI SERVICE INTEGRATION
-# =====================================================
-def get_ai_service():
-    try:
-        import ai_service
-        return ai_service
-    except Exception as e:
-        print(f"AI Import Error: {e}")
-        return None
-
-# =====================================================
 # CORE ROUTES (DASHBOARD)
 # =====================================================
 @app.route("/")
@@ -91,7 +92,7 @@ def index():
                          avg_health=avg_health)
 
 # =====================================================
-# MODULE ROUTES (ZA AWALI)
+# MODULE ROUTES (ZOOTE ULIZOTUMA)
 # =====================================================
 @app.route("/diagnosis")
 @login_required
@@ -136,64 +137,63 @@ def calibration(): return render_template("placeholder.html", title="Calibration
 def harness(): return render_template("placeholder.html", title="Harness Layout", icon="fa-network-wired")
 
 # =====================================================
-# MPYA: ROUTES 5 ZA NYONGEZA
+# NYONGEZA: ROUTES 5 NA SCAN API
 # =====================================================
 
-# 1. SCAN NAMEPLATE API (Vision)
 @app.route("/api/scan-nameplate", methods=["POST"])
 @login_required
 def api_scan_nameplate():
-    if 'file' not in request.files:
-        return jsonify({"error": "Picha haijapatikana"}), 400
-    file = request.files['file']
-    ai = get_ai_service()
-    if not ai: return jsonify({"error": "AI Service Offline"}), 500
-    try:
-        result = ai.analyze_nameplate(file.read())
-        return jsonify(result)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    # Hapa Vision API itahitaji model ya Groq (kama llama-3.2-11b-vision-preview)
+    return jsonify({"error": "Vision API bado inahitaji usanidi wa Model ya Picha"})
 
-# 2. SCHEMATICS HUB
 @app.route("/schematics")
 @login_required
 def schematics():
     return render_template("placeholder.html", title="Schematics", icon="fa-project-diagram", desc="Wiring & Hydraulic diagrams library.")
 
-# 3. FLEET ANALYTICS
 @app.route("/reports")
 @login_required
 def reports():
     return render_template("placeholder.html", title="Reports", icon="fa-chart-line", desc="Detailed machine productivity reports.")
 
-# 4. ALERTS CENTER
 @app.route("/alerts")
 @login_required
 def alerts():
     return render_template("placeholder.html", title="Alerts", icon="fa-bell", desc="Active fault codes and warnings.")
 
-# 5. SYSTEM SETTINGS
 @app.route("/settings")
 @login_required
 def settings():
     return render_template("placeholder.html", title="Settings", icon="fa-cog", desc="User profile and system configuration.")
 
 # =====================================================
-# AI CONTEXTUAL ASSISTANT (API)
+# AI CONTEXTUAL ASSISTANT (IMEUNGANISHWA NA GROQ)
 # =====================================================
 @app.route("/api/ask_expert", methods=["POST"])
 @login_required
 def api_ask_expert():
     data = request.get_json(silent=True) or {}
-    query = data.get("query", "").strip()
-    category = data.get("category", "general").strip()
-    ai = get_ai_service()
-    if not ai: return jsonify({"result": "Msaidizi wa AI hayupo kwa sasa."})
+    query = data.get("query", "").strip() or data.get("message", "").strip()
+    category = data.get("category", "Diagnosis").strip()
+
+    if not groq_client:
+        return jsonify({"result": "Msaidizi wa AI hayupo kwa sasa. Hakikisha GROQ_API_KEY imewekwa Koyeb."})
+
     try:
-        result = ai.ask_expert(query, category)
-        return jsonify({"result": result})
+        response = groq_client.chat.completions.create(
+            model="llama-3.1-70b-versatile",
+            messages=[
+                {
+                    "role": "system", 
+                    "content": f"Wewe ni Dr. Mitambo Pro, mtaalamu wa ufundi Tanzania. Unasaidia kwenye {category}. Jibu kwa Kiswahili fasaha."
+                },
+                {"role": "user", "content": query}
+            ],
+            temperature=0.6,
+        )
+        return jsonify({"result": response.choices[0].message.content})
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"result": f"Kosa la kiufundi: {str(e)}"}), 500
 
 # =====================================================
 # MACHINE MANAGEMENT & AUTH
@@ -254,7 +254,6 @@ def logout():
 @app.errorhandler(404)
 def not_found(e): return render_template("placeholder.html", title="Not Found", icon="fa-exclamation-circle"), 404
 
-# Create DB within context
 with app.app_context():
     db.create_all()
 

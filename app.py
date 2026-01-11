@@ -1,4 +1,6 @@
 import os
+import json
+import io
 from datetime import datetime
 
 from flask import (
@@ -11,16 +13,6 @@ from flask_login import (
     login_required, logout_user, current_user
 )
 from werkzeug.security import generate_password_hash, check_password_hash
-
-# =====================================================
-# AI SERVICE IMPORT
-# =====================================================
-try:
-    # Tunatumia ask_expert kwa ajili ya msaada wa kila sehemu
-    from ai_service import analyze_text, ask_expert
-except Exception:
-    def analyze_text(text): return "AI Service haijapatikana."
-    def ask_expert(query, category): return "Msaidizi wa AI hayupo kwa sasa."
 
 # =====================================================
 # APP INITIALIZATION
@@ -70,7 +62,18 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 # =====================================================
-# CORE ROUTES
+# AI SERVICE INTEGRATION
+# =====================================================
+def get_ai_service():
+    try:
+        import ai_service
+        return ai_service
+    except Exception as e:
+        print(f"AI Import Error: {e}")
+        return None
+
+# =====================================================
+# CORE ROUTES (DASHBOARD)
 # =====================================================
 @app.route("/")
 @app.route("/index")
@@ -80,42 +83,15 @@ def index():
     total_fleet = len(fleet)
     needs_service = sum(1 for m in fleet if m.current_hours >= m.next_service_hours)
     avg_health = (sum(m.health_score for m in fleet) // total_fleet if total_fleet > 0 else 0)
-    return render_template("index.html", user=current_user.username, fleet=fleet, fleet_count=total_fleet, needs_service=needs_service, avg_health=avg_health)
+    return render_template("index.html", 
+                         user=current_user.username, 
+                         fleet=fleet, 
+                         fleet_count=total_fleet, 
+                         needs_service=needs_service, 
+                         avg_health=avg_health)
 
 # =====================================================
-# AI CONTEXTUAL ASSISTANT (API)
-# =====================================================
-@app.route("/api/ask_expert", methods=["POST"])
-@login_required
-def api_ask_expert():
-    data = request.get_json(silent=True) or {}
-    query = data.get("query", "").strip()
-    category = data.get("category", "general").strip()
-
-    if not query:
-        return jsonify({"error": "Tafadhali andika swali lako"}), 400
-
-    try:
-        # Hii inaita AI kulingana na batani aliyopo mtumiaji
-        result = ask_expert(query, category)
-        return jsonify({"result": result})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-# Sehemu ya zamani ya Diagnosis
-@app.route("/api/analyze", methods=["POST"])
-@login_required
-def api_analyze():
-    data = request.get_json(silent=True) or {}
-    text = data.get("text", "").strip()
-    if not text: return jsonify({"error": "No text"}), 400
-    try:
-        result = analyze_text(text)
-        return jsonify({"result": result})
-    except Exception as e: return jsonify({"error": str(e)}), 500
-
-# =====================================================
-# MODULE ROUTES
+# MODULE ROUTES (ZA AWALI)
 # =====================================================
 @app.route("/diagnosis")
 @login_required
@@ -145,22 +121,79 @@ def maintenance():
 
 @app.route("/manuals")
 @login_required
-def manuals():
-    return render_template("placeholder.html", title="Service Manuals", icon="fa-book", desc="Maktaba ya vitabu vya ufundi.")
+def manuals(): return render_template("placeholder.html", title="Manuals", icon="fa-book-open")
 
 @app.route("/safety")
 @login_required
-def safety():
-    return render_template("placeholder.html", title="Safety Standards", icon="fa-shield-halved", desc="Miongozo ya usalama kazini.")
+def safety(): return render_template("placeholder.html", title="Safety", icon="fa-hard-hat")
 
-# Routes nyingine za placeholder
 @app.route("/calibration")
 @login_required
-def calibration(): return render_template("placeholder.html", title="Calibration", icon="fa-compass")
+def calibration(): return render_template("placeholder.html", title="Calibration", icon="fa-sliders-h")
 
 @app.route("/harness")
 @login_required
-def harness(): return render_template("placeholder.html", title="Harness", icon="fa-network-wired")
+def harness(): return render_template("placeholder.html", title="Harness Layout", icon="fa-network-wired")
+
+# =====================================================
+# MPYA: ROUTES 5 ZA NYONGEZA
+# =====================================================
+
+# 1. SCAN NAMEPLATE API (Vision)
+@app.route("/api/scan-nameplate", methods=["POST"])
+@login_required
+def api_scan_nameplate():
+    if 'file' not in request.files:
+        return jsonify({"error": "Picha haijapatikana"}), 400
+    file = request.files['file']
+    ai = get_ai_service()
+    if not ai: return jsonify({"error": "AI Service Offline"}), 500
+    try:
+        result = ai.analyze_nameplate(file.read())
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# 2. SCHEMATICS HUB
+@app.route("/schematics")
+@login_required
+def schematics():
+    return render_template("placeholder.html", title="Schematics", icon="fa-project-diagram", desc="Wiring & Hydraulic diagrams library.")
+
+# 3. FLEET ANALYTICS
+@app.route("/reports")
+@login_required
+def reports():
+    return render_template("placeholder.html", title="Reports", icon="fa-chart-line", desc="Detailed machine productivity reports.")
+
+# 4. ALERTS CENTER
+@app.route("/alerts")
+@login_required
+def alerts():
+    return render_template("placeholder.html", title="Alerts", icon="fa-bell", desc="Active fault codes and warnings.")
+
+# 5. SYSTEM SETTINGS
+@app.route("/settings")
+@login_required
+def settings():
+    return render_template("placeholder.html", title="Settings", icon="fa-cog", desc="User profile and system configuration.")
+
+# =====================================================
+# AI CONTEXTUAL ASSISTANT (API)
+# =====================================================
+@app.route("/api/ask_expert", methods=["POST"])
+@login_required
+def api_ask_expert():
+    data = request.get_json(silent=True) or {}
+    query = data.get("query", "").strip()
+    category = data.get("category", "general").strip()
+    ai = get_ai_service()
+    if not ai: return jsonify({"result": "Msaidizi wa AI hayupo kwa sasa."})
+    try:
+        result = ai.ask_expert(query, category)
+        return jsonify({"result": result})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # =====================================================
 # MACHINE MANAGEMENT & AUTH
@@ -176,11 +209,22 @@ def machines():
 def add_machine():
     if request.method == "POST":
         try:
-            m = Machine(name=request.form.get("name"), brand=request.form.get("brand"), model=request.form.get("model"),
-                        serial=request.form.get("serial"), current_hours=int(request.form.get("hours", 0)), owner_id=current_user.id)
+            brand = request.form.get("brand")
+            model = request.form.get("model")
+            m = Machine(
+                name=f"{brand} {model}",
+                brand=brand,
+                model=model,
+                serial=request.form.get("serial"),
+                current_hours=int(request.form.get("hours", 0)),
+                owner_id=current_user.id
+            )
             db.session.add(m); db.session.commit()
+            flash("Mtambo umeongezwa!", "success")
             return redirect(url_for("machines"))
-        except: db.session.rollback(); flash("Serial tayari ipo.", "danger")
+        except: 
+            db.session.rollback()
+            flash("Serial tayari ipo.", "danger")
     return render_template("add_machine.html")
 
 @app.route("/login", methods=["GET", "POST"])
@@ -198,6 +242,7 @@ def register():
         u = User(username=request.form.get("username"))
         u.set_password(request.form.get("password"))
         db.session.add(u); db.session.commit()
+        flash("Akaunti imeumbwa!", "success")
         return redirect(url_for("login"))
     return render_template("register.html")
 
@@ -209,7 +254,9 @@ def logout():
 @app.errorhandler(404)
 def not_found(e): return render_template("placeholder.html", title="Not Found", icon="fa-exclamation-circle"), 404
 
-with app.app_context(): db.create_all()
+# Create DB within context
+with app.app_context():
+    db.create_all()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))

@@ -1,60 +1,64 @@
-import os
+hereimport os
+from groq import Groq
 import google.generativeai as genai
 from PIL import Image
 import io
 import json
 
-# 1. Inasoma Key kutoka Koyeb (Hakikisha umeongeza GEMINI_KEY kwenye dashboard ya Koyeb)
-API_KEY = os.environ.get("GEMINI_KEY")
+# Pata Keys kutoka kwenye Environment Variables za Koyeb
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+GEMINI_KEY = os.environ.get("GEMINI_KEY")
 
-if API_KEY:
-    genai.configure(api_key=API_KEY)
+# Anzisha Client ya Groq kwa ajili ya Chat
+groq_client = None
+if GROQ_API_KEY:
+    groq_client = Groq(api_key=GROQ_API_KEY)
+
+# Anzisha Gemini kwa ajili ya Picha
+if GEMINI_KEY:
+    genai.configure(api_key=GEMINI_KEY)
 
 def analyze_nameplate(image_bytes):
-    """Inasoma picha ya nameplate na kurudisha JSON"""
+    """Inasoma picha ya nameplate kwa kutumia Gemini (Bure)"""
     try:
-        if not API_KEY:
+        if not GEMINI_KEY:
             return {"error": "Tafadhali weka GEMINI_KEY kule Koyeb!"}
 
-        # Tunatumia model ya flash kwa sababu ni ya bure na ina uwezo wa picha
         model = genai.GenerativeModel('gemini-1.5-flash')
-        
-        # Geuza bytes kuwa picha
         img = Image.open(io.BytesIO(image_bytes))
         
         prompt = """
-        Wewe ni mtaalamu wa kusoma nameplates za mitambo ya ujenzi.
-        Soma picha hii na utoe taarifa zifuatazo kwa mfumo wa JSON pekee:
+        Wewe ni mtaalamu wa mitambo. Soma picha hii na utoe JSON pekee:
         {
           "brand": "Jina la kampuni",
           "model": "Model ya mtambo",
           "serial": "Serial Number"
         }
-        Kama huoni taarifa, weka "N/A". Toa JSON pekee bila maneno mengine.
+        Kama huoni taarifa, weka 'N/A'.
         """
         
         response = model.generate_content([prompt, img])
-        
-        # Safisha jibu ili kupata JSON safi
         clean_text = response.text.replace("```json", "").replace("```", "").strip()
         return json.loads(clean_text)
         
     except Exception as e:
-        return {"error": f"Hitilafu ya Picha: {str(e)}"}
+        return {"error": f"Hitilafu ya Picha (Gemini): {str(e)}"}
 
 def get_ai_response(prompt):
-    """Hii ni kwa ajili ya Chat ya msaidizi (Electrical/Diagnosis) ili kuzuia 'undefined'"""
+    """Inajibu maswali ya Chat kwa kutumia Groq (Kasi zaidi na Bure)"""
     try:
-        if not API_KEY:
-            return "Hitilafu: GEMINI_KEY haijapatikana kule Koyeb."
+        if not groq_client:
+            return "Hitilafu: GROQ_API_KEY haijapatikana kule Koyeb."
             
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        
-        # Tunatoa maelekezo ya jinsi AI inavyopaswa kuwa
-        full_prompt = f"Wewe ni mtaalamu wa mitambo ya ujenzi (CAT, Komatsu, Volvo). Jibu swali hili kwa ufasaha: {prompt}"
-        
-        response = model.generate_content(full_prompt)
-        return response.text
+        # Tunatumia Llama 3 kupitia Groq kwa majibu ya haraka sana
+        completion = groq_client.chat.completions.create(
+            model="llama-3.1-70b-versatile",
+            messages=[
+                {"role": "system", "content": "Wewe ni mtaalamu wa mitambo ya ujenzi (CAT, Komatsu, Volvo). Jibu kwa Kiswahili fasaha na kifupi."},
+                {"role": "user", "content": prompt}
+            ],
+        )
+        return completion.choices[0].message.content
         
     except Exception as e:
-        return f"Hitilafu ya Chat: {str(e)}"
+        return f"Hitilafu ya Chat (Groq): {str(e)}"

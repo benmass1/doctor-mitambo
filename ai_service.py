@@ -1,4 +1,4 @@
-hereimport os
+import os
 from openai import OpenAI
 from PIL import Image
 import io

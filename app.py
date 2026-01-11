@@ -14,11 +14,13 @@ from flask_login import (
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# --- GROQ INTEGRATION ---
+# --- GROQ & HTTPX INTEGRATION (REFIXED) ---
 try:
     from groq import Groq
+    import httpx
 except ImportError:
     Groq = None
+    httpx = None
 
 # =====================================================
 # APP INITIALIZATION
@@ -26,11 +28,20 @@ except ImportError:
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "DR_MITAMBO_PRO_SECURE_2026_V10")
 
-# --- ANZA GROQ CLIENT ---
+# --- ANZA GROQ CLIENT (Kurekebisha TypeError: proxies) ---
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 groq_client = None
-if Groq and GROQ_API_KEY:
-    groq_client = Groq(api_key=GROQ_API_KEY)
+
+if Groq and httpx and GROQ_API_KEY:
+    try:
+        # Tunatengeneza mteja wa HTTP bila proxies ili kuzuia hitilafu kwenye Python 3.13
+        custom_http_client = httpx.Client(proxies=None)
+        groq_client = Groq(
+            api_key=GROQ_API_KEY,
+            http_client=custom_http_client
+        )
+    except Exception as e:
+        print(f"Hakuweza kuanzisha Groq Client: {e}")
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(BASE_DIR, "mitambo_pro.db")
@@ -92,7 +103,7 @@ def index():
                          avg_health=avg_health)
 
 # =====================================================
-# MODULE ROUTES (ZOOTE ULIZOTUMA)
+# MODULE ROUTES
 # =====================================================
 @app.route("/diagnosis")
 @login_required
@@ -143,7 +154,6 @@ def harness(): return render_template("placeholder.html", title="Harness Layout"
 @app.route("/api/scan-nameplate", methods=["POST"])
 @login_required
 def api_scan_nameplate():
-    # Hapa Vision API itahitaji model ya Groq (kama llama-3.2-11b-vision-preview)
     return jsonify({"error": "Vision API bado inahitaji usanidi wa Model ya Picha"})
 
 @app.route("/schematics")

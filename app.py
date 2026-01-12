@@ -1,6 +1,7 @@
-import os
+hereimport os
 import json
 import io
+import base64
 from datetime import datetime
 
 from flask import (
@@ -14,14 +15,13 @@ from flask_login import (
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# --- AI INTEGRATION (GROQ & GEMINI) ---
+# --- AI INTEGRATION (GROQ PEKEE KWA USALAMA) ---
 try:
     from groq import Groq
-    import google.generativeai as genai
-    from PIL import Image
+    import httpx
 except ImportError:
     Groq = None
-    genai = None
+    httpx = None
 
 # =====================================================
 # APP INITIALIZATION
@@ -29,23 +29,21 @@ except ImportError:
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "DR_MITAMBO_PRO_SECURE_2026_V10")
 
-# --- ANZA AI CLIENTS ---
+# --- ANZA GROQ CLIENT (Pamoja na kurekebisha kosa la proxies) ---
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
-GEMINI_KEY = os.environ.get("GEMINI_KEY")
-
 groq_client = None
-if Groq and GROQ_API_KEY:
-    try:
-        # Toleo hili linatumia mipangilio ya msingi kuzuia kosa la 'proxies'
-        groq_client = Groq(api_key=GROQ_API_KEY)
-    except Exception as e:
-        print(f"Groq imefeli kuanza: {e}")
 
-if genai and GEMINI_KEY:
+if Groq and httpx and GROQ_API_KEY:
     try:
-        genai.configure(api_key=GEMINI_KEY)
+        # Tunalazimisha httpx kutotumia proxies kuzuia hitilafu ya Python 3.13
+        custom_http_client = httpx.Client(trust_env=False)
+        groq_client = Groq(
+            api_key=GROQ_API_KEY,
+            http_client=custom_http_client
+        )
+        print("Groq Client imewaka vizuri!")
     except Exception as e:
-        print(f"Gemini imefeli kuanza: {e}")
+        print(f"Bado kuna shida ya Groq: {e}")
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////" + os.path.join(BASE_DIR, "mitambo_pro.db")
@@ -60,7 +58,8 @@ login_manager.login_view = "login"
 # =====================================================
 class User(UserMixin, db.Model):
     __tablename__ = "users"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(# ... (kama awali)
+        db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -109,6 +108,12 @@ def diagnosis(): return render_template("diagnosis.html")
 @login_required
 def electrical(): return render_template("electrical.html")
 
+@app.route("/maintenance")
+@login_required
+def maintenance():
+    machines = Machine.query.filter_by(owner_id=current_user.id).all()
+    return render_template("maintenance.html", machines=machines)
+
 @app.route("/systems_op")
 @login_required
 def systems_op(): return render_template("systems_op.html")
@@ -121,66 +126,69 @@ def troubleshooting(): return render_template("troubleshooting.html")
 @login_required
 def parts(): return render_template("parts.html")
 
-@app.route("/maintenance")
-@login_required
-def maintenance():
-    machines = Machine.query.filter_by(owner_id=current_user.id).all()
-    return render_template("maintenance.html", machines=machines)
-
+# --- Placeholder Routes ---
 @app.route("/manuals")
 @login_required
 def manuals(): return render_template("placeholder.html", title="Manuals", icon="fa-book-open")
-
 @app.route("/safety")
 @login_required
 def safety(): return render_template("placeholder.html", title="Safety", icon="fa-hard-hat")
-
 @app.route("/calibration")
 @login_required
 def calibration(): return render_template("placeholder.html", title="Calibration", icon="fa-sliders-h")
-
 @app.route("/harness")
 @login_required
 def harness(): return render_template("placeholder.html", title="Harness Layout", icon="fa-network-wired")
-
 @app.route("/schematics")
 @login_required
 def schematics(): return render_template("placeholder.html", title="Schematics", icon="fa-project-diagram")
-
 @app.route("/reports")
 @login_required
 def reports(): return render_template("placeholder.html", title="Reports", icon="fa-chart-line")
-
 @app.route("/alerts")
 @login_required
 def alerts(): return render_template("placeholder.html", title="Alerts", icon="fa-bell")
-
 @app.route("/settings")
 @login_required
 def settings(): return render_template("placeholder.html", title="Settings", icon="fa-cog")
 
 # =====================================================
-# AI SCAN & CHAT (MAREKEBISHO YA MODEL)
+# AI SCAN & CHAT (MABORESHO YA GROQ VISION & LOGIC)
 # =====================================================
 @app.route("/api/scan-nameplate", methods=["POST"])
 @login_required
 def api_scan_nameplate():
-    if 'image' not in request.files or not GEMINI_KEY:
-        return jsonify({"error": "Gemini haijasanidiwa vizuri kule Koyeb."})
+    if 'image' not in request.files or not groq_client:
+        return jsonify({"error": "Picha haijapatikana au Groq haijawaka."})
     
     try:
         file = request.files['image']
-        img = Image.open(io.BytesIO(file.read()))
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        # Geuza picha kuwa Base64 kwa ajili ya Groq Vision
+        image_base64 = base64.b64encode(file.read()).decode('utf-8')
         
-        prompt = "Soma nameplate hii na utoe JSON pekee: {brand, model, serial}. Usiongeze maneno mengine."
-        response = model.generate_content([prompt, img])
+        # Tumia model ya Vision (Llama 3.2)
+        response = groq_client.chat.completions.create(
+            model="llama-3.2-11b-vision-preview",
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": "Extract machine brand, model, and serial number from this nameplate. Output as raw JSON only."},
+                        {
+                            "type": "image_url",
+                            "image_url": {"url": f"data:image/jpeg;base64,{image_base64}"}
+                        }
+                    ]
+                }
+            ],
+            temperature=0.1
+        )
         
-        # Kusafisha jibu la JSON
-        clean_text = response.text.replace("```json", "").replace("```", "").strip()
-        return jsonify(json.loads(clean_text))
+        # Kusafisha maandishi na kurudisha JSON
+        res_text = response.choices[0].message.content.replace("```json", "").replace("```", "").strip()
+        return jsonify(json.loads(res_text))
     except Exception as e:
-        return jsonify({"error": f"Hitilafu ya Picha: {str(e)}"}), 500
+        return jsonify({"error": f"Hitilafu ya Vision: {str(e)}"}), 500
 
 @app.route("/api/ask_expert", methods=["POST"])
 @login_required
@@ -190,21 +198,23 @@ def api_ask_expert():
     category = data.get("category", "Diagnosis").strip()
 
     if not groq_client:
-        return jsonify({"result": "Msaidizi hayupo. Hakikisha GROQ_API_KEY ipo Koyeb."})
+        return jsonify({"result": "Msaidizi hayupo kwa sasa."})
 
     try:
-        # MAREKEBISHO: Tumia llama-3.3-70b-versatile badala ya llama-3.1
+        # MAREKEBISHO: Tumia llama-3.3-70b na Temperature ndogo kwa usahihi
         response = groq_client.chat.completions.create(
             model="llama-3.3-70b-versatile",
             messages=[
-                {"role": "system", "content": f"Wewe ni Dr. Mitambo Pro, mtaalamu wa ufundi Tanzania. Unasaidia kwenye {category}. Jibu kwa Kiswahili fasaha."},
+                {
+                    "role": "system", 
+                    "content": f"Wewe ni Dr. Mitambo Pro, mtaalamu wa ufundi Tanzania. Unasaidia kwenye kitengo cha {category}. Jibu maswali ya kiufundi pekee kwa Kiswahili fasaha na kwa usahihi wa 100%."
+                },
                 {"role": "user", "content": query}
             ],
-            temperature=0.6,
+            temperature=0.2, # Hii inazuia AI kutoa majibu yasiyohusiana
         )
         return jsonify({"result": response.choices[0].message.content})
     except Exception as e:
-        # Hii itarudisha kosa halisi badala ya "Samahani nimepata hitilafu"
         return jsonify({"result": f"Kosa la AI: {str(e)}"}), 200
 
 # =====================================================

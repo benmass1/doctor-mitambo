@@ -1,45 +1,154 @@
-{% extends "layout.html" %}
+here{% extends "layout.html" %}
 {% block content %}
-<div class="ai-container" style="max-width: 800px; margin: 0 auto; padding: 20px;">
+<div class="container mt-4 mb-5" style="max-width: 900px;">
     
-    <div class="scanner-header shadow-lg text-center p-4 mb-4" style="background: #111; border: 1px solid #00ffcc; border-radius: 20px;">
-        <i class="fas fa-robot fa-3x text-success mb-3"></i>
-        <h4 class="text-white">AI DIAGNOSIS HALISI</h4>
-        <p class="small text-muted">Eleza tatizo la mtambo upate majibu ya Gemini AI</p>
+    <div class="scanner-header shadow-lg text-center p-4 mb-4" style="background: linear-gradient(145deg, #111, #222); border: 2px solid #00ffcc; border-radius: 25px;">
+        <div class="pulse-icon mb-3">
+            <i class="fas fa-microchip fa-3x" style="color: #00ffcc; text-shadow: 0 0 15px #00ffcc;"></i>
+        </div>
+        <h3 class="text-white fw-bold">DR. MITAMBO PRO <span class="badge bg-success" style="font-size: 0.4em; vertical-align: middle;">AI VISION</span></h3>
+        <p class="text-muted small">Msaidizi wa kiufundi anayetumia Llama-3 & Vision AI</p>
     </div>
 
-    <div class="chat-box mb-4">
-        {% if result %}
-        <div class="ai-message p-3 mb-3" style="background: #1a1a1a; border-left: 4px solid #00ffcc; border-radius: 10px;">
-            <h6 class="text-success fw-bold"><i class="fas fa-check-circle me-2"></i>UCHAMBUZI WA DR. MITAMBO:</h6>
-            <p class="text-white small" id="aiResponseText">{{ result }}</p>
-            <button onclick="readAloud()" class="btn btn-sm btn-outline-success mt-2">
-                <i class="fas fa-volume-up me-1"></i>Sikiliza
+    <ul class="nav nav-pills nav-justified mb-4 shadow-sm p-1 bg-dark rounded-pill" id="aiTab" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link active rounded-pill text-white" id="chat-tab" data-bs-toggle="pill" data-bs-target="#chatSection">
+                <i class="fas fa-comments me-2"></i>AI CHAT
             </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link rounded-pill text-white" id="scan-tab" data-bs-toggle="pill" data-bs-target="#scanSection">
+                <i class="fas fa-camera me-2"></i>SCAN NAMEPLATE
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="chatSection">
+            <div class="chat-container bg-dark p-3 shadow-lg" style="border-radius: 20px; height: 450px; display: flex; flex-direction: column; border: 1px solid #333;">
+                <div id="chatDisplay" class="flex-grow-1 overflow-auto p-2 mb-3" style="scrollbar-width: thin;">
+                    <div class="ai-msg mb-3">
+                        <div class="d-inline-block p-3 rounded-4" style="background: #2a2a2a; border-left: 3px solid #00ffcc; color: #eee; max-width: 85%;">
+                            <small class="d-block text-success fw-bold mb-1">Dr. Mitambo:</small>
+                            Habari! Naweza kukusaidia nini kuhusu mitambo yako leo? (Mfano: "Kwanini hydraulic imekuwa nzito?")
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-input-area">
+                    <div class="input-group shadow-lg">
+                        <input type="text" id="userInput" class="form-control bg-dark text-white border-secondary py-3" placeholder="Andika tatizo hapa...">
+                        <button id="sendBtn" class="btn btn-success px-4 fw-bold">ANALYZE <i class="fas fa-paper-plane ms-1"></i></button>
+                    </div>
+                </div>
+            </div>
         </div>
-        {% else %}
-        <div class="p-3 text-center text-muted border border-secondary rounded">
-            <p class="small mb-0">Subiri uchambuzi hapa baada ya kubonyeza ANALYZE...</p>
+
+        <div class="tab-pane fade" id="scanSection">
+            <div class="card bg-dark border-secondary p-4 text-center shadow-lg" style="border-radius: 20px;">
+                <form id="scanForm">
+                    <div class="upload-zone p-5 mb-3 border-dashed border-2 rounded-4" id="dropZone" style="border: 2px dashed #444; cursor: pointer;">
+                        <i class="fas fa-cloud-upload-alt fa-4x text-muted mb-3"></i>
+                        <h5 class="text-white">Piga Picha au Pakia Nameplate</h5>
+                        <p class="small text-muted">AI itasoma Brand, Model, na Serial Number</p>
+                        <input type="file" name="image" id="imageInput" class="d-none" accept="image/*" capture="environment">
+                    </div>
+                    <button type="submit" id="scanBtn" class="btn btn-primary btn-lg w-100 fw-bold shadow">
+                        START AI SCAN <i class="fas fa-qrcode ms-2"></i>
+                    </button>
+                </form>
+                <div id="scanResult" class="mt-4 text-start d-none animate__animated animate__fadeIn">
+                    <div class="p-3 bg-black rounded shadow-inner" style="border-left: 4px solid #007bff;">
+                        <h6 class="text-primary fw-bold">MATOKEO YA UTAMBUZI:</h6>
+                        <div id="scanContent" class="text-white small"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-        {% endif %}
     </div>
-
-    <form action="{{ url_for('diagnosis') }}" method="POST">
-        <div class="input-group shadow-sm">
-            <input type="text" name="error_code" class="form-control bg-dark text-white border-secondary" 
-                   placeholder="Andika hapa... (mfano: Moshi mweusi na kukosa nguvu)" required>
-            <button type="submit" class="btn btn-success fw-bold">ANALYZE</button>
-        </div>
-    </form>
-
 </div>
 
+
+
+<style>
+    body { background-color: #0a0a0a; }
+    .nav-pills .nav-link.active { background-color: #00ffcc !important; color: #000 !important; font-weight: bold; }
+    #chatDisplay::-webkit-scrollbar { width: 5px; }
+    #chatDisplay::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+    .border-dashed:hover { border-color: #00ffcc !important; background: #1a1a1a; transition: 0.3s; }
+</style>
+
 <script>
-    function readAloud() {
-        const text = document.getElementById("aiResponseText").innerText;
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'sw-TZ';
-        window.speechSynthesis.speak(utterance);
+// --- CHAT LOGIC (AJAX) ---
+document.getElementById('sendBtn').addEventListener('click', async () => {
+    const input = document.getElementById('userInput');
+    const display = document.getElementById('chatDisplay');
+    const text = input.value.trim();
+    if (!text) return;
+
+    // Display User Message
+    display.innerHTML += `<div class="text-end mb-3"><div class="d-inline-block p-3 rounded-4 bg-success text-white" style="max-width: 85%;">${text}</div></div>`;
+    input.value = "";
+    display.scrollTop = display.scrollHeight;
+
+    // Call API
+    try {
+        const response = await fetch('/api/ask_expert', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ query: text, category: "Ufundi General" })
+        });
+        const data = await response.json();
+        
+        // Display AI Response
+        display.innerHTML += `
+            <div class="ai-msg mb-3 animate__animated animate__fadeIn">
+                <div class="d-inline-block p-3 rounded-4" style="background: #2a2a2a; border-left: 3px solid #00ffcc; color: #eee; max-width: 85%;">
+                    <small class="d-block text-success fw-bold mb-1">Dr. Mitambo:</small>
+                    ${data.result}
+                    <div class="mt-2"><button onclick="speak('${data.result.replace(/'/g, "\\'")}')" class="btn btn-sm btn-dark text-success border-success p-1 px-2"><i class="fas fa-volume-up"></i></button></div>
+                </div>
+            </div>`;
+    } catch (e) {
+        display.innerHTML += `<div class="text-danger small mt-2">Kuna tatizo la mtandao...</div>`;
     }
+    display.scrollTop = display.scrollHeight;
+});
+
+// --- SCAN LOGIC ---
+document.getElementById('dropZone').onclick = () => document.getElementById('imageInput').click();
+
+document.getElementById('scanForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('scanBtn');
+    const resultDiv = document.getElementById('scanResult');
+    const content = document.getElementById('scanContent');
+    const file = document.getElementById('imageInput').files[0];
+
+    if(!file) return alert("Pakia picha kwanza!");
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ANALYZING...';
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+        const res = await fetch('/api/scan-nameplate', { method: 'POST', body: formData });
+        const data = await res.json();
+        resultDiv.classList.remove('d-none');
+        content.innerHTML = `<pre class="text-white bg-transparent border-0">${JSON.stringify(data, null, 2)}</pre>`;
+    } catch (e) { alert("Hitilafu ya Scanner!"); }
+
+    btn.disabled = false;
+    btn.innerHTML = 'START AI SCAN <i class="fas fa-qrcode ms-2"></i>';
+};
+
+// --- VOICE LOGIC ---
+function speak(text) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'sw-TZ';
+    window.speechSynthesis.speak(utterance);
+}
 </script>
 {% endblock %}
